@@ -1,0 +1,3 @@
+../Common/Src/utilities.c:10:9:Constrain	24	static
+../Common/Src/utilities.c:22:9:UnwrapAtThreshold16	24	static
+../Common/Src/utilities.c:44:9:Abs	16	static

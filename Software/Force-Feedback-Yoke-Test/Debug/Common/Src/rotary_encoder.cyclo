@@ -1,0 +1,5 @@
+rotary_encoder.c:12:6:RotaryEncInit	1
+rotary_encoder.c:19:6:RotaryEncSetCount	1
+rotary_encoder.c:23:9:RotaryEncGetCount	1
+rotary_encoder.c:27:7:RotaryEncGetSpeed	1
+rotary_encoder.c:32:6:RotaryEncUpdate	3
