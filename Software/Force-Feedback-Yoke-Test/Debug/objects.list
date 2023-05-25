@@ -1,6 +1,8 @@
+"./Common/Src/force_feedback_controller.o"
 "./Common/Src/pid.o"
 "./Common/Src/rotary_encoder.o"
 "./Common/Src/utilities.o"
+"./Core/Src/devices/ina219.o"
 "./Core/Src/devices/motor.o"
 "./Core/Src/main.o"
 "./Core/Src/stm32f3xx_hal_msp.o"

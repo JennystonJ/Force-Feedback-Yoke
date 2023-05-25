@@ -30,6 +30,8 @@
 #include "devices/motor.h"
 #include "peripherals/gpio.h"
 #include "utilities.h"
+#include "devices/ina219.h"
+#include "force_feedback_controller.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,9 +69,14 @@ typedef struct {
 
 RotaryEncoder_t encoder;
 
+Ina219_t currentSense;
+
 PID_t pid;
 
 Motor_t motor;
+
+FFBController_t ffb;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -152,6 +159,8 @@ int main(void)
 
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
 
+  CurrentSenseInit(&currentSense, &hi2c1);
+
   GPIO_t gpioMotorReverse = {
 		  .port = MOTOR_FORWARD_GPIO_Port,
 		  .pin = MOTOR_FORWARD_Pin
@@ -166,15 +175,21 @@ int main(void)
   //MotorSetOffset(&motor, MOTOR_OFFSET);
   MotorStartPWM(&motor);
 
+  FFBInit(&ffb);
+
   HAL_TIM_Base_Start_IT(&htim1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  uint32_t printfCounter = 0;
+  int32_t prevEncCount = 0;
   while (1)
   {
 	  RotaryEncUpdate(&encoder, __HAL_TIM_GET_COUNTER(&htim4), 1);
 	  int32_t joyYOut = RotaryEncGetCount(&encoder);
+	  float speed = (joyYOut - prevEncCount)/0.01;
 
 	 // printf("Count: %d\r\n", (int)__HAL_TIM_GET_COUNTER(&htim4));
 
@@ -186,16 +201,23 @@ int main(void)
 	  //joyYOut = Constrain(joyYOut, -127, 127);
 
 	  //Motor control
-	  float motorPower = ComputePID(&pid, 0, joyYOut);
+	  float motorPower = FFBComputeDamperForce(&ffb, speed);
+	  //float motorPower = ComputePID(&pid, 0, joyYOut);
 	  //motorPower = 1500;
-	  MotorSetPower(&motor, (int32_t)(-motorPower));
+	  MotorSetPower(&motor, (int32_t)(motorPower));
 
 //	  gameHID.joyY = (int8_t)joyYOut;
 
 	  //USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&gameHID,
 		//	  sizeof(gameHID));
 
+//	  printfCounter++;
+//	  if(printfCounter == 1) {
+//		  printf("Current: %f\r\n", CurrentSenseGetCurrent(&currentSense));
+//		  printfCounter = 0;
+//	  }
 
+	  prevEncCount = joyYOut;
 	  HAL_Delay(10);
     /* USER CODE END WHILE */
 
@@ -271,7 +293,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x2000090E;
+  hi2c1.Init.Timing = 0x0000020B;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -445,7 +467,7 @@ static void MX_TIM4_Init(void)
   sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
   sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
   sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
-  sConfig.IC2Filter = 15;
+  sConfig.IC2Filter = 4;
   if (HAL_TIM_Encoder_Init(&htim4, &sConfig) != HAL_OK)
   {
     Error_Handler();

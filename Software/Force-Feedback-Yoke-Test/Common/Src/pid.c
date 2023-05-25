@@ -10,7 +10,7 @@
 static float Abs(float x);
 
 void PIDInit(PID_t *pid) {
-	pid->kP = 20;
+	pid->kP = 10;
 	pid->kI = 0;
 	pid->kD = 0;
 	pid->integral = 0;

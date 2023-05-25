@@ -45,7 +45,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
  ../Common/rotary_encoder.h ../Common/pid.h ../Core/Inc/devices/motor.h \
  ../Core/Inc/devices/../peripherals/gpio.h ../Core/Inc/peripherals/gpio.h \
- ../Common/utilities.h
+ ../Common/utilities.h ../Core/Inc/devices/ina219.h \
+ ../Common/force_feedback_controller.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:
 ../Core/Inc/stm32f3xx_hal_conf.h:
@@ -97,3 +98,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/devices/../peripherals/gpio.h:
 ../Core/Inc/peripherals/gpio.h:
 ../Common/utilities.h:
+../Core/Inc/devices/ina219.h:
+../Common/force_feedback_controller.h:
