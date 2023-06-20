@@ -1,0 +1,5 @@
+../Common/Src/feed_forward.c:10:6:FFInit	16	static
+../Common/Src/feed_forward.c:16:7:FFCompute	32	static
+../Common/Src/feed_forward.c:22:6:FFSetKs	16	static
+../Common/Src/feed_forward.c:26:6:FFSetKv	16	static
+../Common/Src/feed_forward.c:30:6:FFSetKa	16	static

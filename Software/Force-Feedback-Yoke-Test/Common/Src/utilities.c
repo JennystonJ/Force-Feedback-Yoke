@@ -19,6 +19,18 @@ int32_t Constrain(int32_t value, int32_t min, int32_t max) {
 	}
 }
 
+float ConstrainFloat(float value, float min, float max) {
+	if(value < min) {
+		return min;
+	}
+	else if(value > max) {
+		return max;
+	}
+	else {
+		return value;
+	}
+}
+
 int32_t UnwrapAtThreshold16(uint16_t currentCount, uint16_t newCount,
 		uint16_t threshold) {
 

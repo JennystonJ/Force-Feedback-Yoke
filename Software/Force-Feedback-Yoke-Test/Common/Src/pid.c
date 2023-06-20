@@ -10,15 +10,20 @@
 static float Abs(float x);
 
 void PIDInit(PID_t *pid) {
-	pid->kP = 10;
-	pid->kI = 0;
-	pid->kD = 0;
+//	pid->kP = 292;//350;//250;//180;//35;
+//	pid->kI = 100;//20;//60;//20;//20;//3;//7;
+//	pid->kD = 0.5;//2.2;
+
+	pid->kP = 200;//250;
+	pid->kI = 400;
+	pid->kD = 0.8;
+
 	pid->integral = 0;
 	pid->preError = 0;
 }
 
 float ComputePID(PID_t *pid, float setPoint, float actual) {
-	float error = actual - setPoint;
+	float error = setPoint - actual;
 
 	//integrate only if error is large enough
 	if(Abs(error) > PID_EPSILON) {

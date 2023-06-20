@@ -1,0 +1,5 @@
+anti_cog.c:820:6:AntiCogInit	2
+anti_cog.c:830:6:AntiCogRun	3
+anti_cog.c:913:6:AntiCogTest	1
+anti_cog.c:961:10:AntiCogGetCalAt	1
+anti_cog.c:1018:16:AntiCogFindMinPower	3

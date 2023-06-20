@@ -77,6 +77,8 @@ void Error_Handler(void);
 #define OSC_OUT_GPIO_Port GPIOF
 #define B1_Pin GPIO_PIN_0
 #define B1_GPIO_Port GPIOA
+#define HOME_SENSOR_Pin GPIO_PIN_1
+#define HOME_SENSOR_GPIO_Port GPIOA
 #define SPI1_SCK_Pin GPIO_PIN_5
 #define SPI1_SCK_GPIO_Port GPIOA
 #define SPI1_MISO_Pin GPIO_PIN_6

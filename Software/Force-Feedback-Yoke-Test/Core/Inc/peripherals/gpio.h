@@ -8,7 +8,7 @@
 #ifndef INC_PERIPHERALS_GPIO_H_
 #define INC_PERIPHERALS_GPIO_H_
 
-#include "stm32f3xx_hal.h"
+#include "stm32f3xx.h"
 #include <stdint.h>
 
 typedef enum {
@@ -19,9 +19,11 @@ typedef enum {
 typedef struct GPIO {
 	GPIO_TypeDef *port;
 	uint16_t pin;
+//	COMP_HandleTypeDef *hcomp;
 } GPIO_t;
 
 void GPIOInit(GPIO_t *gpio, GPIO_TypeDef *port, uint16_t pin);
+//void GPIOInitComp(GPIO_t *gpio, COMP_HandleTypeDef *hcomp);
 GPIOState GPIOGetState(GPIO_t *gpio);
 void GPIOSetState(GPIO_t *gpio, GPIOState state);
 

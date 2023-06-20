@@ -33,12 +33,13 @@ CPP_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 Common/Src \
-Core/Src/devices \
 Core/Src \
+Core/Src/devices \
 Core/Src/peripherals \
+Core/Src/testing \
 Core/Startup \
 Drivers/STM32F3xx_HAL_Driver/Src \
-Middlewares/ST/STM32_USB_Device_Library/Class/HID/Src \
+Middlewares/ST/STM32_USB_Device_Library/Class/CustomHID/Src \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src \
 USB_DEVICE/App \
 USB_DEVICE/Target \

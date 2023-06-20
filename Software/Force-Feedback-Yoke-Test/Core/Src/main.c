@@ -22,9 +22,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "usbd_hid.h"
+#include <usbd_customhid.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <testing/motor_logger.h>
 #include "rotary_encoder.h"
 #include "pid.h"
 #include "devices/motor.h"
@@ -32,11 +33,15 @@
 #include "utilities.h"
 #include "devices/ina219.h"
 #include "force_feedback_controller.h"
+#include "anti_cog.h"
+#include "devices/home_sensor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 #define MOTOR_OFFSET 1300
+
+#define ENCODER_HOME_OFFSET (-6)
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -55,6 +60,8 @@ SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim4;
+TIM_HandleTypeDef htim6;
+TIM_HandleTypeDef htim7;
 
 UART_HandleTypeDef huart1;
 
@@ -62,8 +69,8 @@ UART_HandleTypeDef huart1;
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
 typedef struct {
-	int8_t joyX;
-	int8_t joyY;
+	int16_t joyX;
+	int16_t joyY;
 	uint8_t joyB1;
 } GameHID_t;
 
@@ -71,12 +78,22 @@ RotaryEncoder_t encoder;
 
 Ina219_t currentSense;
 
-PID_t pid;
+PID_t positionPid;
+PID_t currentPid;
 
 Motor_t motor;
 
 FFBController_t ffb;
 
+HomeSensor_t homeSensor;
+MotorController_t controller;
+
+uint8_t txBuffer[64];
+uint8_t report_buffer[64];
+uint8_t flag = 0;
+uint8_t flag_rx = 0;
+
+//float testCurrent;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -87,6 +104,8 @@ static void MX_SPI1_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM1_Init(void);
+static void MX_TIM6_Init(void);
+static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -107,8 +126,12 @@ PUTCHAR_PROTOTYPE
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-	if(htim == &htim4) {
-		HAL_GPIO_TogglePin(LD10_GPIO_Port, LD10_Pin);
+	if(htim == &htim6) {
+		RotaryEncUpdate(&encoder, __HAL_TIM_GET_COUNTER(&htim4), 0.5);
+	}
+	else if(htim == &htim7) {
+		MotorControllerUpdate(&controller, 2);
+		//testCurrent = MotorControllerGetCurrent(&controller);
 	}
 }
 /* USER CODE END 0 */
@@ -147,6 +170,8 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   MX_TIM1_Init();
+  MX_TIM6_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   GameHID_t gameHID = {
 		  .joyX = 0,
@@ -154,22 +179,22 @@ int main(void)
 		  .joyB1 = 0
   };
 
-  PIDInit(&pid);
+  PIDInit(&positionPid);
   RotaryEncInit(&encoder);
 
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
 
+  PIDInit(&currentPid);
+  currentPid.kP = 3580;
+  currentPid.kI = 0;
+  currentPid.kD = 0;
   CurrentSenseInit(&currentSense, &hi2c1);
 
-  GPIO_t gpioMotorReverse = {
-		  .port = MOTOR_FORWARD_GPIO_Port,
-		  .pin = MOTOR_FORWARD_Pin
-  };
+  GPIO_t gpioMotorReverse;
+  GPIOInit(&gpioMotorReverse, MOTOR_FORWARD_GPIO_Port, MOTOR_FORWARD_Pin);
 
-  GPIO_t gpioMotorForward = {
-		  .port = MOTOR_REVERSE_GPIO_Port,
-		  .pin = MOTOR_REVERSE_Pin
-  };
+  GPIO_t gpioMotorForward;
+  GPIOInit(&gpioMotorForward, MOTOR_REVERSE_GPIO_Port, MOTOR_REVERSE_Pin);
 
   MotorInit(&motor, &htim1, TIM_CHANNEL_3, gpioMotorReverse, gpioMotorForward);
   //MotorSetOffset(&motor, MOTOR_OFFSET);
@@ -178,18 +203,137 @@ int main(void)
   FFBInit(&ffb);
 
   HAL_TIM_Base_Start_IT(&htim1);
+  HAL_TIM_Base_Start_IT(&htim6);
+
+  while(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET){}
+
+  //Home motor
+  GPIO_t homeSensorGpio;
+  GPIOInit(&homeSensorGpio, HOME_SENSOR_GPIO_Port, HOME_SENSOR_Pin);
+  HomeSensorInit(&homeSensor, homeSensorGpio);
+  HomeSensorHome(&homeSensor, &motor);
+
+  //Reset encoder count after homing
+  HAL_Delay(500);
+  RotaryEncSetCount(&encoder, ENCODER_HOME_OFFSET);
+
+  printf("Homing complete\r\n");
+
+  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+
+  MotorControllerInit_t controllerInit = {
+		  .motor = &motor,
+		  .encoder = &encoder,
+		  .currentSensor = &currentSense,
+		  .positionPid = &positionPid,
+		  .currentPid = &currentPid,
+  };
+  MotorControllerInit(&controller, controllerInit);
+  HAL_TIM_Base_Start_IT(&htim7);
+
+//  int32_t motorPower = 0;
+//  while(1) {
+//	  printf("Speed: %f\r\n", RotaryEncGetSpeed(&encoder));
+//	  HAL_Delay(1);
+//
+//	  uint8_t character = NULL;
+//	  HAL_UART_Receive(&huart1, &character, 1, 100);
+//	  if(character == 'd') {
+//		  motorPower += 100;
+//	  }
+//	  else if (character == 'a') {
+//		  motorPower -= 100;
+//	  }
+//
+//	  MotorControllerSetPower(&controller, motorPower);
+//  }
+
+  MotorLogger_t mLogger;
+  MotorLoggerInit(&mLogger, &controller);
+//  MotorLoggerVRun(&mLogger, 2400, 100);
+//  MotorLoggerARun(&mLogger, 2400, 2);
+
+//  AntiCog_t antiCog;
+//  AntiCogInit(&antiCog, &controller, &positionPid);
+
+//  while(1) {
+//	  while(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET){}
+//  AntiCogRun(&antiCog);
+ // AntiCogTest(&antiCog);
+//  }
+
+  //MotorControllerSetCurrent(&controller, 0.3);
+//  while(1){}
+
+  HAL_GPIO_WritePin(LD10_GPIO_Port, LD10_Pin, GPIO_PIN_SET);
+
+//  while(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET){}
+
+//  printf("Forward Calibration Values:\r\n");
+//  for(int i = 0; i < ENCODER_COUNT_PER_REV; i++) {
+//	  printf("%d,\r\n", (int)(AntiCogGetCalAt(&antiCog, i)));
+//  }
+
+ // AntiCogTest(&antiCog);
+  HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
+
+//  for(;;){}
+
+  //for(;;){}
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  for(uint8_t i = 0; i < 64; i++) {
+	  txBuffer[i] = i;
+  }
+
+  for(;;) {
+	  if(flag_rx == 1){
+		  if(report_buffer[0] == 1){
+			  HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
+		  }
+		  else if(report_buffer[0] == 2) {
+			  HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
+		  }
+
+
+
+		  flag_rx = 0;
+
+//		  float strength = (float)((report_buffer[0] & 0xFF) |
+//				  ((report_buffer[1] & 0xFF) << 8) |
+//				  ((report_buffer[2] & 0xFF) << 16) |
+//				  ((report_buffer[3] & 0xFF) << 24));
+
+		  float *strength = (float *)report_buffer;
+
+		  float angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
+
+		  float motorPower = FFBComputeSpringForce(&ffb,
+				  angle, *strength);
+		  MotorControllerSetPower(&controller, motorPower);
+
+		  int16_t aileron = (int16_t)Constrain(((
+				  RotaryEncGetCount(&encoder)/200.0f) *
+				  32767), -32767, 32767);
+
+		  USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&aileron, 2);
+	  }
+
+	  if(flag == 1) {
+		  USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, txBuffer, 64);
+
+		  flag = 0;
+	  }
+  }
 
   uint32_t printfCounter = 0;
   int32_t prevEncCount = 0;
   while (1)
   {
-	  RotaryEncUpdate(&encoder, __HAL_TIM_GET_COUNTER(&htim4), 1);
 	  int32_t joyYOut = RotaryEncGetCount(&encoder);
-	  float speed = (joyYOut - prevEncCount)/0.01;
+	  float speed = (joyYOut - prevEncCount)/0.005;
 
 	 // printf("Count: %d\r\n", (int)__HAL_TIM_GET_COUNTER(&htim4));
 
@@ -198,18 +342,23 @@ int main(void)
 //	  }
 
 	  //constrain to 8-bit signed integer
-	  //joyYOut = Constrain(joyYOut, -127, 127);
+	  joyYOut = Constrain(joyYOut, -32767, 32767);
 
 	  //Motor control
-	  float motorPower = FFBComputeDamperForce(&ffb, speed);
-	  //float motorPower = ComputePID(&pid, 0, joyYOut);
-	  //motorPower = 1500;
-	  MotorSetPower(&motor, (int32_t)(motorPower));
+	  int32_t position = MotorControllerGetPosition(&controller);
+	  int32_t positionAhead = speed < 0 ? position-2 : position+2;
 
-//	  gameHID.joyY = (int8_t)joyYOut;
+	  float motorPower = FFBComputeDamperForce(&ffb, speed);// +
+			  //AntiCogGetCalAt(&antiCog, positionAhead);
+//	  MotorSetPower(&motor, (int32_t)(motorPower));
 
-	  //USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&gameHID,
-		//	  sizeof(gameHID));
+	  gameHID.joyY = (int16_t)joyYOut;
+	 // USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&gameHID,
+	//		  sizeof(gameHID));
+//	  gameHID.joyX += 25;
+//	  if(gameHID.joyX >= 32767) {
+//		  gameHID.joyX = -32767;
+//	  }
 
 //	  printfCounter++;
 //	  if(printfCounter == 1) {
@@ -485,6 +634,82 @@ static void MX_TIM4_Init(void)
 }
 
 /**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 24-1;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 1000-1;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 48-1;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 2000-1;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -565,11 +790,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
+  /*Configure GPIO pins : B1_Pin HOME_SENSOR_Pin */
+  GPIO_InitStruct.Pin = B1_Pin|HOME_SENSOR_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : MOTOR_REVERSE_Pin MOTOR_FORWARD_Pin */
   GPIO_InitStruct.Pin = MOTOR_REVERSE_Pin|MOTOR_FORWARD_Pin;

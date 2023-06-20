@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 
+#include "force_feedback_periodic.h"
 
 typedef struct FFBController {
 	float motorKtConstant;
@@ -39,17 +40,38 @@ void FFBInit(FFBController_t *ffb);
  */
 float FFBComputeMotorTorque(FFBController_t *ffb, float motorCurrent);
 
+/**
+ * Calculates constant force from amount.
+ * parameter ffb: pointer to force feedback controller structure.
+ * parameter amount: amount of force.
+ * returns: force.
+ */
+float FFBComputeConstantForce(FFBController_t *ffb, float amount);
+
+/**
+ * Calculates periodic force.
+ * parameter ffb: pointer to force feedback controller structure.
+ * parameter periodic: pointer to force feedback periodic structure. Contains
+ * periodic force parameters.
+ * parameter deltaTime: change in time from last call to current call.
+ */
+float FFBComputePeriodicForce(FFBController_t *ffb, FFBPeriodic_t *periodic,
+		float deltaTime);
+
 /*
  * Calculates spring force from angular position.
  * parameter ffb: pointer to force feedback controller structure.
  * parameter measuredAngle: angular position from center.
+ * parameter strength: spring force strength (-1.0 to 1.0).
+ * returns: spring force.
  */
-float FFBComputeSpringForce(FFBController_t *ffb, float measuredAngle);
-
+float FFBComputeSpringForce(FFBController_t *ffb, float measuredAngle,
+		float strength);
 /*
  * Calculates damper force from magnitude (usually speed or torque).
  * parameter ffb: pointer to force feedback controller structure.
  * parameter magnitude: magnitude (usually speed or torque).
+ * returns: damper force
  */
 float FFBComputeDamperForce(FFBController_t *ffb, float magnitude);
 

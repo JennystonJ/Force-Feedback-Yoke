@@ -1,4 +1,5 @@
-../Common/Src/force_feedback_controller.c:10:6:FFBInit	16	static
-../Common/Src/force_feedback_controller.c:22:7:FFBComputeMotorTorque	16	static
-../Common/Src/force_feedback_controller.c:26:7:FFBComputeSpringForce	24	static
-../Common/Src/force_feedback_controller.c:40:7:FFBComputeDamperForce	24	static
+../Common/Src/force_feedback_controller.c:11:6:FFBInit	16	static
+../Common/Src/force_feedback_controller.c:23:7:FFBComputeMotorTorque	16	static
+../Common/Src/force_feedback_controller.c:27:7:FFBComputeConstantForce	16	static
+../Common/Src/force_feedback_controller.c:31:7:FFBComputeSpringForce	32	static
+../Common/Src/force_feedback_controller.c:50:7:FFBComputeDamperForce	24	static

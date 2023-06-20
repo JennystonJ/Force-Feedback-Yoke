@@ -14,13 +14,20 @@ extern "C" {
 
 
 #define ENC_COUNT_WRAP_THRESHOLD 0x7FFF
+#define ENC_UPDATE_TIME_STEP 5
+#define ENC_UPDATE_MS_SCALE (0.1f)
+#define ENC_UPDATE_SPEED_SAMPLES 25
+#define ENC_UPDATE_SPEED_MIN_COUNT_DELTA 3
 
 #include <stdint.h>
 
 typedef struct RotaryEncoder {
 	int32_t count32;
 	uint16_t prevHardCount;
+	int32_t prevSpeedCount;
 	float speed;
+	uint32_t dtCounter;
+	uint32_t prevDt;
 } RotaryEncoder_t;
 
 /*

@@ -5,8 +5,10 @@ stm32f3xx_hal_msp.c:156:6:HAL_SPI_MspInit	2
 stm32f3xx_hal_msp.c:193:6:HAL_SPI_MspDeInit	2
 stm32f3xx_hal_msp.c:223:6:HAL_TIM_PWM_MspInit	2
 stm32f3xx_hal_msp.c:245:6:HAL_TIM_Encoder_MspInit	2
-stm32f3xx_hal_msp.c:278:6:HAL_TIM_MspPostInit	2
-stm32f3xx_hal_msp.c:310:6:HAL_TIM_PWM_MspDeInit	2
-stm32f3xx_hal_msp.c:332:6:HAL_TIM_Encoder_MspDeInit	2
-stm32f3xx_hal_msp.c:363:6:HAL_UART_MspInit	2
-stm32f3xx_hal_msp.c:399:6:HAL_UART_MspDeInit	2
+stm32f3xx_hal_msp.c:281:6:HAL_TIM_Base_MspInit	3
+stm32f3xx_hal_msp.c:314:6:HAL_TIM_MspPostInit	2
+stm32f3xx_hal_msp.c:346:6:HAL_TIM_PWM_MspDeInit	2
+stm32f3xx_hal_msp.c:368:6:HAL_TIM_Encoder_MspDeInit	2
+stm32f3xx_hal_msp.c:397:6:HAL_TIM_Base_MspDeInit	3
+stm32f3xx_hal_msp.c:436:6:HAL_UART_MspInit	2
+stm32f3xx_hal_msp.c:472:6:HAL_UART_MspDeInit	2

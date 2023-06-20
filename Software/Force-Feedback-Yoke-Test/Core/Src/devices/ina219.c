@@ -20,7 +20,7 @@ void CurrentSenseInit(Ina219_t *cSense, I2C_HandleTypeDef *hi2c) {
 
 	//Soft reset INA219
 	Ina219WriteRegister(cSense, INA219_CONFIG, 0b1000000000000000);
-
+	HAL_Delay(5);
 	/*
 	 * Bus Voltage Range: 16V
 	 * PGA: +/- 320mV
@@ -28,7 +28,16 @@ void CurrentSenseInit(Ina219_t *cSense, I2C_HandleTypeDef *hi2c) {
 	 * SADC: 12-bit
 	 * Operating Mode: Shunt and bus, continuous
 	 */
-	Ina219WriteRegister(cSense, INA219_CONFIG, 0b0001100110011111);
+//	Ina219WriteRegister(cSense, INA219_CONFIG, 0b0001100110011111);
+
+	/*
+	 * Bus Voltage Range: 16V
+	 * PGA: +/- 320mV
+	 * BADC: 12-bit
+	 * SADC: 2 samples
+	 * Operating Mode: Shunt and bus, continuous
+	 */
+	Ina219WriteRegister(cSense, INA219_CONFIG, 0b0001100111001111);
 
 	//Calibration
 	Ina219WriteRegister(cSense, INA219_CALIBRATION, 4096);
@@ -36,10 +45,14 @@ void CurrentSenseInit(Ina219_t *cSense, I2C_HandleTypeDef *hi2c) {
 }
 
 float CurrentSenseGetCurrent(Ina219_t *cSense) {
+	//Ina219WriteRegister(cSense, INA219_CONFIG, 0b1000000000000000);
+
 	//Ensure sensor calibration did not reset as recommended by Adafruit
 	//Ina219WriteRegister(cSense, INA219_CALIBRATION, 4096);
 
-	Ina219WriteRegister(cSense, INA219_CONFIG, 0b0001100110011111);
+	//Ina219WriteRegister(cSense, INA219_CONFIG, 0b0001100110011111);
+	Ina219WriteRegister(cSense, INA219_CONFIG, 0b0001100111001111);
+
 
 	//Calibration
 	Ina219WriteRegister(cSense, INA219_CALIBRATION, 4096);

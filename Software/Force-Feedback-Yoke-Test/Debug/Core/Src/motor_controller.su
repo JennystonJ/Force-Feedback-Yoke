@@ -1,0 +1,10 @@
+../Core/Src/motor_controller.c:19:6:MotorControllerInit	24	static
+../Core/Src/motor_controller.c:33:6:MotorControllerSetPower	16	static
+../Core/Src/motor_controller.c:89:6:MotorControllerSetPosition	32	static
+../Core/Src/motor_controller.c:143:6:MotorControllerSetCurrent	16	static
+../Core/Src/motor_controller.c:148:9:MotorControllerGetPosition	16	static
+../Core/Src/motor_controller.c:152:7:MotorControllerGetCurrent	16	static
+../Core/Src/motor_controller.c:156:7:MotorControllerGetSpeed	16	static
+../Core/Src/motor_controller.c:160:6:MotorControllerUpdate	16	static
+../Core/Src/motor_controller.c:170:13:MotorControllerPositionUpdate	16	static
+../Core/Src/motor_controller.c:175:13:MotorControllerCurrentUpdate	24	static
