@@ -1,6 +1,6 @@
 main.c:122:1:__io_putchar	1
 main.c:128:6:HAL_TIM_PeriodElapsedCallback	3
-main.c:143:5:main	7
+main.c:143:5:main	2
 main.c:385:6:SystemClock_Config	4
 main.c:437:13:MX_I2C1_Init	4
 main.c:485:13:MX_SPI1_Init	2

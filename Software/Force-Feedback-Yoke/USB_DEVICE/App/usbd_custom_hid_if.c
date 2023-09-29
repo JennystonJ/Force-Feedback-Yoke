@@ -88,13 +88,38 @@ extern uint8_t flag_rx;
   * @{
   */
 
+///** Usb HID report descriptor. */
+//__ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DESC_SIZE] __ALIGN_END =
+//{
+//  /* USER CODE BEGIN 0 */
+//		0x06, 0x00, 0xff, // Usage Page(Undefined )
+//		0x09, 0x01, // USAGE (Undefined)
+//		0xa1, 0x01, // COLLECTION (Application)
+//		0x15, 0x00, // LOGICAL_MINIMUM (0)
+//		0x26, 0xff, 0x00, // LOGICAL_MAXIMUM (255)
+//		0x75, 0x08, // REPORT_SIZE (8)
+//		0x95, 0x02, // REPORT_COUNT (2)
+//		0x09, 0x01, // USAGE (Undefined)
+//		0x81, 0x02, // INPUT (Data,Var,Abs)
+//		0x95, 0x04, // REPORT_COUNT (4)
+//		0x09, 0x01, // USAGE (Undefined)
+//		0x91, 0x02, // OUTPUT (Data,Var,Abs)
+//		0x95, 0x01, // REPORT_COUNT (1)
+//		0x09, 0x01, // USAGE (Undefined)
+//		0xb1, 0x02, // FEATURE (Data,Var,Abs)
+//  /* USER CODE END 0 */
+//  0xC0    /*     END_COLLECTION	             */
+//};
+
 /** Usb HID report descriptor. */
 __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DESC_SIZE] __ALIGN_END =
 {
   /* USER CODE BEGIN 0 */
-		0x06, 0x00, 0xff, // Usage Page(Undefined )
 		0x09, 0x01, // USAGE (Undefined)
 		0xa1, 0x01, // COLLECTION (Application)
+
+		0x85, 0x01, // Report ID (1)
+		0x06, 0x00, 0xff, // Usage Page(Undefined )
 		0x15, 0x00, // LOGICAL_MINIMUM (0)
 		0x26, 0xff, 0x00, // LOGICAL_MAXIMUM (255)
 		0x75, 0x08, // REPORT_SIZE (8)

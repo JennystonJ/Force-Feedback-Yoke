@@ -213,6 +213,7 @@ int main(void)
   HomeSensorInit(&homeSensor, homeSensorGpio);
   HomeSensorHome(&homeSensor, &motor);
 
+// TODO: Remove. For setting up home offsets
 //  while(1) {
 //	  printf("%d\r\n", (int)RotaryEncGetCount(&encoder));
 //  }
