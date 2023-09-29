@@ -1,4 +1,0 @@
-../Common/Src/utilities.c:10:9:Constrain	24	static
-../Common/Src/utilities.c:22:7:ConstrainFloat	24	static
-../Common/Src/utilities.c:34:9:UnwrapAtThreshold16	24	static
-../Common/Src/utilities.c:56:9:Abs	16	static

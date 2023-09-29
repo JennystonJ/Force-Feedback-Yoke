@@ -1,3 +1,0 @@
-../Common/Src/pid.c:12:6:PIDInit	16	static
-../Common/Src/pid.c:25:7:ComputePID	40	static
-../Common/Src/pid.c:57:14:Abs	16	static

@@ -1,5 +1,0 @@
-../Core/Src/anti_cog.c:820:6:AntiCogInit	32	static
-../Core/Src/anti_cog.c:830:6:AntiCogRun	24	static
-../Core/Src/anti_cog.c:913:6:AntiCogTest	24	static
-../Core/Src/anti_cog.c:961:10:AntiCogGetCalAt	16	static
-../Core/Src/anti_cog.c:1018:16:AntiCogFindMinPower	24	static

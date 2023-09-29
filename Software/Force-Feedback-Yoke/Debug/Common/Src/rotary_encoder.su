@@ -1,5 +1,0 @@
-../Common/Src/rotary_encoder.c:13:6:RotaryEncInit	16	static
-../Common/Src/rotary_encoder.c:22:6:RotaryEncSetCount	16	static
-../Common/Src/rotary_encoder.c:26:9:RotaryEncGetCount	16	static
-../Common/Src/rotary_encoder.c:30:7:RotaryEncGetSpeed	16	static
-../Common/Src/rotary_encoder.c:35:6:RotaryEncUpdate	40	static
