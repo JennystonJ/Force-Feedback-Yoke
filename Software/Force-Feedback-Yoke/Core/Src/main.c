@@ -41,7 +41,7 @@
 /* USER CODE BEGIN PTD */
 #define MOTOR_OFFSET 1300
 
-#define ENCODER_HOME_OFFSET (-6)
+#define ENCODER_HOME_OFFSET (-50)
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -213,6 +213,10 @@ int main(void)
   HomeSensorInit(&homeSensor, homeSensorGpio);
   HomeSensorHome(&homeSensor, &motor);
 
+//  while(1) {
+//	  printf("%d\r\n", (int)RotaryEncGetCount(&encoder));
+//  }
+
   //Reset encoder count after homing
   HAL_Delay(500);
   RotaryEncSetCount(&encoder, ENCODER_HOME_OFFSET);
@@ -265,7 +269,6 @@ int main(void)
   //MotorControllerSetCurrent(&controller, 0.3);
 //  while(1){}
 
-  HAL_GPIO_WritePin(LD10_GPIO_Port, LD10_Pin, GPIO_PIN_SET);
 
 //  while(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET){}
 
@@ -274,8 +277,7 @@ int main(void)
 //	  printf("%d,\r\n", (int)(AntiCogGetCalAt(&antiCog, i)));
 //  }
 
- // AntiCogTest(&antiCog);
-  HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
+// AntiCogTest(&antiCog);
 
 //  for(;;){}
 
@@ -288,7 +290,7 @@ int main(void)
 	  txBuffer[i] = i;
   }
 
-  for(;;) {
+  while(1) {
 	  if(flag_rx == 1){
 		  if(report_buffer[0] == 1){
 			  HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
@@ -306,12 +308,13 @@ int main(void)
 //				  ((report_buffer[2] & 0xFF) << 16) |
 //				  ((report_buffer[3] & 0xFF) << 24));
 
+		  //TODO: Add support for multiple force types
 		  float *strength = (float *)report_buffer;
 
 		  float angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
 
 		  float motorPower = FFBComputeSpringForce(&ffb,
-				  angle, *strength);
+				  angle, *strength, 0.0f);
 		  MotorControllerSetPower(&controller, motorPower);
 
 		  int16_t aileron = (int16_t)Constrain(((

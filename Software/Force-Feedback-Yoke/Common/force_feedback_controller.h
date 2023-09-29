@@ -61,12 +61,13 @@ float FFBComputePeriodicForce(FFBController_t *ffb, FFBPeriodic_t *periodic,
 /*
  * Calculates spring force from angular position.
  * parameter ffb: pointer to force feedback controller structure.
- * parameter measuredAngle: angular position from center.
+ * parameter measuredAngle: angular position measured from center.
+ * parameter setPointAngle: desired angular position from center.
  * parameter strength: spring force strength (-1.0 to 1.0).
  * returns: spring force.
  */
 float FFBComputeSpringForce(FFBController_t *ffb, float measuredAngle,
-		float strength);
+		float setPointAngle, float strength);
 /*
  * Calculates damper force from magnitude (usually speed or torque).
  * parameter ffb: pointer to force feedback controller structure.

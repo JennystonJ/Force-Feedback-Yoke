@@ -29,12 +29,12 @@ float FFBComputeConstantForce(FFBController_t *ffb, float amount) {
 }
 
 float FFBComputeSpringForce(FFBController_t *ffb, float measuredAngle,
-		float strength) {
+		float setPointAngle, float strength) {
 
 	float constrainedStrength = ConstrainFloat(strength, -1.0f, 1.0f);
 
-	float force = ffb->springGain * -measuredAngle * ffb->gain *
-			constrainedStrength;
+	float force = ffb->springGain * (setPointAngle - measuredAngle) *
+			ffb->gain * constrainedStrength;
 
 	//add/subtract minimum spring force based on force direction
 	if(force < 0) {
