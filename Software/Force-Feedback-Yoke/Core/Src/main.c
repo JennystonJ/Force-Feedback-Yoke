@@ -41,7 +41,10 @@
 /* USER CODE BEGIN PTD */
 #define MOTOR_OFFSET 1300
 
-#define ENCODER_HOME_OFFSET (142)
+#define ENCODER_HOME_OFFSET (-337)
+
+#define ENCODER_NUM_SAMPLES 4
+#define ENCODER_BUFFER_SIZE (ENCODER_NUM_SAMPLES+1)
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -75,6 +78,13 @@ typedef struct {
 } GameHID_t;
 
 RotaryEncoder_t encoder;
+int32_t prevEncoderCount;
+
+// Circular buffer storing encoder samples
+int32_t encoderBuffer[ENCODER_BUFFER_SIZE];
+int32_t encoderBufferStart;
+int32_t encoderBufferEnd;
+int64_t encoderAccumulator;
 
 Ina219_t currentSense;
 
@@ -82,6 +92,7 @@ PID_t positionPid;
 PID_t currentPid;
 
 Motor_t motor;
+float derivativeTerm;
 
 FFBController_t ffb;
 
@@ -92,6 +103,12 @@ uint8_t txBuffer[64];
 uint8_t report_buffer[64];
 uint8_t flag = 0;
 uint8_t flag_rx = 0;
+
+//for live debugging
+float avgAngle;
+float angle;
+float endStopKp = 0.01f;
+float endStopKd = 0.01f;
 
 //float testCurrent;
 /* USER CODE END PV */
@@ -128,6 +145,21 @@ PUTCHAR_PROTOTYPE
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if(htim == &htim6) {
 		RotaryEncUpdate(&encoder, __HAL_TIM_GET_COUNTER(&htim4), 0.5);
+		encoderBuffer[encoderBufferEnd] = RotaryEncGetCount(&encoder);
+
+		// Add new value, subtract old value
+		encoderAccumulator += encoderBuffer[encoderBufferEnd] -
+				encoderBuffer[encoderBufferStart];
+
+		encoderBufferStart++;
+		if(encoderBufferStart == ENCODER_BUFFER_SIZE) {
+			encoderBufferStart = 0;
+		}
+
+		encoderBufferEnd++;
+		if(encoderBufferEnd == ENCODER_BUFFER_SIZE) {
+			encoderBufferEnd = 0;
+		}
 	}
 	else if(htim == &htim7) {
 		MotorControllerUpdate(&controller, 2);
@@ -181,6 +213,11 @@ int main(void)
 
   PIDInit(&positionPid);
   RotaryEncInit(&encoder);
+
+
+  encoderAccumulator = 0;
+  encoderBufferStart = 0;
+  encoderBufferEnd = ENCODER_NUM_SAMPLES;
 
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
 
@@ -288,15 +325,15 @@ int main(void)
 //  for(uint8_t i = 0; i < 64; i++) {
 //	  txBuffer[i] = i;
 //  }
+//  bool withinBounds = true;
+//  float prevMotorPower = 0.0f;
 
+  bool endStopEntered = false;
+  bool endStopExited = true;
   while(1) {
+	  //Remove when running with USB
+//	  flag_rx = 1;
 	  if(flag_rx == 1){
-		  if(report_buffer[0] == 1){
-			  HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
-		  }
-		  else if(report_buffer[0] == 2) {
-			  HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
-		  }
 
 		  flag_rx = 0;
 
@@ -308,22 +345,37 @@ int main(void)
 		  //TODO: Add support for multiple force types
 		  float *strength = (float *)report_buffer;
 
-		  if((*strength) > 0.0f) {
-			  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-		  }
-		  else {
-			  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-		  }
-
-		  float angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
-		  float motorPower = FFBComputeSpringForce(&ffb,
+		  angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
+		  float motorPower = -FFBComputeSpringForce(&ffb,
 				  angle, 0.0f, *strength);
-		  MotorControllerSetPower(&controller, motorPower);
 
+		  avgAngle = ((((float)encoderAccumulator)/ENCODER_NUM_SAMPLES)/
+				  200.0f) * 90.0f;
+
+		  if(angle > 90.0f || angle < -90.0f) {
+			  float speed = (RotaryEncGetSpeed(&encoder)/200.0f) * 90.0f;
+			  derivativeTerm = speed * endStopKd;
+			  if(derivativeTerm > 0 && angle > 0) {
+				  //derivativeTerm = 0;
+			  }
+			  else if(derivativeTerm < 0 && angle < 0) {
+				  //derivativeTerm = 0;
+			  }
+
+			  float error = angle > 90.0f ? angle - 89.5f : angle + 89.5f;
+
+			  motorPower = 65535.0f * (error * endStopKp +
+					   derivativeTerm);
+		  }
+
+		  motorPower = ConstrainFloat(motorPower, -65535.0f, 65535.0f);
+
+		  MotorControllerSetPower(&controller, (int32_t)motorPower);
+
+		  // Prepare and send aileron axis
 		  int16_t aileron = (int16_t)Constrain(((
 				  RotaryEncGetCount(&encoder)/200.0f) *
 				  32767), -32767, 32767);
-
 		  USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&aileron, 2);
 	  }
 
