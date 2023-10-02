@@ -65,7 +65,7 @@ void RotaryEncUpdate(RotaryEncoder_t *encoder, uint16_t newCount,
 
 	int32_t speedDeltaCount = encoder->count32 - encoder->prevSpeedCount;
 	encoder->dtCounter += ENC_UPDATE_TIME_STEP;
-	if(speedDeltaCount >= ENC_UPDATE_SPEED_MIN_COUNT_DELTA &&
+	if(Abs(speedDeltaCount) >= ENC_UPDATE_SPEED_MIN_COUNT_DELTA &&
 			encoder->dtCounter >=
 			ENC_UPDATE_TIME_STEP*ENC_UPDATE_SPEED_SAMPLES) {
 
