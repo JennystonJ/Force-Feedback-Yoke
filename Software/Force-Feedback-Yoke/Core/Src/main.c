@@ -99,6 +99,7 @@ FFBController_t ffb;
 HomeSensor_t homeSensor;
 MotorController_t controller;
 
+uint8_t reportTxBuffer[3];
 uint8_t txBuffer[64];
 uint8_t report_buffer[64];
 uint8_t flag = 0;
@@ -328,11 +329,8 @@ int main(void)
 //  bool withinBounds = true;
 //  float prevMotorPower = 0.0f;
 
-  bool endStopEntered = false;
-  bool endStopExited = true;
   while(1) {
-	  //Remove when running with USB
-//	  flag_rx = 1;
+
 	  if(flag_rx == 1){
 
 		  flag_rx = 0;
@@ -343,6 +341,8 @@ int main(void)
 //				  ((report_buffer[3] & 0xFF) << 24));
 
 		  //TODO: Add support for multiple force types
+		  int32_t reportId = (int32_t)(report_buffer[0] & 0xff);
+
 		  float *strength = (float *)report_buffer;
 
 		  angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
@@ -355,20 +355,20 @@ int main(void)
 		  if(angle > 90.0f || angle < -90.0f) {
 			  float speed = (RotaryEncGetSpeed(&encoder)/200.0f) * 90.0f;
 			  derivativeTerm = speed * endStopKd;
-			  if(derivativeTerm > 0 && angle > 0) {
-				  //derivativeTerm = 0;
-			  }
-			  else if(derivativeTerm < 0 && angle < 0) {
-				  //derivativeTerm = 0;
-			  }
+//			  if(derivativeTerm > 0 && angle > 0) {
+//				  //derivativeTerm = 0;
+//			  }
+//			  else if(derivativeTerm < 0 && angle < 0) {
+//				  //derivativeTerm = 0;
+//			  }
 
 			  float error = angle > 90.0f ? angle - 89.5f : angle + 89.5f;
 
-			  motorPower = 65535.0f * (error * endStopKp +
+			  motorPower = UINT16_MAX * (error * endStopKp +
 					   derivativeTerm);
 		  }
 
-		  motorPower = ConstrainFloat(motorPower, -65535.0f, 65535.0f);
+		  motorPower = ConstrainFloat(motorPower, -UINT16_MAX, UINT16_MAX);
 
 		  MotorControllerSetPower(&controller, (int32_t)motorPower);
 
@@ -376,7 +376,15 @@ int main(void)
 		  int16_t aileron = (int16_t)Constrain(((
 				  RotaryEncGetCount(&encoder)/200.0f) *
 				  32767), -32767, 32767);
-		  USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&aileron, 2);
+
+		  // Set report ID to 1
+		  reportTest[0] = 0x01;
+		  reportTest[1] = aileron >> 8;
+		  reportTest[2] = aileron & 0xFF;
+
+		  USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, reportTest, 3);
+
+		  //USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&aileron, 2);
 	  }
 
 	  if(flag == 1) {
