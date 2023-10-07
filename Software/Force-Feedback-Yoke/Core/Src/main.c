@@ -33,6 +33,7 @@
 #include "utilities.h"
 #include "devices/ina219.h"
 #include "force_feedback_controller.h"
+#include "force_feedback_periodic.h"
 #include "anti_cog.h"
 #include "devices/home_sensor.h"
 /* USER CODE END Includes */
@@ -45,6 +46,8 @@
 
 #define ENCODER_NUM_SAMPLES 4
 #define ENCODER_BUFFER_SIZE (ENCODER_NUM_SAMPLES+1)
+
+#define TIME_DIVIDER_TO_MS 2
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -80,6 +83,9 @@ typedef struct {
 RotaryEncoder_t encoder;
 int32_t prevEncoderCount;
 
+unsigned long timeInMs;
+int timeDivider;
+
 // Circular buffer storing encoder samples
 int32_t encoderBuffer[ENCODER_BUFFER_SIZE];
 int32_t encoderBufferStart;
@@ -110,6 +116,9 @@ float avgAngle;
 float angle;
 float endStopKp = 0.01f;
 float endStopKd = 0.01f;
+FFBPeriodic_t periodic;
+unsigned long timeTest = 0;
+
 
 //float testCurrent;
 /* USER CODE END PV */
@@ -160,6 +169,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		encoderBufferEnd++;
 		if(encoderBufferEnd == ENCODER_BUFFER_SIZE) {
 			encoderBufferEnd = 0;
+		}
+
+		timeDivider++;
+		if(timeDivider == TIME_DIVIDER_TO_MS) {
+			timeDivider = 0;
+			timeInMs++;
 		}
 	}
 	else if(htim == &htim7) {
@@ -215,6 +230,8 @@ int main(void)
   PIDInit(&positionPid);
   RotaryEncInit(&encoder);
 
+  timeDivider = 0;
+  timeInMs = 0;
 
   encoderAccumulator = 0;
   encoderBufferStart = 0;
@@ -329,6 +346,13 @@ int main(void)
 //  bool withinBounds = true;
 //  float prevMotorPower = 0.0f;
 
+
+  unsigned long previousTimeInMs = timeInMs;
+  FFBPeriodicInit(&periodic, 0, 120, 0);
+
+  float periFrequency = 0.0f;
+  float periAmplitude = 0.0f;
+  float sprStrength = 0.0f;
   while(1) {
 
 	  if(flag_rx == 1){
@@ -341,36 +365,43 @@ int main(void)
 //				  ((report_buffer[3] & 0xFF) << 24));
 
 		  //TODO: Add support for multiple force types
-		  int32_t reportId = (int32_t)(report_buffer[0] & 0xff);
+		  uint8_t reportId = report_buffer[0];
 
-		  float *strength = (float *)report_buffer;
-
-		  angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
-		  float motorPower = -FFBComputeSpringForce(&ffb,
-				  angle, 0.0f, *strength);
-
-		  avgAngle = ((((float)encoderAccumulator)/ENCODER_NUM_SAMPLES)/
-				  200.0f) * 90.0f;
-
-		  if(angle > 90.0f || angle < -90.0f) {
-			  float speed = (RotaryEncGetSpeed(&encoder)/200.0f) * 90.0f;
-			  derivativeTerm = speed * endStopKd;
-//			  if(derivativeTerm > 0 && angle > 0) {
-//				  //derivativeTerm = 0;
-//			  }
-//			  else if(derivativeTerm < 0 && angle < 0) {
-//				  //derivativeTerm = 0;
-//			  }
-
-			  float error = angle > 90.0f ? angle - 89.5f : angle + 89.5f;
-
-			  motorPower = UINT16_MAX * (error * endStopKp +
-					   derivativeTerm);
-		  }
-
-		  motorPower = ConstrainFloat(motorPower, -UINT16_MAX, UINT16_MAX);
-
-		  MotorControllerSetPower(&controller, (int32_t)motorPower);
+//		  float strength;
+		  memcpy(&sprStrength, &report_buffer[1], sizeof(float));//(float *)(&report_buffer[1]);
+//
+//		  angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
+//		  float motorPower = -FFBComputeSpringForce(&ffb,
+//				  angle, 0.0f, strength);
+//
+//		  //TODO: Remove after testing
+//		  periodic.amplitude = strength;
+//		  motorPower = CalcFFBPeriodic(&periodic, timeInMs - previousTimeInMs)
+//				  * 1000.0f;
+//		  previousTimeInMs = timeInMs;
+//
+//		  avgAngle = ((((float)encoderAccumulator)/ENCODER_NUM_SAMPLES)/
+//				  200.0f) * 90.0f;
+//
+//		  if(angle > 90.0f || angle < -90.0f) {
+//			  float speed = (RotaryEncGetSpeed(&encoder)/200.0f) * 90.0f;
+//			  derivativeTerm = speed * endStopKd;
+////			  if(derivativeTerm > 0 && angle > 0) {
+////				  //derivativeTerm = 0;
+////			  }
+////			  else if(derivativeTerm < 0 && angle < 0) {
+////				  //derivativeTerm = 0;
+////			  }
+//
+//			  float error = angle > 90.0f ? angle - 89.5f : angle + 89.5f;
+//
+//			  motorPower += UINT16_MAX * (error * endStopKp +
+//					   derivativeTerm);
+//		  }
+//
+//		  motorPower = ConstrainFloat(motorPower, -UINT16_MAX, UINT16_MAX);
+//
+//		  MotorControllerSetPower(&controller, (int32_t)motorPower);
 
 		  // Prepare and send aileron axis
 		  int16_t aileron = (int16_t)Constrain(((
@@ -378,11 +409,11 @@ int main(void)
 				  32767), -32767, 32767);
 
 		  // Set report ID to 1
-		  reportTest[0] = 0x01;
-		  reportTest[1] = aileron >> 8;
-		  reportTest[2] = aileron & 0xFF;
+		  reportTxBuffer[0] = 0x01;
+		  reportTxBuffer[1] = aileron & 0xFF;
+		  reportTxBuffer[2] = aileron >> 8;
 
-		  USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, reportTest, 3);
+		  USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, reportTxBuffer, 3);
 
 		  //USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&aileron, 2);
 	  }
@@ -392,6 +423,42 @@ int main(void)
 
 		  flag = 0;
 	  }
+
+	  angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
+	  float motorPower = -FFBComputeSpringForce(&ffb,
+			  angle, 0.0f, sprStrength);
+
+	  //TODO: Remove after testing
+	  periodic.amplitude = sprStrength;
+	  motorPower = CalcFFBPeriodic(&periodic, timeInMs - previousTimeInMs)
+			  * 1000.0f;
+	  timeTest = timeInMs - previousTimeInMs;
+	  previousTimeInMs = timeInMs;
+
+	  avgAngle = ((((float)encoderAccumulator)/ENCODER_NUM_SAMPLES)/
+			  200.0f) * 90.0f;
+
+	  if(angle > 90.0f || angle < -90.0f) {
+		  float speed = (RotaryEncGetSpeed(&encoder)/200.0f) * 90.0f;
+		  derivativeTerm = speed * endStopKd;
+//			  if(derivativeTerm > 0 && angle > 0) {
+//				  //derivativeTerm = 0;
+//			  }
+//			  else if(derivativeTerm < 0 && angle < 0) {
+//				  //derivativeTerm = 0;
+//			  }
+
+		  float error = angle > 90.0f ? angle - 89.5f : angle + 89.5f;
+
+		  motorPower += UINT16_MAX * (error * endStopKp +
+				   derivativeTerm);
+	  }
+
+	  motorPower = ConstrainFloat(motorPower, -UINT16_MAX, UINT16_MAX);
+
+	  MotorControllerSetPower(&controller, (int32_t)motorPower);
+
+	  HAL_Delay(1);
   }
 
   uint32_t printfCounter = 0;
