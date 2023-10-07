@@ -16,8 +16,27 @@ typedef struct FFBPeriodic {
 	float amplitude;
 	float frequency;
 	float offset;
-	float time;
+	float gain;
+	long time;
 } FFBPeriodic_t;
+
+/*
+ * Initializes force feedback periodic structure.
+ * parameter peri: pointer to force feedback periodic structure to be
+ * 		initialized.
+ * parameter amplitude: amplitude of periodic effect.
+ * parameter frequency: frequency of periodic effect.
+ * parameter offset: offset of periodic effect.
+ */
+void FFBPeriodicInit(FFBPeriodic_t *peri, float amplitude, float frequency,
+		float offset);
+
+/*
+ * Calculate force feedback periodic effect.
+ * parameter dt: time delta between previous and current call
+ * returns: calculated force feedback
+ */
+float CalcFFBPeriodic(FFBPeriodic_t *peri, int dt);
 
 #ifdef __cplusplus
 }
