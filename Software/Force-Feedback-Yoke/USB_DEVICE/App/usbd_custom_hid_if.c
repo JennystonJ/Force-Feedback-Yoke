@@ -127,7 +127,7 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DES
 		0x95, 0x02, // REPORT_COUNT (2)
 		0x09, 0x01, // USAGE (Undefined)
 		0x81, 0x02, // INPUT (Data,Var,Abs)
-		0x95, 0x04, // REPORT_COUNT (4)
+		0x95, 0x0C, // REPORT_COUNT (12)
 
 		0x09, 0x01, // USAGE (Undefined)
 		0x91, 0x02, // OUTPUT (Data,Var,Abs)
