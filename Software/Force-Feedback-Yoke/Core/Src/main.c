@@ -47,7 +47,6 @@
 #define ENCODER_NUM_SAMPLES 4
 #define ENCODER_BUFFER_SIZE (ENCODER_NUM_SAMPLES+1)
 
-#define TIME_DIVIDER_TO_MS 2
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -83,9 +82,6 @@ typedef struct {
 RotaryEncoder_t encoder;
 int32_t prevEncoderCount;
 
-unsigned long timeInMs;
-int timeDivider;
-
 // Circular buffer storing encoder samples
 int32_t encoderBuffer[ENCODER_BUFFER_SIZE];
 int32_t encoderBufferStart;
@@ -117,8 +113,8 @@ float angle;
 float endStopKp = 0.01f;
 float endStopKd = 0.01f;
 FFBPeriodic_t periodic;
-unsigned long timeTest = 0;
 
+static volatile int32_t motorPowerLog;
 
 //float testCurrent;
 /* USER CODE END PV */
@@ -169,12 +165,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		encoderBufferEnd++;
 		if(encoderBufferEnd == ENCODER_BUFFER_SIZE) {
 			encoderBufferEnd = 0;
-		}
-
-		timeDivider++;
-		if(timeDivider == TIME_DIVIDER_TO_MS) {
-			timeDivider = 0;
-			timeInMs++;
 		}
 	}
 	else if(htim == &htim7) {
@@ -229,9 +219,6 @@ int main(void)
 
   PIDInit(&positionPid);
   RotaryEncInit(&encoder);
-
-  timeDivider = 0;
-  timeInMs = 0;
 
   encoderAccumulator = 0;
   encoderBufferStart = 0;
@@ -347,7 +334,7 @@ int main(void)
 //  float prevMotorPower = 0.0f;
 
 
-  unsigned long previousTimeInMs = timeInMs;
+  unsigned long previousTimeInMs = HAL_GetTick();
   FFBPeriodicInit(&periodic, 0, 120, 0);
   periodic.gain = 2.5;
 
@@ -380,34 +367,6 @@ int main(void)
 //		  float motorPower = -FFBComputeSpringForce(&ffb,
 //				  angle, 0.0f, strength);
 //
-//		  //TODO: Remove after testing
-//		  periodic.amplitude = strength;
-//		  motorPower = CalcFFBPeriodic(&periodic, timeInMs - previousTimeInMs)
-//				  * 1000.0f;
-//		  previousTimeInMs = timeInMs;
-//
-//		  avgAngle = ((((float)encoderAccumulator)/ENCODER_NUM_SAMPLES)/
-//				  200.0f) * 90.0f;
-//
-//		  if(angle > 90.0f || angle < -90.0f) {
-//			  float speed = (RotaryEncGetSpeed(&encoder)/200.0f) * 90.0f;
-//			  derivativeTerm = speed * endStopKd;
-////			  if(derivativeTerm > 0 && angle > 0) {
-////				  //derivativeTerm = 0;
-////			  }
-////			  else if(derivativeTerm < 0 && angle < 0) {
-////				  //derivativeTerm = 0;
-////			  }
-//
-//			  float error = angle > 90.0f ? angle - 89.5f : angle + 89.5f;
-//
-//			  motorPower += UINT16_MAX * (error * endStopKp +
-//					   derivativeTerm);
-//		  }
-//
-//		  motorPower = ConstrainFloat(motorPower, -UINT16_MAX, UINT16_MAX);
-//
-//		  MotorControllerSetPower(&controller, (int32_t)motorPower);
 
 		  // Prepare and send aileron axis
 		  int16_t aileron = (int16_t)Constrain(((
@@ -438,9 +397,9 @@ int main(void)
 	  periodic.amplitude = periAmplitude;
 	  periodic.frequency = periFrequency;
 
+	  uint32_t timeInMs = HAL_GetTick();
 	  motorPower += CalcFFBPeriodic(&periodic, timeInMs - previousTimeInMs)
 			  * 1000.0f;
-	  timeTest = timeInMs - previousTimeInMs;
 	  previousTimeInMs = timeInMs;
 
 	  avgAngle = ((((float)encoderAccumulator)/ENCODER_NUM_SAMPLES)/
@@ -463,56 +422,58 @@ int main(void)
 	  }
 
 	  motorPower = ConstrainFloat(motorPower, -UINT16_MAX, UINT16_MAX);
-
 	  MotorControllerSetPower(&controller, (int32_t)motorPower);
+
+	  //TODO: Remove. For logging
+	  motorPowerLog = motorPower;
 
 	  HAL_Delay(1);
   }
 
-  uint32_t printfCounter = 0;
-  int32_t prevEncCount = 0;
-  while (1)
-  {
-	  int32_t joyYOut = RotaryEncGetCount(&encoder);
-	  float speed = (joyYOut - prevEncCount)/0.005;
-
-	 // printf("Count: %d\r\n", (int)__HAL_TIM_GET_COUNTER(&htim4));
-
-//	  if(__HAL_TIM_GET_COUNTER(&htim4) >= 667) {
-//		  MotorSetPower(&motor, 0);
-//	  }
-
-	  //constrain to 8-bit signed integer
-	  joyYOut = Constrain(joyYOut, -32767, 32767);
-
-	  //Motor control
-	  int32_t position = MotorControllerGetPosition(&controller);
-	  int32_t positionAhead = speed < 0 ? position-2 : position+2;
-
-	  float motorPower = FFBComputeDamperForce(&ffb, speed);// +
-			  //AntiCogGetCalAt(&antiCog, positionAhead);
-//	  MotorSetPower(&motor, (int32_t)(motorPower));
-
-	  gameHID.joyY = (int16_t)joyYOut;
-	 // USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&gameHID,
-	//		  sizeof(gameHID));
-//	  gameHID.joyX += 25;
-//	  if(gameHID.joyX >= 32767) {
-//		  gameHID.joyX = -32767;
-//	  }
-
-//	  printfCounter++;
-//	  if(printfCounter == 1) {
-//		  printf("Current: %f\r\n", CurrentSenseGetCurrent(&currentSense));
-//		  printfCounter = 0;
-//	  }
-
-	  prevEncCount = joyYOut;
-	  HAL_Delay(10);
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-  }
+//  uint32_t printfCounter = 0;
+//  int32_t prevEncCount = 0;
+//  while (1)
+//  {
+//	  int32_t joyYOut = RotaryEncGetCount(&encoder);
+//	  float speed = (joyYOut - prevEncCount)/0.005;
+//
+//	 // printf("Count: %d\r\n", (int)__HAL_TIM_GET_COUNTER(&htim4));
+//
+////	  if(__HAL_TIM_GET_COUNTER(&htim4) >= 667) {
+////		  MotorSetPower(&motor, 0);
+////	  }
+//
+//	  //constrain to 8-bit signed integer
+//	  joyYOut = Constrain(joyYOut, -32767, 32767);
+//
+//	  //Motor control
+//	  int32_t position = MotorControllerGetPosition(&controller);
+//	  int32_t positionAhead = speed < 0 ? position-2 : position+2;
+//
+//	  float motorPower = FFBComputeDamperForce(&ffb, speed);// +
+//			  //AntiCogGetCalAt(&antiCog, positionAhead);
+////	  MotorSetPower(&motor, (int32_t)(motorPower));
+//
+//	  gameHID.joyY = (int16_t)joyYOut;
+//	 // USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&gameHID,
+//	//		  sizeof(gameHID));
+////	  gameHID.joyX += 25;
+////	  if(gameHID.joyX >= 32767) {
+////		  gameHID.joyX = -32767;
+////	  }
+//
+////	  printfCounter++;
+////	  if(printfCounter == 1) {
+////		  printf("Current: %f\r\n", CurrentSenseGetCurrent(&currentSense));
+////		  printfCounter = 0;
+////	  }
+//
+//	  prevEncCount = joyYOut;
+//	  HAL_Delay(10);
+//    /* USER CODE END WHILE */
+//
+//    /* USER CODE BEGIN 3 */
+//  }
   /* USER CODE END 3 */
 }
 
