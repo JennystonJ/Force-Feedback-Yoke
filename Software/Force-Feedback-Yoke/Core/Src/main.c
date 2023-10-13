@@ -349,8 +349,9 @@ int main(void)
 
   unsigned long previousTimeInMs = timeInMs;
   FFBPeriodicInit(&periodic, 0, 120, 0);
+  periodic.gain = 2.5;
 
-  float periFrequency = 0.0f;
+  int32_t periFrequency = 0;
   float periAmplitude = 0.0f;
   float sprStrength = 0.0f;
   while(1) {
@@ -368,7 +369,12 @@ int main(void)
 		  uint8_t reportId = report_buffer[0];
 
 //		  float strength;
-		  memcpy(&sprStrength, &report_buffer[1], sizeof(float));//(float *)(&report_buffer[1]);
+		  memcpy(&sprStrength, &report_buffer[1], sizeof(float));
+		  memcpy(&periAmplitude, &report_buffer[1+sizeof(float)],
+				  sizeof(float));
+		  memcpy(&periFrequency, &report_buffer[1+sizeof(float)*2],
+				  sizeof(float));
+
 //
 //		  angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
 //		  float motorPower = -FFBComputeSpringForce(&ffb,
@@ -429,8 +435,10 @@ int main(void)
 			  angle, 0.0f, sprStrength);
 
 	  //TODO: Remove after testing
-	  periodic.amplitude = sprStrength;
-	  motorPower = CalcFFBPeriodic(&periodic, timeInMs - previousTimeInMs)
+	  periodic.amplitude = periAmplitude;
+	  periodic.frequency = periFrequency;
+
+	  motorPower += CalcFFBPeriodic(&periodic, timeInMs - previousTimeInMs)
 			  * 1000.0f;
 	  timeTest = timeInMs - previousTimeInMs;
 	  previousTimeInMs = timeInMs;
