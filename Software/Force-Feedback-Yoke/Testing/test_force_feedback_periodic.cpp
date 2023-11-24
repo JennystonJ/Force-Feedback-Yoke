@@ -7,7 +7,7 @@ TEST(FFBPeriodicTest, FFBPeriodicZeroTest) {
 
 	float result = CalcFFBPeriodic(&periodic, 0);
 
-	EXPECT_EQ(result, 0) << "FFBPeriodic output not 0 when parameters are " <<
+	EXPECT_EQ(result, 0) << "FFBPeriodic output not 0 when parameters are "
 			"all 0";
 }
 
@@ -16,11 +16,13 @@ TEST(FFBPeriodicTest, FFBPeriodicQuarterWaveTest) {
 	FFBPeriodicInit(&periodic, 1, 1, 0);
 
 	float result = CalcFFBPeriodic(&periodic, 250);
-	EXPECT_EQ(result, 0) << "FFBPeriodic output not 0.0 for 0ms, " \
+	EXPECT_EQ(result, 0) << "FFBPeriodic output not 0.0 for 0ms, "
 			"amplitude 1.0, offset 0";
 
 	float result2 = CalcFFBPeriodic(&periodic, 250);
-	EXPECT_EQ(result2, 1.0) << "FFBPeriodic output not 1.0 for 250ms, " \
+	EXPECT_EQ(result2, 1.0) << "FFBPeriodic output not 1.0 for 250ms, "
 				"amplitude 1.0, offset 0";
 
 }
+
+
