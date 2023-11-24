@@ -36,6 +36,7 @@
 #include "force_feedback_periodic.h"
 #include "anti_cog.h"
 #include "devices/home_sensor.h"
+#include "usb_report.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,6 +107,8 @@ uint8_t txBuffer[64];
 uint8_t report_buffer[64];
 uint8_t flag = 0;
 uint8_t flag_rx = 0;
+
+UsbReport_t usbReport;
 
 //for live debugging
 float avgAngle;
@@ -217,6 +220,8 @@ int main(void)
 		  .joyB1 = 0
   };
 
+  UsbReportInit(&usbReport, USB_REPORT_IN_LITTLE_ENDIAN);
+
   PIDInit(&positionPid);
   RotaryEncInit(&encoder);
 
@@ -327,11 +332,6 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-//  for(uint8_t i = 0; i < 64; i++) {
-//	  txBuffer[i] = i;
-//  }
-//  bool withinBounds = true;
-//  float prevMotorPower = 0.0f;
 
 
   unsigned long previousTimeInMs = HAL_GetTick();
@@ -347,20 +347,18 @@ int main(void)
 
 		  flag_rx = 0;
 
-//		  float strength = (float)((report_buffer[0] & 0xFF) |
-//				  ((report_buffer[1] & 0xFF) << 8) |
-//				  ((report_buffer[2] & 0xFF) << 16) |
-//				  ((report_buffer[3] & 0xFF) << 24));
-
-		  //TODO: Add support for multiple force types
-		  uint8_t reportId = report_buffer[0];
+		  UsbReportLoad(&usbReport, report_buffer,
+				  USBD_CUSTOMHID_OUTREPORT_BUF_SIZE);
+		  sprStrength = UsbReportParseNextFloat(&usbReport);
+		  periAmplitude = UsbReportParseNextFloat(&usbReport);
+		  periFrequency = UsbReportParseNextInt(&usbReport);
 
 //		  float strength;
-		  memcpy(&sprStrength, &report_buffer[1], sizeof(float));
-		  memcpy(&periAmplitude, &report_buffer[1+sizeof(float)],
-				  sizeof(float));
-		  memcpy(&periFrequency, &report_buffer[1+sizeof(float)*2],
-				  sizeof(float));
+//		  memcpy(&sprStrength, &report_buffer[1], sizeof(float));
+//		  memcpy(&periAmplitude, &report_buffer[1+sizeof(float)],
+//				  sizeof(float));
+//		  memcpy(&periFrequency, &report_buffer[1+sizeof(float)*2],
+//				  sizeof(float));
 
 //
 //		  angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
@@ -408,12 +406,6 @@ int main(void)
 	  if(angle > 90.0f || angle < -90.0f) {
 		  float speed = (RotaryEncGetSpeed(&encoder)/200.0f) * 90.0f;
 		  derivativeTerm = speed * endStopKd;
-//			  if(derivativeTerm > 0 && angle > 0) {
-//				  //derivativeTerm = 0;
-//			  }
-//			  else if(derivativeTerm < 0 && angle < 0) {
-//				  //derivativeTerm = 0;
-//			  }
 
 		  float error = angle > 90.0f ? angle - 89.5f : angle + 89.5f;
 

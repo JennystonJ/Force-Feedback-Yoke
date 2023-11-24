@@ -3,6 +3,7 @@
 "./Common/Src/force_feedback_periodic.o"
 "./Common/Src/pid.o"
 "./Common/Src/rotary_encoder.o"
+"./Common/Src/usb_report.o"
 "./Common/Src/utilities.o"
 "./Core/Src/anti_cog.o"
 "./Core/Src/main.o"

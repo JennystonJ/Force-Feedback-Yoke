@@ -10,6 +10,7 @@ C_SRCS += \
 ../Common/Src/force_feedback_periodic.c \
 ../Common/Src/pid.c \
 ../Common/Src/rotary_encoder.c \
+../Common/Src/usb_report.c \
 ../Common/Src/utilities.c 
 
 C_DEPS += \
@@ -18,6 +19,7 @@ C_DEPS += \
 ./Common/Src/force_feedback_periodic.d \
 ./Common/Src/pid.d \
 ./Common/Src/rotary_encoder.d \
+./Common/Src/usb_report.d \
 ./Common/Src/utilities.d 
 
 OBJS += \
@@ -26,6 +28,7 @@ OBJS += \
 ./Common/Src/force_feedback_periodic.o \
 ./Common/Src/pid.o \
 ./Common/Src/rotary_encoder.o \
+./Common/Src/usb_report.o \
 ./Common/Src/utilities.o 
 
 
@@ -36,7 +39,7 @@ Common/Src/%.o Common/Src/%.su Common/Src/%.cyclo: ../Common/Src/%.c Common/Src/
 clean: clean-Common-2f-Src
 
 clean-Common-2f-Src:
-	-$(RM) ./Common/Src/feed_forward.cyclo ./Common/Src/feed_forward.d ./Common/Src/feed_forward.o ./Common/Src/feed_forward.su ./Common/Src/force_feedback_controller.cyclo ./Common/Src/force_feedback_controller.d ./Common/Src/force_feedback_controller.o ./Common/Src/force_feedback_controller.su ./Common/Src/force_feedback_periodic.cyclo ./Common/Src/force_feedback_periodic.d ./Common/Src/force_feedback_periodic.o ./Common/Src/force_feedback_periodic.su ./Common/Src/pid.cyclo ./Common/Src/pid.d ./Common/Src/pid.o ./Common/Src/pid.su ./Common/Src/rotary_encoder.cyclo ./Common/Src/rotary_encoder.d ./Common/Src/rotary_encoder.o ./Common/Src/rotary_encoder.su ./Common/Src/utilities.cyclo ./Common/Src/utilities.d ./Common/Src/utilities.o ./Common/Src/utilities.su
+	-$(RM) ./Common/Src/feed_forward.cyclo ./Common/Src/feed_forward.d ./Common/Src/feed_forward.o ./Common/Src/feed_forward.su ./Common/Src/force_feedback_controller.cyclo ./Common/Src/force_feedback_controller.d ./Common/Src/force_feedback_controller.o ./Common/Src/force_feedback_controller.su ./Common/Src/force_feedback_periodic.cyclo ./Common/Src/force_feedback_periodic.d ./Common/Src/force_feedback_periodic.o ./Common/Src/force_feedback_periodic.su ./Common/Src/pid.cyclo ./Common/Src/pid.d ./Common/Src/pid.o ./Common/Src/pid.su ./Common/Src/rotary_encoder.cyclo ./Common/Src/rotary_encoder.d ./Common/Src/rotary_encoder.o ./Common/Src/rotary_encoder.su ./Common/Src/usb_report.cyclo ./Common/Src/usb_report.d ./Common/Src/usb_report.o ./Common/Src/usb_report.su ./Common/Src/utilities.cyclo ./Common/Src/utilities.d ./Common/Src/utilities.o ./Common/Src/utilities.su
 
 .PHONY: clean-Common-2f-Src
 
