@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include "packet_parser.h"
 
 #define USB_REPORT_IN_LITTLE_ENDIAN 0
 #define USB_REPORT_IN_BIG_ENDIAN 1
@@ -22,16 +23,16 @@ extern "C" {
 typedef struct UsbReport {
 	uint8_t reportId;
 	uint8_t data[USB_REPORT_MAX_SIZE];
-	uint16_t currentParseAddr;
+	uint16_t currentParseIndex;
 	uint8_t endianness;
 } UsbReport_t;
 
 /*
  * Initializes USB Report structure
  * param report: pointer to USB report structure
- * param endianness: specifies report input endianness
+ * param parser: pointer to Packet Parser structure
  */
-void UsbReportInit(UsbReport_t *report, uint8_t endianness);
+void UsbReportInit(UsbReport_t *report, PacketParser_t *parser);
 
 /*
  * Loads report into memory for further processing
@@ -40,6 +41,13 @@ void UsbReportInit(UsbReport_t *report, uint8_t endianness);
  * param size: number of bytes to copy from report buffer
  */
 void UsbReportLoad(UsbReport_t *report, uint8_t *buffer, uint16_t size);
+
+/*
+ * Gets report ID from loaded report
+ * param report: pointer to USB report structure to obtain report ID from
+ * returns report ID
+ */
+uint8_t UsbReportGetReportId(UsbReport_t *report);
 
 /*
  * Process the next 4 bytes as an integer
