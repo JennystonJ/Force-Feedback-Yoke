@@ -6,15 +6,13 @@
  */
 
 #include "pid.h"
+#include "utilities/utilities.h"
 
 static float Abs(float x);
 
 void PIDInit(PID_t *pid) {
-//	pid->kP = 292;//350;//250;//180;//35;
-//	pid->kI = 100;//20;//60;//20;//20;//3;//7;
-//	pid->kD = 0.5;//2.2;
 
-	pid->kP = 200;//250;
+	pid->kP = 200;
 	pid->kI = 400;
 	pid->kD = 0.8;
 
@@ -29,24 +27,16 @@ float ComputePID(PID_t *pid, float setPoint, float actual) {
 	if(Abs(error) > PID_EPSILON) {
 		pid->integral += error*PID_DT;
 	}
+
 	//constrain integral
-	if(pid->integral > PID_I_MAX) {
-		pid->integral = PID_I_MAX;
-	}
-	else if(pid->integral < PID_I_MIN) {
-		pid->integral = PID_I_MIN;
-	}
+	pid->integral = ConstrainFloat(pid->integral, PID_I_MIN, PID_I_MAX);
 
 	float derivative = (error - pid->preError)/PID_DT;
 
 	float output = pid->kP*error + pid->kI*pid->integral + pid->kD*derivative;
+
 	//constrain PID output
-	if(output > PID_MAX) {
-		output = PID_MAX;
-	}
-	else if(output < PID_MIN) {
-		output = PID_MIN;
-	}
+	output = ConstrainFloat(output, PID_MIN, PID_MAX);
 
 	//update previous error for derivative calculation
 	pid->preError = error;
