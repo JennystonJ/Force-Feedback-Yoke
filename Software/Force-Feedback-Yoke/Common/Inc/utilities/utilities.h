@@ -5,8 +5,8 @@
  *      Author: Jennyston
  */
 
-#ifndef UTILITIES_H_
-#define UTILITIES_H_
+#ifndef INC_UTILITIES_UTILITIES_H_
+#define INC_UTILITIES_UTILITIES_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,14 +14,16 @@ extern "C" {
 
 #include <stdint.h>
 
+int32_t Map(int32_t in, int32_t inMin, int32_t inMax, int32_t outMin,
+		int32_t outMax);
 int32_t Constrain(int32_t value, int32_t min, int32_t max);
 float ConstrainFloat(float value, float min, float max);
-int32_t UnwrapAtThreshold16(uint16_t currentCount, uint16_t newCount,
-		uint16_t threshold);
 int32_t Abs(int32_t x);
+int32_t Min(int32_t a, int32_t b);
+int32_t Max(int32_t a, int32_t b);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* UTILITIES_H_ */
+#endif /* INC_UTILITIES_UTILITIES_H_ */

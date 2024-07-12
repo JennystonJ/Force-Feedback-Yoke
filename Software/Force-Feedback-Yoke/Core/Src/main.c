@@ -17,6 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include "utilities/utilities.h"
 #include "main.h"
 #include "usb_device.h"
 
@@ -30,7 +31,6 @@
 #include "pid.h"
 #include "devices/motor.h"
 #include "peripherals/gpio.h"
-#include "utilities.h"
 #include "devices/ina219.h"
 #include "force_feedback_controller.h"
 #include "force_feedback_periodic.h"

@@ -5,8 +5,8 @@
  *      Author: Jennyston
  */
 
+#include "utilities/utilities.h"
 #include "force_feedback_controller.h"
-#include "utilities.h"
 
 void FFBInit(FFBController_t *ffb) {
 	ffb->constantGain = 0;

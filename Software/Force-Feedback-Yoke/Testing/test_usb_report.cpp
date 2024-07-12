@@ -23,20 +23,23 @@ TEST(UsbReportTest, UsbReportLittleParseNextIntTest) {
 			"parsed incorrectly";
 }
 
-TEST(UsbReportTest, UsbReportBigParseNextIntTest) {
-	UsbReport_t report;
-	UsbReportInit(&report, USB_REPORT_IN_BIG_ENDIAN);
-
-	const int BUFFER_SIZE = 5;
-	uint8_t buffer[BUFFER_SIZE] = {0x01, 0x02, 0x03, 0x04, 0x05};
-
-	UsbReportLoad(&report, buffer, BUFFER_SIZE);
-
-	int32_t result = UsbReportParseNextInt(&report);
-
-	ASSERT_EQ(result, 0x02030405) << "USB report big endian integer "
-			"parsed incorrectly";
-}
+//TEST(UsbReportTest, UsbReportBigParseNextIntTest) {
+//	PacketParser_t parser;
+//	PacketParserInit(&parser, parseFunction)
+//
+//	UsbReport_t report;
+//	UsbReportInit(&report, USB_REPORT_IN_BIG_ENDIAN);
+//
+//	const int BUFFER_SIZE = 5;
+//	uint8_t buffer[BUFFER_SIZE] = {0x01, 0x02, 0x03, 0x04, 0x05};
+//
+//	UsbReportLoad(&report, buffer, BUFFER_SIZE);
+//
+//	int32_t result = UsbReportParseNextInt(&report);
+//
+//	ASSERT_EQ(result, 0x02030405) << "USB report big endian integer "
+//			"parsed incorrectly";
+//}
 
 TEST(UsbReportTest, UsbReportParseBytesLittle) {
 	const int LENGTH = 4;

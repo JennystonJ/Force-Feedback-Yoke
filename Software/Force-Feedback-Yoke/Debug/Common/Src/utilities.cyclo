@@ -1,4 +1,0 @@
-utilities.c:10:9:Constrain	3
-utilities.c:22:7:ConstrainFloat	3
-utilities.c:34:9:UnwrapAtThreshold16	3
-utilities.c:56:9:Abs	1

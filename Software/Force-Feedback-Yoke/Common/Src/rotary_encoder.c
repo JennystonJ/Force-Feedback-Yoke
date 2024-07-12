@@ -5,8 +5,8 @@
  *      Author: Jennyston
  */
 
+#include "utilities/utilities.h"
 #include "rotary_encoder.h"
-#include "utilities.h"
 
 static float RotaryEncCalcSpeed(RotaryEncoder_t *encoder, float deltaTimeMs);
 

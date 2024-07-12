@@ -1,5 +1,5 @@
-force_feedback_controller.c:11:6:FFBInit	1
-force_feedback_controller.c:23:7:FFBComputeMotorTorque	1
-force_feedback_controller.c:27:7:FFBComputeConstantForce	1
-force_feedback_controller.c:31:7:FFBComputeSpringForce	3
-force_feedback_controller.c:50:7:FFBComputeDamperForce	1
+../Common/Src/force_feedback_controller.c:11:6:FFBInit	1
+../Common/Src/force_feedback_controller.c:23:7:FFBComputeMotorTorque	1
+../Common/Src/force_feedback_controller.c:27:7:FFBComputeConstantForce	1
+../Common/Src/force_feedback_controller.c:31:7:FFBComputeSpringForce	3
+../Common/Src/force_feedback_controller.c:50:7:FFBComputeDamperForce	1
