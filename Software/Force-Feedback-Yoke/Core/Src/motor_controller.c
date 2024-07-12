@@ -100,7 +100,7 @@ void MotorControllerSetPosition(MotorController_t *controller,
 		 * position.
 		 */
 		int32_t currentPosition = RotaryEncGetCount(controller->init.encoder);
-		int32_t motorPower = ComputePID(controller->init.positionPid,
+		int32_t motorPower = CalcPID(controller->init.positionPid,
 				targetPosition, currentPosition);
 
 
@@ -187,7 +187,7 @@ static void MotorControllerCurrentUpdate(MotorController_t *controller,
 	}
 
 	//calculate PID for motor output power
-	int32_t motorPower = ComputePID(controller->init.currentPid,
+	int32_t motorPower = CalcPID(controller->init.currentPid,
 			controller->currentSetPoint, actualCurrent);
 	MotorSetPower(controller->init.motor, motorPower);
 

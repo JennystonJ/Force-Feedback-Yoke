@@ -5,15 +5,12 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Common/Src/utilities/unwrap_counter.c \
 ../Common/Src/utilities/utilities.c 
 
 C_DEPS += \
-./Common/Src/utilities/unwrap_counter.d \
 ./Common/Src/utilities/utilities.d 
 
 OBJS += \
-./Common/Src/utilities/unwrap_counter.o \
 ./Common/Src/utilities/utilities.o 
 
 
@@ -24,7 +21,7 @@ Common/Src/utilities/%.o Common/Src/utilities/%.su Common/Src/utilities/%.cyclo:
 clean: clean-Common-2f-Src-2f-utilities
 
 clean-Common-2f-Src-2f-utilities:
-	-$(RM) ./Common/Src/utilities/unwrap_counter.cyclo ./Common/Src/utilities/unwrap_counter.d ./Common/Src/utilities/unwrap_counter.o ./Common/Src/utilities/unwrap_counter.su ./Common/Src/utilities/utilities.cyclo ./Common/Src/utilities/utilities.d ./Common/Src/utilities/utilities.o ./Common/Src/utilities/utilities.su
+	-$(RM) ./Common/Src/utilities/utilities.cyclo ./Common/Src/utilities/utilities.d ./Common/Src/utilities/utilities.o ./Common/Src/utilities/utilities.su
 
 .PHONY: clean-Common-2f-Src-2f-utilities
 

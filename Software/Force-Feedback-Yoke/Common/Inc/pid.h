@@ -30,7 +30,7 @@ typedef struct PID {
 } PID_t;
 
 void PIDInit(PID_t *pid);
-float ComputePID(PID_t *pid, float setPoint, float actual);
+float CalcPID(PID_t *pid, float setPoint, float actual);
 
 #ifdef __cplusplus
 }

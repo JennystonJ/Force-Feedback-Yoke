@@ -12,7 +12,7 @@ TEST(PIDTest, PIDErrorZeroTest) {
 	PID_t pid;
 	PIDInit(&pid);
 
-	float result = ComputePID(&pid, 0, 0);
+	float result = CalcPID(&pid, 0, 0);
 
 	EXPECT_EQ(result, 0) << "PID output not 0 when error is 0";
 }
@@ -24,7 +24,7 @@ TEST(PIDTest, PIDProportionalTest) {
 	pid.kI = 0;
 	pid.kD = 0;
 
-	float result = ComputePID(&pid, 1, 0);
+	float result = CalcPID(&pid, 1, 0);
 
 	EXPECT_EQ(result, 2) <<
 			"PID output not 2 when error is 1 and Kp is 2 (Ki = Kd = 0)";
@@ -37,7 +37,7 @@ TEST(PIDTest, PIDIntegralTest) {
 	pid.kI = 2;
 	pid.kD = 0;
 
-	float result = ComputePID(&pid, 1, 0);
+	float result = CalcPID(&pid, 1, 0);
 
 	EXPECT_EQ(result, PID_DT * 2) <<
 			"PID output not " << PID_DT * 2 <<

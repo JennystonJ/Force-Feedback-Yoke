@@ -40,6 +40,10 @@ int32_t Abs(int32_t x) {
 	return x > 0 ? x : -x;
 }
 
+float AbsFloat(float x) {
+	return x > 0 ? x : -x;
+}
+
 int32_t Min(int32_t a, int32_t b) {
 	return a < b ? a : b;
 }

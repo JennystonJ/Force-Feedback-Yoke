@@ -8,8 +8,6 @@
 #include "pid.h"
 #include "utilities/utilities.h"
 
-static float Abs(float x);
-
 void PIDInit(PID_t *pid) {
 
 	pid->kP = 200;
@@ -20,11 +18,11 @@ void PIDInit(PID_t *pid) {
 	pid->preError = 0;
 }
 
-float ComputePID(PID_t *pid, float setPoint, float actual) {
+float CalcPID(PID_t *pid, float setPoint, float actual) {
 	float error = setPoint - actual;
 
 	//integrate only if error is large enough
-	if(Abs(error) > PID_EPSILON) {
+	if(AbsFloat(error) > PID_EPSILON) {
 		pid->integral += error*PID_DT;
 	}
 
@@ -42,13 +40,4 @@ float ComputePID(PID_t *pid, float setPoint, float actual) {
 	pid->preError = error;
 
 	return output;
-}
-
-static float Abs(float x) {
-	if(x < 0) {
-		return -x;
-	}
-	else{
-		return x;
-	}
 }

@@ -2,5 +2,6 @@
 ../Common/Src/utilities/utilities.c:15:9:Constrain	3
 ../Common/Src/utilities/utilities.c:27:7:ConstrainFloat	3
 ../Common/Src/utilities/utilities.c:39:9:Abs	1
-../Common/Src/utilities/utilities.c:43:9:Min	1
-../Common/Src/utilities/utilities.c:47:9:Max	1
+../Common/Src/utilities/utilities.c:43:7:AbsFloat	2
+../Common/Src/utilities/utilities.c:47:9:Min	1
+../Common/Src/utilities/utilities.c:51:9:Max	1

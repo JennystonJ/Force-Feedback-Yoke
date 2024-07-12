@@ -19,6 +19,7 @@ int32_t Map(int32_t in, int32_t inMin, int32_t inMax, int32_t outMin,
 int32_t Constrain(int32_t value, int32_t min, int32_t max);
 float ConstrainFloat(float value, float min, float max);
 int32_t Abs(int32_t x);
+float AbsFloat(float x);
 int32_t Min(int32_t a, int32_t b);
 int32_t Max(int32_t a, int32_t b);
 
