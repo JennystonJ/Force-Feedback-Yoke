@@ -7,8 +7,7 @@
 
 
 #include "devices/motor.h"
-
-static int32_t Abs(int32_t x);
+#include "utilities/utilities.h"
 
 void MotorInit(Motor_t *motor, TIM_HandleTypeDef *htim, uint32_t pwmCh,
 		GPIO_t reverseGpio, GPIO_t forwardGpio) {
@@ -93,11 +92,3 @@ void MotorSetPower(Motor_t *motor, int32_t power) {
 	MotorSetSpeed(motor, (uint16_t)Abs(power));
 }
 
-static int32_t Abs(int32_t x) {
-	if(x < 0) {
-		return x * -1;
-	}
-	else {
-		return x;
-	}
-}
