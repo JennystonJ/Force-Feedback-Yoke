@@ -101,11 +101,11 @@ void Error_Handler(void);
 #define LD8_GPIO_Port GPIOE
 #define LD6_Pin GPIO_PIN_15
 #define LD6_GPIO_Port GPIOE
-#define MOTOR_REVERSE_Pin GPIO_PIN_8
-#define MOTOR_REVERSE_GPIO_Port GPIOA
-#define MOTOR_FORWARD_Pin GPIO_PIN_9
-#define MOTOR_FORWARD_GPIO_Port GPIOA
-#define MOTOR_PWM_Pin GPIO_PIN_10
+#define MOTOR_REVERSE_Pin GPIO_PIN_13
+#define MOTOR_REVERSE_GPIO_Port GPIOB
+#define MOTOR_FORWARD_Pin GPIO_PIN_14
+#define MOTOR_FORWARD_GPIO_Port GPIOB
+#define MOTOR_PWM_Pin GPIO_PIN_8
 #define MOTOR_PWM_GPIO_Port GPIOA
 #define DM_Pin GPIO_PIN_11
 #define DM_GPIO_Port GPIOA
