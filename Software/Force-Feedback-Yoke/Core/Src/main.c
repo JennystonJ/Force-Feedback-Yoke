@@ -17,6 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <devices/aAS5600.h>
 #include "utilities/utilities.h"
 #include "main.h"
 #include "usb_device.h"
@@ -28,7 +29,6 @@
 #include <stdio.h>
 #include <testing/motor_logger.h>
 #include "encoder.h"
-#include "devices/AS5600.h"
 #include "pid.h"
 #include "motor.h"
 #include "peripherals/gpio.h"
@@ -164,22 +164,22 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		EncoderUpdate(&pitchEncoder, 0.5);
 		EncoderUpdate(&rollEncoder, 0.5);
 
-		RotaryEncUpdate(&encoder, __HAL_TIM_GET_COUNTER(&htim4), 0.5);
-		encoderBuffer[encoderBufferEnd] = RotaryEncGetCount(&encoder);
-
-		// Add new value, subtract old value
-		encoderAccumulator += encoderBuffer[encoderBufferEnd] -
-				encoderBuffer[encoderBufferStart];
-
-		encoderBufferStart++;
-		if(encoderBufferStart == ENCODER_BUFFER_SIZE) {
-			encoderBufferStart = 0;
-		}
-
-		encoderBufferEnd++;
-		if(encoderBufferEnd == ENCODER_BUFFER_SIZE) {
-			encoderBufferEnd = 0;
-		}
+//		RotaryEncUpdate(&encoder, __HAL_TIM_GET_COUNTER(&htim4), 0.5);
+//		encoderBuffer[encoderBufferEnd] = RotaryEncGetCount(&encoder);
+//
+//		// Add new value, subtract old value
+//		encoderAccumulator += encoderBuffer[encoderBufferEnd] -
+//				encoderBuffer[encoderBufferStart];
+//
+//		encoderBufferStart++;
+//		if(encoderBufferStart == ENCODER_BUFFER_SIZE) {
+//			encoderBufferStart = 0;
+//		}
+//
+//		encoderBufferEnd++;
+//		if(encoderBufferEnd == ENCODER_BUFFER_SIZE) {
+//			encoderBufferEnd = 0;
+//		}
 	}
 	else if(htim == &htim7) {
 		MotorControllerUpdate(&controller, 2);

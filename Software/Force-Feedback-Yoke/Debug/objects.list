@@ -15,7 +15,7 @@
 "./Core/Src/syscalls.o"
 "./Core/Src/sysmem.o"
 "./Core/Src/system_stm32f3xx.o"
-"./Core/Src/devices/AS5600.o"
+"./Core/Src/devices/as5600.o"
 "./Core/Src/devices/bts7960.o"
 "./Core/Src/devices/home_sensor.o"
 "./Core/Src/devices/ina219.o"

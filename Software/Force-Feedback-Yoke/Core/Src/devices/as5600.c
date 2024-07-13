@@ -5,8 +5,8 @@
  *      Author: Jennyston
  */
 
-#include "devices/AS5600.h"
-#include "devices/AS5600_Registers.h"
+#include "devices/as5600_Registers.h"
+#include "devices/as5600.h"
 
 static void WriteRegister(AS5600_t *device, AS5600Reg reg, uint8_t value);
 static uint8_t ReadRegister(AS5600_t *device, AS5600Reg reg);
