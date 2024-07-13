@@ -20,15 +20,15 @@ void FFBInit(FFBController_t *ffb) {
 	ffb->lockAngle = 90;
 }
 
-float FFBComputeMotorTorque(FFBController_t *ffb, float motorCurrent) {
+float FFBCalcMotorTorque(FFBController_t *ffb, float motorCurrent) {
 	return ffb->motorKtConstant * motorCurrent;
 }
 
-float FFBComputeConstantForce(FFBController_t *ffb, float amount) {
+float FFBCalcConstantForce(FFBController_t *ffb, float amount) {
 	return ffb->constantGain * amount;
 }
 
-float FFBComputeSpringForce(FFBController_t *ffb, float measuredAngle,
+float FFBCalcSpringForce(FFBController_t *ffb, float measuredAngle,
 		float setPointAngle, float strength) {
 
 	float constrainedStrength = ConstrainFloat(strength, -1.0f, 1.0f);
@@ -47,7 +47,7 @@ float FFBComputeSpringForce(FFBController_t *ffb, float measuredAngle,
 	return force;
 }
 
-float FFBComputeDamperForce(FFBController_t *ffb, float magnitude) {
+float FFBCalcDamperForce(FFBController_t *ffb, float magnitude) {
 	float force = ffb->damperGain * -magnitude * ffb->gain;
 	return force;
 }

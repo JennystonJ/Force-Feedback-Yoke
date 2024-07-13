@@ -38,7 +38,7 @@ void FFBInit(FFBController_t *ffb);
  * parameter motorCurrent: measured motor current.
  * returns: motor torque.
  */
-float FFBComputeMotorTorque(FFBController_t *ffb, float motorCurrent);
+float FFBCalcMotorTorque(FFBController_t *ffb, float motorCurrent);
 
 /**
  * Calculates constant force from amount.
@@ -46,7 +46,7 @@ float FFBComputeMotorTorque(FFBController_t *ffb, float motorCurrent);
  * parameter amount: amount of force.
  * returns: force.
  */
-float FFBComputeConstantForce(FFBController_t *ffb, float amount);
+float FFBCalcConstantForce(FFBController_t *ffb, float amount);
 
 /**
  * Calculates periodic force.
@@ -55,7 +55,7 @@ float FFBComputeConstantForce(FFBController_t *ffb, float amount);
  * periodic force parameters.
  * parameter deltaTime: change in time from last call to current call.
  */
-float FFBComputePeriodicForce(FFBController_t *ffb, FFBPeriodic_t *periodic,
+float FFBCalcPeriodicForce(FFBController_t *ffb, FFBPeriodic_t *periodic,
 		float deltaTime);
 
 /*
@@ -66,7 +66,7 @@ float FFBComputePeriodicForce(FFBController_t *ffb, FFBPeriodic_t *periodic,
  * parameter strength: spring force strength (-1.0 to 1.0).
  * returns: spring force.
  */
-float FFBComputeSpringForce(FFBController_t *ffb, float measuredAngle,
+float FFBCalcSpringForce(FFBController_t *ffb, float measuredAngle,
 		float setPointAngle, float strength);
 /*
  * Calculates damper force from magnitude (usually speed or torque).
@@ -74,9 +74,9 @@ float FFBComputeSpringForce(FFBController_t *ffb, float measuredAngle,
  * parameter magnitude: magnitude (usually speed or torque).
  * returns: damper force
  */
-float FFBComputeDamperForce(FFBController_t *ffb, float magnitude);
+float FFBCalcDamperForce(FFBController_t *ffb, float magnitude);
 
-float FFBComputerAllForces(FFBController_t * ffb, float measuredTorque,
+float FFBCalcAllForces(FFBController_t * ffb, float measuredTorque,
 		float measuredAngle);
 
 #ifdef __cplusplus

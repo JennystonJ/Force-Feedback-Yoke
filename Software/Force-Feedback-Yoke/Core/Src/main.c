@@ -27,9 +27,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <testing/motor_logger.h>
-#include "rotary_encoder.h"
+#include "encoder.h"
+#include "devices/AS5600.h"
 #include "pid.h"
-#include "devices/motor.h"
+#include "motor.h"
 #include "peripherals/gpio.h"
 #include "devices/ina219.h"
 #include "force_feedback_controller.h"
@@ -81,7 +82,8 @@ typedef struct {
 	uint8_t joyB1;
 } GameHID_t;
 
-RotaryEncoder_t encoder;
+
+//RotaryEncoder_t encoder;
 int32_t prevEncoderCount;
 
 // Circular buffer storing encoder samples
@@ -95,13 +97,16 @@ Ina219_t currentSense;
 PID_t positionPid;
 PID_t currentPid;
 
-Motor_t motor;
+Motor_t pitchMotor, rollMotor;
+
+AS
+Encoder_t pitchEncoder, rollEncoder;
 float derivativeTerm;
 
-FFBController_t ffb;
+FFBController_t pitchFFB, rollFFB;
 
 HomeSensor_t homeSensor;
-MotorController_t controller;
+MotorController_t pitchMController, rollMController;
 
 uint8_t reportTxBuffer[3];
 uint8_t txBuffer[64];
@@ -155,6 +160,10 @@ PUTCHAR_PROTOTYPE
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if(htim == &htim6) {
+
+		EncoderUpdate(&pitchEncoder, 0.5);
+		EncoderUpdate(&rollEncoder, 0.5);
+
 		RotaryEncUpdate(&encoder, __HAL_TIM_GET_COUNTER(&htim4), 0.5);
 		encoderBuffer[encoderBufferEnd] = RotaryEncGetCount(&encoder);
 
@@ -218,6 +227,9 @@ int main(void)
   MX_TIM7_Init();
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
+
+
+  // TODO: Remove
   GameHID_t gameHID = {
 		  .joyX = 0,
 		  .joyY = 0,
@@ -392,7 +404,7 @@ int main(void)
 	  }
 
 	  angle = (RotaryEncGetCount(&encoder)/200.0f) * 90.0f;
-	  float motorPower = -FFBComputeSpringForce(&ffb,
+	  float motorPower = -FFBCalcSpringForce(&ffb,
 			  angle, 0.0f, sprStrength);
 
 	  //TODO: Remove after testing

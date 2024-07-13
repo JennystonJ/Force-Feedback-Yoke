@@ -1,6 +1,0 @@
-../Common/Src/usb_report.c:12:6:UsbReportInit	1
-../Common/Src/usb_report.c:22:6:UsbReportLoad	1
-../Common/Src/usb_report.c:33:9:UsbReportGetReportId	1
-../Common/Src/usb_report.c:37:9:UsbReportParseNextInt	1
-../Common/Src/usb_report.c:48:7:UsbReportParseNextFloat	1
-../Common/Src/usb_report.c:59:6:ParseBytesEndian	5

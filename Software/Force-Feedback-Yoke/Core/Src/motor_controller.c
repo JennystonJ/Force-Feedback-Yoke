@@ -19,19 +19,13 @@ static void MotorControllerCurrentUpdate(MotorController_t *controller,
 void MotorControllerInit(MotorController_t *controller,
 		MotorControllerInit_t init) {
 	controller->init = init;
-//	controller->init.motor = motor;
-//	controller->init.encoder = encoder;
-//
-//	controller->init.positionPid = positionPid;
-//	controller->init.currentPid = currentPid;
 
-	controller->mode = MOTOR_CONTROL_POWER;
+	controller->mode = MOTOR_CONTROL_PWM;
 	controller->currentSetPoint = 0;
 	controller->positionSetPoint = 0;
 }
 
 void MotorControllerSetPower(MotorController_t *controller, int32_t power) {
-	controller->mode = MOTOR_CONTROL_POWER;
 	MotorSetPower(controller->init.motor, power);
 }
 

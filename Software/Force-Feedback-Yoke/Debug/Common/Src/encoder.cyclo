@@ -1,7 +1,0 @@
-../Common/Src/encoder.c:10:6:EncoderInit	1
-../Common/Src/encoder.c:19:5:EncoderGetCount	1
-../Common/Src/encoder.c:23:6:EncoderSetCount	1
-../Common/Src/encoder.c:27:6:EncoderResetCount	1
-../Common/Src/encoder.c:31:7:EncoderGetSpeed	1
-../Common/Src/encoder.c:35:5:EncoderGetCountPerRev	1
-../Common/Src/encoder.c:39:6:EncoderUpdate	3

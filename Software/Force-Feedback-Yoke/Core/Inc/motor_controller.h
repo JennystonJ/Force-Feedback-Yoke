@@ -8,8 +8,8 @@
 #ifndef INC_MOTOR_CONTROLLER_H_
 #define INC_MOTOR_CONTROLLER_H_
 
-#include "devices/motor.h"
-#include "rotary_encoder.h"
+#include "motor.h"
+#include "encoder.h"
 #include "devices/ina219.h"
 #include "pid.h"
 #include <stdint.h>
@@ -19,14 +19,13 @@
 //#define MOTOR_CONTROL_MAX_JERK 25
 
 typedef enum {
-	MOTOR_CONTROL_POWER,
-	MOTOR_CONTROL_POSITION,
-	MOTOR_CONTROL_CURRENT,
+	MOTOR_CONTROL_PWM,
+	MOTOR_CONTROL_PWM_CURRENT
 } MotorControllerMode;
 
 typedef struct MotorControllerInit {
 	Motor_t *motor;
-	RotaryEncoder_t *encoder;
+	Encoder_t *encoder;
 	Ina219_t *currentSensor;
 	PID_t *speedPid;
 //	PID_t *accelPid;
