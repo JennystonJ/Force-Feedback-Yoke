@@ -36,6 +36,14 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+extern I2C_HandleTypeDef hi2c1;
+extern I2C_HandleTypeDef hi2c2;
+
+extern SPI_HandleTypeDef hspi1;
+
+extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim6;
+extern TIM_HandleTypeDef htim7;
 
 /* USER CODE END ET */
 
@@ -75,10 +83,8 @@ void Error_Handler(void);
 #define OSC_IN_GPIO_Port GPIOF
 #define OSC_OUT_Pin GPIO_PIN_1
 #define OSC_OUT_GPIO_Port GPIOF
-#define B1_Pin GPIO_PIN_0
-#define B1_GPIO_Port GPIOA
-#define HOME_SENSOR_Pin GPIO_PIN_1
-#define HOME_SENSOR_GPIO_Port GPIOA
+#define BUTTON_ACCEPT_Pin GPIO_PIN_0
+#define BUTTON_ACCEPT_GPIO_Port GPIOA
 #define SPI1_SCK_Pin GPIO_PIN_5
 #define SPI1_SCK_GPIO_Port GPIOA
 #define SPI1_MISO_Pin GPIO_PIN_6
@@ -89,8 +95,6 @@ void Error_Handler(void);
 #define LD4_GPIO_Port GPIOE
 #define LD3_Pin GPIO_PIN_9
 #define LD3_GPIO_Port GPIOE
-#define LD5_Pin GPIO_PIN_10
-#define LD5_GPIO_Port GPIOE
 #define LD7_Pin GPIO_PIN_11
 #define LD7_GPIO_Port GPIOE
 #define LD9_Pin GPIO_PIN_12
@@ -101,12 +105,22 @@ void Error_Handler(void);
 #define LD8_GPIO_Port GPIOE
 #define LD6_Pin GPIO_PIN_15
 #define LD6_GPIO_Port GPIOE
-#define MOTOR_REVERSE_Pin GPIO_PIN_13
-#define MOTOR_REVERSE_GPIO_Port GPIOB
-#define MOTOR_FORWARD_Pin GPIO_PIN_14
-#define MOTOR_FORWARD_GPIO_Port GPIOB
-#define MOTOR_PWM_Pin GPIO_PIN_8
-#define MOTOR_PWM_GPIO_Port GPIOA
+#define MOTOR_ROLL_R_EN_Pin GPIO_PIN_14
+#define MOTOR_ROLL_R_EN_GPIO_Port GPIOD
+#define MOTOR_ROLL_F_EN_Pin GPIO_PIN_15
+#define MOTOR_ROLL_F_EN_GPIO_Port GPIOD
+#define MOTOR_ROLL_R_PWM_Pin GPIO_PIN_6
+#define MOTOR_ROLL_R_PWM_GPIO_Port GPIOC
+#define MOTOR_ROLL_F_PWM_Pin GPIO_PIN_7
+#define MOTOR_ROLL_F_PWM_GPIO_Port GPIOC
+#define MOTOR_PITCH_R_PWM_Pin GPIO_PIN_8
+#define MOTOR_PITCH_R_PWM_GPIO_Port GPIOC
+#define MOTOR_PITCH_F_PWM_Pin GPIO_PIN_9
+#define MOTOR_PITCH_F_PWM_GPIO_Port GPIOC
+#define MOTOR_PITCH_R_EN_Pin GPIO_PIN_8
+#define MOTOR_PITCH_R_EN_GPIO_Port GPIOA
+#define MOTOR_PITCH_F_EN_Pin GPIO_PIN_9
+#define MOTOR_PITCH_F_EN_GPIO_Port GPIOA
 #define DM_Pin GPIO_PIN_11
 #define DM_GPIO_Port GPIOA
 #define DP_Pin GPIO_PIN_12
