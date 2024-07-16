@@ -9,16 +9,14 @@
 #include "utilities/utilities.h"
 #include <stdbool.h>
 
-void MotorInit(Motor_t *motor, void(*SetPower)(int power),
-		int(*GetPower)()) {
-	motor->SetPower = SetPower;
-	motor->GetPower = GetPower;
-}
-
-void MotorSetPower(Motor_t *motor, int power) {
-	motor->SetPower(power);
+void MotorInit(Motor_t *motor, MotorInterface_t interface) {
+	motor->interface = interface;
 }
 
 int MotorGetPower(Motor_t *motor) {
-	return motor->GetPower();
+	return motor->interface.MotorGetPower(&motor->interface);
+}
+
+void MotorSetPower(Motor_t *motor, int power) {
+	motor->interface.MotorSetPower(&motor->interface, power);
 }

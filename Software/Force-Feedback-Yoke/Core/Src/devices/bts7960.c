@@ -15,6 +15,9 @@ void BTS7960Init(BTS7960_t *driver, GPIO_t forwardEn, GPIO_t reverseEn,
 	driver->htim = htim;
 	driver->forwardPwmCh = forwardPwmCh;
 	driver->reversePwmCh = reversePwmCh;
+
+	// Ensure motor is powered off for safety
+	BTS7960SetPower(driver, 0);
 }
 
 void BTS7960SetPower(BTS7960_t *driver, int power) {

@@ -14,9 +14,15 @@ extern "C" {
 
 #define ENCODER_DEFAULT_COUNT_PER_REV 4096
 
-typedef struct Encoder {
-	int (*GetEncoderSensorCount)(void);
+typedef struct EncoderInterface EncoderInterface_t;
 
+struct EncoderInterface {
+	void *hardwareEncoder;
+	int (*GetEncoderSensorCount)(EncoderInterface_t *);
+};
+
+typedef struct Encoder {
+	EncoderInterface_t interface;
 	int totalCount;
 	int prevHardCount;
 	int countPerRev;
@@ -27,8 +33,9 @@ typedef struct Encoder {
 /*
  * Initializes encoder structure.
  * parameter encoder: pointer to encoder structure to initialize.
+ * parameter interface: encoder interface that has already been initialized
  */
-void EncoderInit(Encoder_t *encoder, int (*GetEncoderSensorCount)(void));
+void EncoderInit(Encoder_t *encoder, EncoderInterface_t interface);
 
 /*
  * Obtains encoder count.

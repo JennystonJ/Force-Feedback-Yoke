@@ -7,8 +7,8 @@
 
 #include "encoder.h"
 
-void EncoderInit(Encoder_t *encoder, int (*GetEncoderSensorCount)(void)) {
-	encoder->GetEncoderSensorCount = GetEncoderSensorCount;
+void EncoderInit(Encoder_t *encoder, EncoderInterface_t interface) {
+	encoder->interface = interface;
 
 	encoder->countPerRev = ENCODER_DEFAULT_COUNT_PER_REV;
 	encoder->totalCount = GetEncoderSensorCount();
@@ -39,7 +39,8 @@ int EncoderGetCountPerRev(Encoder_t *encoder) {
 void EncoderUpdate(Encoder_t *encoder, float deltaTimeMs) {
 
 	int deltaCount;
-	int currentHardCount = encoder->GetEncoderSensorCount();
+	int currentHardCount =
+			encoder->interface.GetEncoderSensorCount(&encoder->interface);
 	int countPerRevHalf = encoder->countPerRev/2;
 
 	// Calculate deltaCount based on current and previous counts
