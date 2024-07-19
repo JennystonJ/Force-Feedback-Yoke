@@ -25,9 +25,8 @@ void FFBPeriodicInit(FFBPeriodicParam_t *peri, float amplitude, float frequency,
 
 float FFBPeriodicCalc(FFBPeriodicParam_t *peri) {
 
-	float force = sinf(peri->frequency * (2*PI) * (peri->time/1000.0f)) *
+	float force = sinf(peri->frequency * (2*PI) * (timeInMs/1000.0f)) *
 			peri->amplitude * peri->gain + peri->offset;
-	peri->time += dt;
 
 	return force;
 }
