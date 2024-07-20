@@ -28,12 +28,17 @@ float FFBCalcConstantForce(FFBController_t *ffb, float amount) {
 	return ffb->constantGain * amount;
 }
 
+float FFBCalcPeriodicForce(FFBController_t *ffb, FFBPeriodicParam_t *periodic) {
+	return periodicForce = ffb->periodicGain * FFBPeriodicCalc(periodic);
+}
+
 float FFBCalcSpringForce(FFBController_t *ffb, float measuredAngle,
-		float setPointAngle, float strength) {
+		FFBSpringParam_t springParams) {
 
-	float constrainedStrength = ConstrainFloat(strength, -1.0f, 1.0f);
+	float constrainedStrength = ConstrainFloat(
+			springParams.strength, -1.0f, 1.0f);
 
-	float force = ffb->springGain * (setPointAngle - measuredAngle) *
+	float force = ffb->springGain * (springParams.angleOffset - measuredAngle) *
 			ffb->gain * constrainedStrength;
 
 	//add/subtract minimum spring force based on force direction

@@ -14,6 +14,18 @@ extern "C" {
 
 #include "force_feedback_periodic.h"
 
+/*
+ * Parameters used to apply a spring force.
+ * parameter strength: spring force strength (-1.0 to 1.0).
+ * parameter angleOffset: desired angular position from center.
+ */
+typedef struct FFBSpringParam {
+	float strength;
+	float angleOffset;
+} FFBSpringParam_t;
+
+
+
 typedef struct FFBController {
 	float motorKtConstant;
 	float gain;
@@ -55,7 +67,7 @@ float FFBCalcConstantForce(FFBController_t *ffb, float amount);
  * periodic force parameters.
  * parameter deltaTime: change in time from last call to current call.
  */
-float FFBCalcPeriodicForce(FFBController_t *ffb, FFBPeriodic_t *periodic,
+float FFBCalcPeriodicForce(FFBController_t *ffb, FFBPeriodicParam_t *periodic,
 		float deltaTime);
 
 /*
@@ -67,7 +79,8 @@ float FFBCalcPeriodicForce(FFBController_t *ffb, FFBPeriodic_t *periodic,
  * returns: spring force.
  */
 float FFBCalcSpringForce(FFBController_t *ffb, float measuredAngle,
-		float setPointAngle, float strength);
+		FFBSpringParam_t springParams);
+
 /*
  * Calculates damper force from magnitude (usually speed or torque).
  * parameter ffb: pointer to force feedback controller structure.
@@ -76,7 +89,7 @@ float FFBCalcSpringForce(FFBController_t *ffb, float measuredAngle,
  */
 float FFBCalcDamperForce(FFBController_t *ffb, float magnitude);
 
-float FFBCalcAllForces(FFBController_t * ffb, float measuredTorque,
+float FFBCalcAllForces(FFBController_t *ffb, float measuredTorque,
 		float measuredAngle);
 
 #ifdef __cplusplus
