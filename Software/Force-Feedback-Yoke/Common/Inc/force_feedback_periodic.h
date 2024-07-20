@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-typedef struct FFBPeriodic {
+typedef struct FFBPeriodicParam {
 	float amplitude;
 	float frequency;
 	float offset;
@@ -35,13 +35,7 @@ void FFBPeriodicInit(FFBPeriodicParam_t *peri, float amplitude, float frequency,
  * parameter dt: time delta between previous and current call.
  * returns: calculated force feedback
  */
-float FFBPeriodicCalc(FFBPeriodicParam_t *peri);
-
-/*
- * Update force feedback periodic internal time.
- * parameter dt: time delta between previous and current call.
- */
-void FFBPeriodicUpdateTime(int dt);
+float FFBPeriodicCalc(FFBPeriodicParam_t *peri, int dt);
 
 #ifdef __cplusplus
 }

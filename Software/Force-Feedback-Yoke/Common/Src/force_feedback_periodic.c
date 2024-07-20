@@ -10,8 +10,6 @@
 
 #define PI 3.141592653589793f
 
-static long timeInMs = 0;
-
 void FFBPeriodicInit(FFBPeriodicParam_t *peri, float amplitude, float frequency,
 		float offset) {
 	// Initialize FFB periodic parameters
@@ -23,14 +21,14 @@ void FFBPeriodicInit(FFBPeriodicParam_t *peri, float amplitude, float frequency,
 	peri->time = 0;
 }
 
-float FFBPeriodicCalc(FFBPeriodicParam_t *peri) {
+float FFBPeriodicCalc(FFBPeriodicParam_t *peri, int dt) {
 
-	float force = sinf(peri->frequency * (2*PI) * (timeInMs/1000.0f)) *
+	// Update time
+	peri->time += dt;
+
+	// Calculate force
+	float force = sinf(peri->frequency * (2*PI) * (peri->time/1000.0f)) *
 			peri->amplitude * peri->gain + peri->offset;
 
 	return force;
-}
-
-void FFBPeriodicUpdateTime(int dt) {
-	timeInMs += dt;
 }
