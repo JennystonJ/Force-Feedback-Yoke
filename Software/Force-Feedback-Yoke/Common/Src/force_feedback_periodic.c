@@ -28,7 +28,7 @@ float FFBPeriodicCalc(FFBPeriodicParam_t *peri, int dt) {
 
 	// Calculate force
 	float force = sinf(peri->frequency * (2*PI) * (peri->time/1000.0f)) *
-			peri->amplitude * peri->gain + peri->offset;
+			peri->amplitude + peri->offset;
 
 	return force;
 }
