@@ -29,16 +29,26 @@ uint8_t flag_rx = 0;
 
 UsbReport_t usbReport;
 
+bool appRunning;
+
 Button_t btnAccept;
+
+
+// FFB variables
+FFBController_t ffbPitch;
+FFBController_t ffbRoll;
 
 // For live debugging
 static float angle;
 
+// Private function prototypes
+void ProcessEncoders(int deltaTimeUs);
 void CommandLineMode(void);
 
 // Callbacks
 void ButtonStateChangedCallback(Button_t *button) {
 	if(button == &btnAccept) {
+		// Add implementation for accept button here
 	}
 }
 
@@ -58,6 +68,9 @@ void ApplicationInit(void) {
 	UsbReportInit(&usbReport, USB_REPORT_IN_LITTLE_ENDIAN);
 
 	ButtonInit(&btnAccept, &ButtonReadState);
+
+	FFBInit(&ffbPitch);
+	FFBInit(&ffbRoll);
 
 	printf("Ready!\r\n");
 
@@ -79,6 +92,8 @@ void ApplicationRun(void) {
 	float periAmplitude = 0.0f;
 	float sprStrength = 0.0f;
 
+	// Application is now running in loop
+	appRunning = true;
 	while(1) {
 		if(flag_rx == 1){
 
@@ -114,4 +129,28 @@ void ApplicationRun(void) {
 		HAL_Delay(5);
 
 	}
+}
+
+void ApplicationUpdate(int deltaTimeUs) {
+	if(!appRunning) {
+		return;
+	}
+
+	ButtonProcessInt(&btnAccept);
+	ProcessEncoders(deltaTimeUs);
+
+}
+
+void ProcessEncoders(int deltaTimeUs) {
+	EncoderUpdate(&pitchEncoder, deltaTimeUs);
+	EncoderUpdate(&rollEncoder, deltaTimeUs);
+}
+
+void ProcessFFB(void) {
+
+
+}
+
+void DecodeUsbReportFFB(void) {
+
 }
