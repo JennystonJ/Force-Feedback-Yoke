@@ -17,11 +17,12 @@ extern "C" {
 /*
  * Parameters used to apply a spring force.
  * parameter strength: spring force strength (-1.0 to 1.0).
- * parameter angleOffset: desired angular position from center.
+ * parameter offset: desired position from center.
  */
 typedef struct FFBSpringParam {
 	float strength;
-	float angleOffset;
+	float offset;
+	float minimumSpringForce;
 } FFBSpringParam_t;
 
 
@@ -33,8 +34,15 @@ typedef struct FFBController {
 	float periodicGain;
 	float springGain;
 	float damperGain;
-	float minimumSpringForce;
 	float lockAngle;
+
+	struct {
+		float constantStrength;
+		FFBPeriodicParam_t periodic;
+		FFBSpringParam_t spring;
+		float damperStrength;
+	} param;
+
 } FFBController_t;
 
 /*
@@ -43,6 +51,45 @@ typedef struct FFBController {
  * initialized.
  */
 void FFBInit(FFBController_t *ffb);
+
+/*
+ * Assigns strength of constant force.
+ * parameter ffb: pointer to force feedback controller structure.
+ * parameter constantStrength: strength of constant force
+ */
+void FFBSetConstantStrength(FFBController_t *ffb, float constantStrength);
+
+/*
+ * Assigns periodic force parameters.
+ * parameter ffb: pointer to force feedback controller structure.
+ * parameter periodic: structure containing periodic force parameters.
+ */
+void FFBSetPeriodicParams(FFBController_t *ffb, FFBPeriodicParam_t periodic);
+
+/*
+ * Assigns spring force parameters.
+ * parameter ffb: pointer to force feedback controller structure.
+ * parameter spring: structure containing spring force parameters.
+ */
+void FFBSetSpringParams(FFBController_t *ffb, FFBSpringParam_t spring);
+
+/*
+ * Assigns damper force strength.
+ * parameter ffb: pointer to force feedback controller structure.
+ * parameter damperStrength: strength of damper force.
+ */
+void FFBSetDamper(FFBController_t *ffb, float damperStrength);
+
+
+/*
+ * Calculates output force from given parameters.
+ * parameter ffb: pointer to force feedback controller structure.
+ * parameter measuredPosition: position measured from center.
+ * parameter deltaTime: change in time between calls
+ * returns: calculated force.
+ */
+float FFBCalcForces(FFBController_t *ffb, float measuredPosition,
+		int deltaTime);
 
 /*
  * Calculates motor torque from current.
@@ -58,7 +105,7 @@ float FFBCalcMotorTorque(FFBController_t *ffb, float motorCurrent);
  * parameter amount: amount of force.
  * returns: force.
  */
-float FFBCalcConstantForce(FFBController_t *ffb, float amount);
+float FFBCalcConstantForce(float gain, float amount);
 
 /**
  * Calculates periodic force.
@@ -67,19 +114,19 @@ float FFBCalcConstantForce(FFBController_t *ffb, float amount);
  * periodic force parameters.
  * parameter deltaTime: change in time from last call to current call.
  */
-float FFBCalcPeriodicForce(FFBController_t *ffb, FFBPeriodicParam_t *periodic,
+float FFBCalcPeriodicForce(float gain, FFBPeriodicParam_t *periodic,
 		float deltaTime);
 
 /*
  * Calculates spring force from angular position.
  * parameter ffb: pointer to force feedback controller structure.
- * parameter measuredAngle: angular position measured from center.
+ * parameter measuredPosition: position measured from center.
  * parameter setPointAngle: desired angular position from center.
  * parameter strength: spring force strength (-1.0 to 1.0).
  * returns: spring force.
  */
-float FFBCalcSpringForce(FFBController_t *ffb, float measuredAngle,
-		FFBSpringParam_t springParams);
+float FFBCalcSpringForce(float gain, float measuredPosition,
+		FFBSpringParam_t *springParam);
 
 /*
  * Calculates damper force from magnitude (usually speed or torque).
@@ -87,10 +134,10 @@ float FFBCalcSpringForce(FFBController_t *ffb, float measuredAngle,
  * parameter magnitude: magnitude (usually speed or torque).
  * returns: damper force
  */
-float FFBCalcDamperForce(FFBController_t *ffb, float magnitude);
+float FFBCalcDamperForce(float gain, float magnitude);
 
-float FFBCalcAllForces(FFBController_t *ffb, float measuredTorque,
-		float measuredAngle);
+//float FFBCalcAllForces(FFBController_t *ffb, float measuredTorque,
+//		float measuredPosition);
 
 #ifdef __cplusplus
 }
