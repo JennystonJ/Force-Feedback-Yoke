@@ -119,7 +119,7 @@ float avgAngle;
 float angle;
 float endStopKp = 0.01f;
 float endStopKd = 0.01f;
-FFBPeriodic_t periodic;
+FFBPeriodicParam_t periodic;
 
 static volatile int32_t motorPowerLog;
 
@@ -173,7 +173,7 @@ GETCHAR_PROTOTYPE
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if(htim == &htim6) {
-
+		ApplicationUpdate(500);
 //		EncoderUpdate(&pitchEncoder, 0.5);
 //		EncoderUpdate(&rollEncoder, 0.5);
 
