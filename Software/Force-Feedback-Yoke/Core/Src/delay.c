@@ -6,8 +6,8 @@
  */
 
 #include "delay.h"
-#include <stm32f3xx_hal.h>
+#include <stm32f4xx_hal.h>
 
 void delayMs(int milliseconds) {
-	HAL_Delay(ms);
+	HAL_Delay(milliseconds);
 }

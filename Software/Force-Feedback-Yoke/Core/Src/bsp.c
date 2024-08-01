@@ -21,6 +21,7 @@ Motor_t pitchMotor;
 Motor_t rollMotor;
 
 GPIO_t gpioAccept;
+GPIO_t gpioStatus;
 
 // Private variables
 AS5600_t pitchAS5600;
@@ -34,19 +35,21 @@ BTS7960_t rollDriver;
 void SetupEncoders(void);
 void SetupMotors(void);
 void SetupButtons(void);
+void SetupLEDs(void);
 
 void BspInit(void) {
 	SetupEncoders();
 	SetupMotors();
 	SetupButtons();
+	SetupLEDs();
 
 	// --- Timer setup ----
 	// Motor PWM timer
 	HAL_TIM_Base_Start_IT(&htim3);
 	// Update timer
-	HAL_TIM_Base_Start_IT(&htim6);
+	HAL_TIM_Base_Start_IT(&htim10);
 	// Control loop timer
-	HAL_TIM_Base_Start_IT(&htim7);
+	//HAL_TIM_Base_Start_IT(&htim11);
 }
 
 void SetupEncoders(void) {
@@ -57,26 +60,16 @@ void SetupEncoders(void) {
 	EncoderInit(&pitchEncoder, pitchEncoderI);
 
 	// Roll
-	AS5600Init(&rollAS5600, &hi2c2);
+	AS5600Init(&rollAS5600, &hi2c3);
 	EncoderInterface_t rollEncoderI;
 	AS5600InterfaceInit(&rollEncoderI, &rollAS5600);
 	EncoderInit(&rollEncoder, rollEncoderI);
 }
 
-void  SetupMotors(void) {
+void SetupMotors(void) {
 	// Pitch
-	// Initialize forward/reverse enable GPIOs
-	GPIO_t forwardPitchEnGpio;
-	GPIO_t reversePitchEnGpio;
-
-	GPIOInit(&forwardPitchEnGpio,
-			MOTOR_PITCH_F_EN_GPIO_Port, MOTOR_PITCH_F_EN_Pin);
-	GPIOInit(&reversePitchEnGpio,
-			MOTOR_PITCH_R_EN_GPIO_Port, MOTOR_PITCH_R_EN_Pin);
-
 	// Initialize driver
-	BTS7960Init(&pitchDriver, forwardPitchEnGpio, reversePitchEnGpio, &htim3,
-			TIM_PITCH_F_CH, TIM_PITCH_R_CH);
+	BTS7960Init(&pitchDriver, &htim3, TIM_PITCH_F_CH, TIM_PITCH_R_CH);
 
 	// Set up interface
 	MotorInterface_t pitchMotorI;
@@ -86,18 +79,8 @@ void  SetupMotors(void) {
 	MotorInit(&pitchMotor, pitchMotorI);
 
 	// Roll
-	// Initialize forward/reverse enable GPIOs
-	GPIO_t forwardRollEnGpio;
-	GPIO_t reverseRollEnGpio;
-
-	GPIOInit(&forwardRollEnGpio,
-			MOTOR_ROLL_F_EN_GPIO_Port, MOTOR_ROLL_F_EN_Pin);
-	GPIOInit(&reverseRollEnGpio,
-			MOTOR_ROLL_R_EN_GPIO_Port, MOTOR_ROLL_R_EN_Pin);
-
 	// Initialize driver
-	BTS7960Init(&rollDriver, forwardRollEnGpio, reverseRollEnGpio, &htim3,
-			TIM_ROLL_F_CH, TIM_ROLL_R_CH);
+	BTS7960Init(&rollDriver, &htim3, TIM_ROLL_F_CH, TIM_ROLL_R_CH);
 
 	// Set up interface
 	MotorInterface_t rollMotorI;
@@ -109,4 +92,8 @@ void  SetupMotors(void) {
 
 void SetupButtons(void) {
 	GPIOInit(&gpioAccept, BUTTON_ACCEPT_GPIO_Port, BUTTON_ACCEPT_Pin);
+}
+
+void SetupLEDs(void) {
+	GPIOInit(&gpioStatus, STATUS_LED_GPIO_Port, STATUS_LED_Pin);
 }

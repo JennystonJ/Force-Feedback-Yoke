@@ -69,21 +69,24 @@ void ApplicationInit(void) {
 
 	ButtonInit(&btnAccept, &ButtonReadState);
 
-	FFBInit(&ffbPitch);
-	FFBInit(&ffbRoll);
+	FFBInit(&ffbPitch, &pitchMotor, &pitchEncoder);
+	FFBInit(&ffbRoll, &rollMotor, &rollEncoder);
 
 	printf("Ready!\r\n");
 
-	// Wait for button press then release before proceeding
-	while(!ButtonIsPressed(&btnAccept)) {
-	}
-	while(ButtonIsPressed(&btnAccept)) {
-	}
-	while(!ButtonIsPressed(&btnAccept)) {
-	}
+//	// Wait for button press then release before proceeding
+//	while(!ButtonIsPressed(&btnAccept)) {
+//	}
+//	while(ButtonIsPressed(&btnAccept)) {
+//	}
+//	while(!ButtonIsPressed(&btnAccept)) {
+//	}
 
 	// Register callback for future presses
 	ButtonSetStateChangedCallback(&btnAccept, &ButtonStateChangedCallback);
+
+	// Indicate application is running
+	GPIOSetState(&gpioStatus, GPIO_HIGH);
 }
 
 void ApplicationRun(void) {
@@ -146,9 +149,9 @@ void ProcessEncoders(int deltaTimeUs) {
 	EncoderUpdate(&rollEncoder, deltaTimeUs);
 }
 
-void ProcessFFB(void) {
-
-
+void ApplicationFFBUpdate(int deltaTimeUs) {
+	FFBUpdate(&ffbPitch, deltaTimeUs);
+	FFBUpdate(&ffbRoll, deltaTimeUs);
 }
 
 void DecodeUsbReportFFB(void) {

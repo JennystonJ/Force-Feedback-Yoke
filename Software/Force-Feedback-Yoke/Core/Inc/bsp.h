@@ -13,12 +13,12 @@
 #include "button.h"
 #include "peripherals/gpio.h"
 
-#include "stm32f3xx.h"
+#include "stm32f4xx.h"
 
-#define TIM_PITCH_F_CH TIM_CHANNEL_4
-#define TIM_PITCH_R_CH TIM_CHANNEL_3
-#define TIM_ROLL_F_CH TIM_CHANNEL_2
-#define TIM_ROLL_R_CH TIM_CHANNEL_1
+#define TIM_PITCH_F_CH TIM_CHANNEL_1
+#define TIM_PITCH_R_CH TIM_CHANNEL_2
+#define TIM_ROLL_F_CH TIM_CHANNEL_3
+#define TIM_ROLL_R_CH TIM_CHANNEL_4
 
 extern Encoder_t pitchEncoder;
 extern Encoder_t rollEncoder;
@@ -27,6 +27,7 @@ extern Motor_t pitchMotor;
 extern Motor_t rollMotor;
 
 extern GPIO_t gpioAccept;
+extern GPIO_t gpioStatus;
 
 void BspInit(void);
 

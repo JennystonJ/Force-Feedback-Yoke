@@ -31,14 +31,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include "main.h"
-#include "stm32f3xx.h"
-#include "stm32f3xx_hal.h"
+#include "stm32f4xx.h"
+#include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN INCLUDE */
 
 /* USER CODE END INCLUDE */
 
 /** @addtogroup USBD_OTG_DRIVER
+  * @brief Driver for Usb device.
   * @{
   */
 
@@ -70,6 +71,8 @@
 /*---------- -----------*/
 #define USBD_DEBUG_LEVEL     0U
 /*---------- -----------*/
+#define USBD_LPM_ENABLED     0U
+/*---------- -----------*/
 #define USBD_SELF_POWERED     1U
 /*---------- -----------*/
 #define USBD_CUSTOMHID_OUTREPORT_BUF_SIZE     13U
@@ -81,6 +84,7 @@
 /****************************************/
 /* #define for FS and HS identification */
 #define DEVICE_FS 		0
+#define DEVICE_HS 		1
 
 /**
   * @}
@@ -90,28 +94,22 @@
   * @brief Aliases.
   * @{
   */
-
-/* Memory management macros */
-
+/* Memory management macros make sure to use static memory allocation */
 /** Alias for memory allocation. */
-#define USBD_malloc         (uint32_t *)USBD_static_malloc
+
+#define USBD_malloc         (void *)USBD_static_malloc
 
 /** Alias for memory release. */
 #define USBD_free           USBD_static_free
 
 /** Alias for memory set. */
-#define USBD_memset         /* Not used */
+#define USBD_memset         memset
 
 /** Alias for memory copy. */
-#define USBD_memcpy         /* Not used */
+#define USBD_memcpy         memcpy
 
 /** Alias for delay. */
 #define USBD_Delay          HAL_Delay
-
-/* For footprint reasons and since only one allocation is handled in the HID class
-   driver, the malloc/free is changed into a static allocation method */
-void *USBD_static_malloc(uint32_t size);
-void USBD_static_free(void *p);
 
 /* DEBUG macros */
 
@@ -120,24 +118,24 @@ void USBD_static_free(void *p);
                             printf("\n");
 #else
 #define USBD_UsrLog(...)
-#endif
+#endif /* (USBD_DEBUG_LEVEL > 0U) */
 
 #if (USBD_DEBUG_LEVEL > 1)
 
-#define USBD_ErrLog(...)    printf("ERROR: ") ;\
+#define USBD_ErrLog(...)    printf("ERROR: ");\
                             printf(__VA_ARGS__);\
                             printf("\n");
 #else
 #define USBD_ErrLog(...)
-#endif
+#endif /* (USBD_DEBUG_LEVEL > 1U) */
 
 #if (USBD_DEBUG_LEVEL > 2)
-#define USBD_DbgLog(...)    printf("DEBUG : ") ;\
+#define USBD_DbgLog(...)    printf("DEBUG : ");\
                             printf(__VA_ARGS__);\
                             printf("\n");
 #else
 #define USBD_DbgLog(...)
-#endif
+#endif /* (USBD_DEBUG_LEVEL > 2U) */
 
 /**
   * @}
@@ -158,6 +156,8 @@ void USBD_static_free(void *p);
   */
 
 /* Exported functions -------------------------------------------------------*/
+void *USBD_static_malloc(uint32_t size);
+void USBD_static_free(void *p);
 
 /**
   * @}

@@ -8,7 +8,7 @@
 #ifndef INC_DEVICES_HOME_SENSOR_H_
 #define INC_DEVICES_HOME_SENSOR_H_
 
-#include <stm32f3xx.h>
+#include <stm32f4xx.h>
 #include <stdint.h>
 #include "motor.h"
 #include "peripherals/gpio.h"

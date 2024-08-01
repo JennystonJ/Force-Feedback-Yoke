@@ -16,18 +16,6 @@ C_SRCS += \
 ../Common/Src/rotary_encoder.c \
 ../Common/Src/usb_report.c 
 
-C_DEPS += \
-./Common/Src/button.d \
-./Common/Src/encoder.d \
-./Common/Src/feed_forward.d \
-./Common/Src/force_feedback_controller.d \
-./Common/Src/force_feedback_periodic.d \
-./Common/Src/motor.d \
-./Common/Src/packet_parser.d \
-./Common/Src/pid.d \
-./Common/Src/rotary_encoder.d \
-./Common/Src/usb_report.d 
-
 OBJS += \
 ./Common/Src/button.o \
 ./Common/Src/encoder.o \
@@ -40,10 +28,22 @@ OBJS += \
 ./Common/Src/rotary_encoder.o \
 ./Common/Src/usb_report.o 
 
+C_DEPS += \
+./Common/Src/button.d \
+./Common/Src/encoder.d \
+./Common/Src/feed_forward.d \
+./Common/Src/force_feedback_controller.d \
+./Common/Src/force_feedback_periodic.d \
+./Common/Src/motor.d \
+./Common/Src/packet_parser.d \
+./Common/Src/pid.d \
+./Common/Src/rotary_encoder.d \
+./Common/Src/usb_report.d 
+
 
 # Each subdirectory must supply rules for building sources it contributes
 Common/Src/%.o Common/Src/%.su Common/Src/%.cyclo: ../Common/Src/%.c Common/Src/subdir.mk
-	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CustomHID/Inc -I../Common/Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
+	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CustomHID/Inc -I../Common/Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 
 clean: clean-Common-2f-Src
 

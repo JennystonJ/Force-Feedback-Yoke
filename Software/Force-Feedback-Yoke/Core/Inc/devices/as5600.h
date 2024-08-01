@@ -13,7 +13,7 @@
 #define AS5600_MIN_COUNT 0
 #define AS5600_MID_COUNT ((AS5600_MAX_COUNT-AS5600_MIN_COUNT)/2)
 
-#include <stm32f3xx_hal.h>
+#include <stm32f4xx_hal.h>
 #include <stdint.h>
 
 typedef struct AS5600 {

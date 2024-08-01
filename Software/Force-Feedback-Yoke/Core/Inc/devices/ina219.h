@@ -8,7 +8,7 @@
 #ifndef INC_DEVICES_INA219_H_
 #define INC_DEVICES_INA219_H_
 
-#include "stm32f3xx.h"
+#include "stm32f4xx.h"
 
 #define INA219_ADDR (0x40<<1)
 

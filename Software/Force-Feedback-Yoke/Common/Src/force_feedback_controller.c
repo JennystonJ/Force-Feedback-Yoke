@@ -7,8 +7,15 @@
 
 #include "utilities/utilities.h"
 #include "force_feedback_controller.h"
+#include "delay.h"
 
-void FFBInit(FFBController_t *ffb) {
+void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
+	ffb->state = FFB_STOPPED;
+	ffb->homingState = FFB_UNHOMED;
+
+	ffb->motor = motor;
+	ffb->encoder = encoder;
+
 	ffb->constantGain = 0;
 	ffb->periodicGain = 0;
 	ffb->springGain = 165;
@@ -64,6 +71,106 @@ float FFBCalcForces(FFBController_t *ffb, float measuredPosition,
 			(constantForce + periodicForce + springForce + damperForce);
 }
 
+void FFBUpdate(FFBController_t *ffb, int deltaTimeUs) {
+	switch(ffb->state){
+	case FFB_STOPPED:
+		MotorSetPower(ffb->motor, 0);
+		break;
+	case FFB_RUNNING:
+		int motorPower = FFBCalcForces(ffb, EncoderGetCount(ffb->encoder),
+				deltaTimeUs);
+		//TODO: Remove: Scale down motor power and limit for testing and safety
+		motorPower /= 8;
+		motorPower = Constrain(motorPower, -MOTOR_POWER_MAX/8,
+				MOTOR_POWER_MAX/8);
+		MotorSetPower(ffb->motor, motorPower);
+		break;
+	case FFB_HOMING:
+		break;
+	default:
+		// Should not reach here
+		MotorSetPower(ffb->motor, 0);
+		break;
+	}
+}
+
+void FFBStop(FFBController_t *ffb) {
+	ffb->state = FFB_STOPPED;
+	MotorSetPower(ffb->motor, 0);
+}
+
+void FFBStart(FFBController_t *ffb) {
+	ffb->state = FFB_RUNNING;
+}
+
+void FFBHome(FFBController_t *ffb) {
+	ffb->state = FFB_HOMING;
+	/* Find home start */
+	// Record motor position
+	int previousPosition = EncoderGetCount(ffb->encoder);
+	// Reverse motor slowly
+	MotorSetPower(ffb->motor, -FFB_CONTROL_HOME_POWER);
+	// Wait for motor to move
+	delayMs(200);
+	// Wait until motor stops moving (hit end)
+	int steadyCount = 0;
+	do {
+		int currentPosition = EncoderGetCount(ffb->encoder);
+		if(Abs(currentPosition-previousPosition) < 10) {
+			steadyCount++;
+		}
+		else {
+			steadyCount = 0;
+		}
+		previousPosition = currentPosition;
+		delayMs(10);
+	} while(steadyCount < 25);
+	// Record start position
+	int startPosition = EncoderGetCount(ffb->encoder);
+	// Stop motor
+	MotorSetPower(ffb->motor, 0);
+	delay(1000);
+
+
+	/* Find home end */
+	// Record motor position
+	previousPosition = EncoderGetCount(ffb->encoder);
+	// move motor forward slowly
+	MotorSetPower(ffb->motor, FFB_CONTROL_HOME_POWER);
+	// Wait for motor to move
+	delayMs(200);
+	// Wait until motor stops moving (hit end)
+	steadyCount = 0;
+	do {
+		int currentPosition = EncoderGetCount(ffb->encoder);
+		if(Abs(currentPosition-previousPosition) < 10) {
+			steadyCount++;
+		}
+		else {
+			steadyCount = 0;
+		}
+		previousPosition = currentPosition;
+		delayMs(10);
+	} while(steadyCount < 25);
+	// Record end position
+	int endPosition = EncoderGetCount(ffb->encoder);
+	// Stop motor
+	MotorSetPower(ffb->motor, 0);
+	delay(1000);
+
+	/* Calculate center */
+	int center = (endPosition - startPosition)/2;
+
+	/* Go to center */
+	FFBSpringParam_t centerForce = {
+			.minimumSpringForce = 0,
+			.offset = center,
+			.strength = 0.3,
+	};
+
+	FFBSetSpringParams(ffb, centerForce);
+
+}
 
 float FFBCalcMotorTorque(FFBController_t *ffb, float motorCurrent) {
 	return ffb->motorKtConstant * motorCurrent;
