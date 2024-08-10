@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#define MOTOR_POWER_MAX (2400-1)
+#define MOTOR_POWER_MAX (4800-1)
 
 typedef struct MotorInterface MotorInterface_t;
 
