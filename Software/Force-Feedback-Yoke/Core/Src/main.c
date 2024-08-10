@@ -83,6 +83,7 @@ static void MX_USART1_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+/* Redirect putchar and getchar output to UART1 */
 #ifdef __GNUC__
 #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 #define GETCHAR_PROTOTYPE int __io_getchar(void)
@@ -111,9 +112,12 @@ GETCHAR_PROTOTYPE
   return ch;
 }
 
+/* Interrupt Service Routines (ISR)*/
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if(htim == &htim10) {
-		//ApplicationUpdate(1000);
+		ApplicationUpdate(1000);
+		ApplicationFFBUpdate(1000);
 	}
 }
 /* USER CODE END 0 */
