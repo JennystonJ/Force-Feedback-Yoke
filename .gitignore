@@ -54,3 +54,6 @@ dkms.conf
 
 # Misc
 *.cyclo
+*.prefs
+*.settings/*
+*.settings/language.settings.xml

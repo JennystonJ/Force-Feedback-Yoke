@@ -11,5 +11,6 @@
 void ApplicationInit(void);
 void ApplicationRun(void);
 void ApplicationUpdate(int deltaTimeUs);
+void ApplicationFFBUpdate(int deltaTimeUs);
 
 #endif /* INC_APP_H_ */
