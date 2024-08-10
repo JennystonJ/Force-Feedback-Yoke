@@ -13,7 +13,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define BTS7690_MAX_PWM_POWER (2400-1)
+#define BTS7690_MAX_PWM_POWER (4800-1)
+
+// Compensate for difference in forward and reverse power
+#define BTS7690_FORWARD_DIR_POWER_SCALE 1.0f
+#define BTS7690_REVERSE_DIR_POWER_SCALE 1.0f
 
 typedef struct BTS7960 {
 	bool enableInit;

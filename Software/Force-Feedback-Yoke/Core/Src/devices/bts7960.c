@@ -43,7 +43,7 @@ void BTS7960SetPower(BTS7960_t *driver, int power) {
 			GPIOSetState(&driver->reverseEn, GPIO_LOW);
 		}
 		__HAL_TIM_SET_COMPARE(driver->htim, driver->forwardPwmCh,
-				driver->power);
+				(int)(driver->power * BTS7690_FORWARD_DIR_POWER_SCALE));
 		__HAL_TIM_SET_COMPARE(driver->htim, driver->reversePwmCh, 0);
 	}
 	else if(driver->power < 0) {
@@ -54,7 +54,7 @@ void BTS7960SetPower(BTS7960_t *driver, int power) {
 
 		__HAL_TIM_SET_COMPARE(driver->htim, driver->forwardPwmCh, 0);
 		__HAL_TIM_SET_COMPARE(driver->htim, driver->reversePwmCh,
-				-(driver->power));
+				-(int)(driver->power * BTS7690_REVERSE_DIR_POWER_SCALE));
 	}
 	else {
 		if(driver->enableInit) {
