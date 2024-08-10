@@ -18,7 +18,7 @@ void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 
 	ffb->constantGain = 0;
 	ffb->periodicGain = 0;
-	ffb->springGain = 165;
+	ffb->springGain = 10;
 	ffb->damperGain = 2;
 
 	ffb->gain = 1;
@@ -80,12 +80,13 @@ void FFBUpdate(FFBController_t *ffb, int deltaTimeUs) {
 		int motorPower = FFBCalcForces(ffb, EncoderGetCount(ffb->encoder),
 				deltaTimeUs);
 		//TODO: Remove: Scale down motor power and limit for testing and safety
-		motorPower /= 8;
-		motorPower = Constrain(motorPower, -MOTOR_POWER_MAX/8,
-				MOTOR_POWER_MAX/8);
+		motorPower /= 2;
+		motorPower = Constrain(motorPower, -MOTOR_POWER_MAX/2,
+				MOTOR_POWER_MAX/2);
+
 		MotorSetPower(ffb->motor, motorPower);
 		break;
-	case FFB_HOMING:
+	case FFB_IDLE:
 		break;
 	default:
 		// Should not reach here
@@ -103,15 +104,19 @@ void FFBStart(FFBController_t *ffb) {
 	ffb->state = FFB_RUNNING;
 }
 
+FFBControllerState_e FFBGetState(FFBController_t *ffb) {
+	return ffb->state;
+}
+
 void FFBHome(FFBController_t *ffb) {
-	ffb->state = FFB_HOMING;
+	ffb->state = FFB_IDLE;
 	/* Find home start */
 	// Record motor position
 	int previousPosition = EncoderGetCount(ffb->encoder);
 	// Reverse motor slowly
 	MotorSetPower(ffb->motor, -FFB_CONTROL_HOME_POWER);
 	// Wait for motor to move
-	delayMs(200);
+	delayMs(300);
 	// Wait until motor stops moving (hit end)
 	int steadyCount = 0;
 	do {
@@ -129,7 +134,7 @@ void FFBHome(FFBController_t *ffb) {
 	int startPosition = EncoderGetCount(ffb->encoder);
 	// Stop motor
 	MotorSetPower(ffb->motor, 0);
-	delay(1000);
+	delayMs(1000);
 
 
 	/* Find home end */
@@ -138,7 +143,7 @@ void FFBHome(FFBController_t *ffb) {
 	// move motor forward slowly
 	MotorSetPower(ffb->motor, FFB_CONTROL_HOME_POWER);
 	// Wait for motor to move
-	delayMs(200);
+	delayMs(300);
 	// Wait until motor stops moving (hit end)
 	steadyCount = 0;
 	do {
@@ -156,20 +161,37 @@ void FFBHome(FFBController_t *ffb) {
 	int endPosition = EncoderGetCount(ffb->encoder);
 	// Stop motor
 	MotorSetPower(ffb->motor, 0);
-	delay(1000);
+	delayMs(1000);
 
-	/* Calculate center */
+	/* Calibrate center */
 	int center = (endPosition - startPosition)/2;
+	EncoderSetCount(ffb->encoder, center);
 
 	/* Go to center */
 	FFBSpringParam_t centerForce = {
 			.minimumSpringForce = 0,
-			.offset = center,
-			.strength = 0.3,
+			.offset = 0,
+			.strength = 0.2,
 	};
-
 	FFBSetSpringParams(ffb, centerForce);
 
+	// Start
+	FFBStart(ffb);
+
+	// Wait for center to be reached
+	while(Abs(EncoderGetCount(ffb->encoder) - center) > 50) {
+		// Do nothing
+	}
+
+//	// Zero center position
+//	EncoderResetCount(ffb->encoder);
+//
+//	FFBSpringParam_t newCenterForce = {
+//			.minimumSpringForce = 0,
+//			.offset = 0,
+//			.strength = 0.35,
+//	};
+//	FFBSetSpringParams(ffb, newCenterForce);
 }
 
 float FFBCalcMotorTorque(FFBController_t *ffb, float motorCurrent) {

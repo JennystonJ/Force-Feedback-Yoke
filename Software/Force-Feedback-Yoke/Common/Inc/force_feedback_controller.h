@@ -17,7 +17,7 @@ extern "C" {
 #include "motor.h"
 #include "encoder.h"
 
-#define FFB_CONTROL_HOME_POWER (MOTOR_POWER_MAX/20)
+#define FFB_CONTROL_HOME_POWER (MOTOR_POWER_MAX/4)
 
 /*
  * Parameters used to apply a spring force.
@@ -28,7 +28,7 @@ extern "C" {
 typedef enum {
 	FFB_STOPPED,
 	FFB_RUNNING,
-	FFB_HOMING
+	FFB_IDLE,
 } FFBControllerState_e;
 
 typedef enum {
@@ -136,6 +136,13 @@ void FFBStop(FFBController_t *ffb);
  * parameter ffb: pointer to force feedback controller structure.
  */
 void FFBStart(FFBController_t *ffb);
+
+/*
+ * Obtains current force feedback controller state.
+ * parameter ffb: point to force feedback controller structure.
+ * returns state.
+ */
+FFBControllerState_e FFBGetState(FFBController_t *ffb);
 
 void FFBHome(FFBController_t *ffb);
 
