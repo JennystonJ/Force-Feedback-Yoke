@@ -38,8 +38,6 @@ CPP_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-Common/Src \
-Common/Src/utilities \
 Core/Src \
 Core/Src/devices \
 Core/Src/peripherals \
