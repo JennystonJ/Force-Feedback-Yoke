@@ -8,6 +8,22 @@
 #include "utilities/utilities.h"
 #include "force_feedback_controller.h"
 #include "delay.h"
+#include <math.h>
+
+void UpdateFFBSpeed(FFBController_t *ffb, int dt) {
+	ffb->speedDt += dt;
+
+	// Check if required time for speed calculation has passed
+	if(ffb->speedDt >= FFB_AVG_SPEED_DT) {
+		ffb->speedDt -= FFB_AVG_SPEED_DT;
+
+		// Calculate new speed
+		int encoderReading = EncoderGetCount(ffb->encoder);
+		ffb->speed = (encoderReading - ffb->prevEncoderCountAvg)/
+				(float)FFB_AVG_SPEED_DT;
+		ffb->prevEncoderCountAvg = encoderReading;
+	}
+}
 
 void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 	ffb->state = FFB_STOPPED;
@@ -16,14 +32,26 @@ void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 	ffb->motor = motor;
 	ffb->encoder = encoder;
 
-	ffb->constantGain = 0;
+	ffb->constantGain = 0.1;
 	ffb->periodicGain = 0;
 	ffb->springGain = 10;
 	ffb->damperGain = 2;
 
-	ffb->gain = 1;
+	// Temporarily disable assist until better implementation
+	ffb->assistMin = 0;//450;
+	ffb->assistGain = 0;//40000;
+
+	ffb->gain = MOTOR_POWER_MAX;
 	ffb->motorKtConstant = 0.0265;
-	ffb->lockAngle = 90;
+	ffb->minLock = -1000;
+	ffb->maxLock = 1000;
+	ffb->lockPower = 4000;
+	ffb->lockKp = 0.0035f;
+	ffb->lockKd = 25000.0f;
+
+	ffb->prevEncoderCountAvg = EncoderGetCount(encoder);
+	ffb->speed = 0;
+	ffb->speedDt = 0;
 
 	// Initialize all forces to 0
 	FFBSetConstantStrength(ffb, 0);
@@ -53,36 +81,60 @@ void FFBSetDamper(FFBController_t *ffb, float damperStrength) {
 	ffb->param.damperStrength = damperStrength;
 }
 
-float FFBCalcForces(FFBController_t *ffb, float measuredPosition,
+float FFBCalcForces(FFBController_t *ffb, float measuredPosition, float speed,
 		int deltaTime) {
-	float constantForce = FFBCalcConstantForce(ffb->constantGain,
-			ffb->param.constantStrength);
 
-	float periodicForce = FFBCalcPeriodicForce(ffb->periodicGain,
-			&ffb->param.periodic, deltaTime);
+	// Check if axis is outside lock range
+	if(measuredPosition < ffb->minLock) {
 
-	float springForce = FFBCalcSpringForce(ffb->springGain, measuredPosition,
-			&ffb->param.spring);
+		return ffb->lockKp * powf(ffb->minLock - measuredPosition, 2.0f) -
+				ffb->lockKd * speed;
+	}
+	else if(measuredPosition > ffb->maxLock) {
 
-	float damperForce = FFBCalcDamperForce(ffb->damperGain,
-			ffb->param.damperStrength);
+		return -(ffb->lockKp * powf(ffb->maxLock - measuredPosition, 2.0f) -
+				ffb->lockKd * speed);
+	}
+	// Axis is within lock range, perform calculations
+	else {
 
-	return ffb->gain *
-			(constantForce + periodicForce + springForce + damperForce);
+		float constantForce = FFBCalcConstantForce(ffb->constantGain,
+				ffb->param.constantStrength);
+
+		float periodicForce = FFBCalcPeriodicForce(ffb->periodicGain,
+				&ffb->param.periodic, deltaTime);
+
+		float springForce = FFBCalcSpringForce(ffb->springGain, measuredPosition,
+				&ffb->param.spring);
+
+		float damperForce = FFBCalcDamperForce(ffb->damperGain,
+				ffb->param.damperStrength);
+
+		float assistForce = FFBCalcAssist(ffb->assistGain, ffb->assistMin,
+				speed);
+
+		// Assist force gain is independent to prevent runaway
+		return ffb->gain *
+				(constantForce + periodicForce + springForce + damperForce) +
+				assistForce;
+	}
 }
 
 void FFBUpdate(FFBController_t *ffb, int deltaTimeUs) {
+	UpdateFFBSpeed(ffb, deltaTimeUs);
+
 	switch(ffb->state){
 	case FFB_STOPPED:
 		MotorSetPower(ffb->motor, 0);
 		break;
 	case FFB_RUNNING:
 		int motorPower = FFBCalcForces(ffb, EncoderGetCount(ffb->encoder),
+				ffb->speed,
 				deltaTimeUs);
 		//TODO: Remove: Scale down motor power and limit for testing and safety
-		motorPower /= 2;
-		motorPower = Constrain(motorPower, -MOTOR_POWER_MAX/2,
-				MOTOR_POWER_MAX/2);
+//		motorPower /= 2;
+//		motorPower = Constrain(motorPower, -MOTOR_POWER_MAX/2,
+//				MOTOR_POWER_MAX/2);
 
 		MotorSetPower(ffb->motor, motorPower);
 		break;
@@ -106,6 +158,19 @@ void FFBStart(FFBController_t *ffb) {
 
 FFBControllerState_e FFBGetState(FFBController_t *ffb) {
 	return ffb->state;
+}
+
+void FFBSetControlRange(FFBController_t *ffb, int min, int max) {
+	ffb->minLock = min;
+	ffb->maxLock = max;
+}
+
+int FFBGetMinControlRange(FFBController_t *ffb) {
+	return ffb->minLock;
+}
+
+int FFBGetMaxControlRange(FFBController_t *ffb) {
+	return ffb->maxLock;
 }
 
 void FFBHome(FFBController_t *ffb) {
@@ -166,6 +231,7 @@ void FFBHome(FFBController_t *ffb) {
 	/* Calibrate center */
 	int center = (endPosition - startPosition)/2;
 	EncoderSetCount(ffb->encoder, center);
+	ffb->prevEncoderCountAvg = 0;
 
 	/* Go to center */
 	FFBSpringParam_t centerForce = {
@@ -231,5 +297,17 @@ float FFBCalcSpringForce(float gain, float measuredAngle,
 float FFBCalcDamperForce(float gain, float magnitude) {
 	float force = gain * -magnitude;
 	return force;
+}
+
+float FFBCalcAssist(float gain, float min, float speed) {
+	if(speed < 0) {
+		return gain*speed - min;
+	}
+	else if(speed > 0) {
+		return gain*speed + min;
+	}
+	else {
+		return 0;
+	}
 }
 
