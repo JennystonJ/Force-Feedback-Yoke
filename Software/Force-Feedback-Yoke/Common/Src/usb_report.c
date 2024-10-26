@@ -45,6 +45,15 @@ int32_t UsbReportParseNextInt(UsbReport_t *report) {
 	return value;
 }
 
+uint8_t UsbReportParseNextByte(UsbReport_t *report) {
+	uint8_t data = report->data[report->currentParseIndex];
+
+	// Increment parse index for next parse
+	report->currentParseIndex += sizeof(uint8_t);
+
+	return data;
+}
+
 float UsbReportParseNextFloat(UsbReport_t *report) {
 	uint8_t *data = report->data + report->currentParseIndex;
 	float value;

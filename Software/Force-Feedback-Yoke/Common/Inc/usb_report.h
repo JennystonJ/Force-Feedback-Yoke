@@ -50,6 +50,12 @@ void UsbReportLoad(UsbReport_t *report, uint8_t *buffer, uint16_t size);
 uint8_t UsbReportGetReportId(UsbReport_t *report);
 
 /*
+ * Process the next byte as an uint8_t
+ * param report: pointer to USB report structure
+ */
+uint8_t UsbReportParseNextByte(UsbReport_t *report);
+
+/*
  * Process the next 4 bytes as an integer
  * param report: pointer to USB report structure
  */
