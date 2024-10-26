@@ -11,7 +11,7 @@ void EncoderInit(Encoder_t *encoder, EncoderInterface_t interface) {
 	encoder->interface = interface;
 
 	encoder->countPerRev = ENCODER_DEFAULT_COUNT_PER_REV;
-	encoder->totalCount = GetEncoderSensorCount();
+	encoder->totalCount = interface.GetEncoderSensorCount(&interface);
 	encoder->prevHardCount = encoder->totalCount;
 	encoder->speed = 0;
 }
