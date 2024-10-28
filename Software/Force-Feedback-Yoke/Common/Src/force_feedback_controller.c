@@ -32,7 +32,7 @@ void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 	ffb->motor = motor;
 	ffb->encoder = encoder;
 
-	ffb->constantGain = 0.1;
+	ffb->constantGain = 1;
 	ffb->periodicGain = 0;
 	ffb->springGain = 10;
 	ffb->damperGain = 2;
