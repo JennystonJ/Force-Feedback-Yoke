@@ -8,6 +8,10 @@
 #include "devices/bts7960.h"
 #include "utilities/utilities.h"
 
+// Forward function prototypes
+static void BTS7960SetPowerBrake(BTS7960_t *driver, int power);
+static void BTS7960SetPowerCoast(BTS7960_t *driver, int power);
+
 void BTS7960InitEn(BTS7960_t *driver, GPIO_t forwardEn, GPIO_t reverseEn,
 		TIM_HandleTypeDef *htim, uint32_t forwardPwmCh, uint32_t reversePwmCh) {
 	driver->enableInit = true;
@@ -16,23 +20,57 @@ void BTS7960InitEn(BTS7960_t *driver, GPIO_t forwardEn, GPIO_t reverseEn,
 	driver->htim = htim;
 	driver->forwardPwmCh = forwardPwmCh;
 	driver->reversePwmCh = reversePwmCh;
+	driver->controlMode = BTS7960_POWER_BRAKE;
 
 	// Ensure motor is powered off for safety
-	BTS7960SetPower(driver, 0);
+	BTS7960SetDriverEStop(driver, true);
 }
 
-void BTS7960Init(BTS7960_t *driver, TIM_HandleTypeDef *htim,
+void BTS7960InitPowerBrake(BTS7960_t *driver, TIM_HandleTypeDef *htim,
 		uint32_t forwardPwmCh, uint32_t reversePwmCh) {
 	driver->enableInit = false;
 	driver->htim = htim;
 	driver->forwardPwmCh = forwardPwmCh;
 	driver->reversePwmCh = reversePwmCh;
+	driver->controlMode = BTS7960_POWER_BRAKE;
+
+	// Ensure motor is powered off for safety
+	BTS7960SetPower(driver, 0);
+}
+
+void BTS7960InitPowerCoast(BTS7960_t *driver, TIM_HandleTypeDef *htim,
+		uint32_t pwmCh, GPIO_t forwardEn, GPIO_t reverseEn) {
+	driver->enableInit = false;
+	driver->htim = htim;
+	driver->forwardPwmCh = pwmCh;
+	driver->reversePwmCh = pwmCh;
+	driver->forwardEn = forwardEn;
+	driver->reverseEn = reverseEn;
+	driver->controlMode = BTS7960_POWER_COAST;
 
 	// Ensure motor is powered off for safety
 	BTS7960SetPower(driver, 0);
 }
 
 void BTS7960SetPower(BTS7960_t *driver, int power) {
+	// Determine control mode and call appropriate set power function
+	if(driver->controlMode == BTS7960_POWER_BRAKE) {
+		BTS7960SetPowerBrake(driver, power);
+	}
+	else if(driver->controlMode == BTS7960_POWER_COAST){
+		BTS7960SetPowerCoast(driver, power);
+	}
+	else {
+		// Invalid control mode
+	}
+}
+
+static void BTS7960SetPowerBrake(BTS7960_t *driver, int power) {
+
+	if(driver->driverEStop) {
+		power = 0;
+	}
+
 	driver->power = Constrain(power, -BTS7690_MAX_PWM_POWER,
 			BTS7690_MAX_PWM_POWER);
 
@@ -67,6 +105,22 @@ void BTS7960SetPower(BTS7960_t *driver, int power) {
 	}
 }
 
+static void BTS7960SetPowerCoast(BTS7960_t *driver, int power) {
+
+	if(driver->driverEStop) {
+		power = 0;
+	}
+}
+
 int BTS7960GetPower(BTS7960_t *driver) {
 	return driver->power;
+}
+
+void BTS7960SetDriverEStop(BTS7960_t *driver, bool estop) {
+	if(estop) {
+
+		// Shut motor off
+		BTS7960SetPower(driver, 0);
+	}
+	driver->driverEStop = estop;
 }

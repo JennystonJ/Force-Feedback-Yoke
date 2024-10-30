@@ -84,19 +84,19 @@ void FFBSetDamper(FFBController_t *ffb, float damperStrength) {
 float FFBCalcForces(FFBController_t *ffb, float measuredPosition, float speed,
 		int deltaTime) {
 
-	// Check if axis is outside lock range
-	if(measuredPosition < ffb->minLock) {
-
-		return ffb->lockKp * powf(ffb->minLock - measuredPosition, 2.0f) -
-				ffb->lockKd * speed;
-	}
-	else if(measuredPosition > ffb->maxLock) {
-
-		return -(ffb->lockKp * powf(ffb->maxLock - measuredPosition, 2.0f) -
-				ffb->lockKd * speed);
-	}
-	// Axis is within lock range, perform calculations
-	else {
+//	// Check if axis is outside lock range
+//	if(measuredPosition < ffb->minLock) {
+//
+//		return ffb->lockKp * powf(ffb->minLock - measuredPosition, 2.0f) -
+//				ffb->lockKd * speed;
+//	}
+//	else if(measuredPosition > ffb->maxLock) {
+//
+//		return -(ffb->lockKp * powf(ffb->maxLock - measuredPosition, 2.0f) -
+//				ffb->lockKd * speed);
+//	}
+//	// Axis is within lock range, perform calculations
+//	else {
 
 		float constantForce = FFBCalcConstantForce(ffb->constantGain,
 				ffb->param.constantStrength);
@@ -114,10 +114,26 @@ float FFBCalcForces(FFBController_t *ffb, float measuredPosition, float speed,
 				speed);
 
 		// Assist force gain is independent to prevent runaway
-		return ffb->gain *
+		float force = ffb->gain *
 				(constantForce + periodicForce + springForce + damperForce) +
 				assistForce;
-	}
+
+		// Check if axis is outside lock range
+		if(measuredPosition < ffb->minLock) {
+			return fmax(force, 0) + ffb->lockKp *
+					powf(ffb->minLock - measuredPosition, 2.0f) -
+					ffb->lockKd * speed;
+		}
+		else if (measuredPosition > ffb->maxLock) {
+			return fmin(force, 0) -
+					(ffb->lockKp * powf(ffb->maxLock - measuredPosition, 2.0f) -
+					ffb->lockKd * speed);
+		}
+		else {
+			return force;
+		}
+
+//	}
 }
 
 void FFBUpdate(FFBController_t *ffb, int deltaTimeUs) {

@@ -37,9 +37,11 @@ void SetupMotors(void);
 void SetupButtons(void);
 void SetupLEDs(void);
 
+void HandleEncoderError(AS5600_t *device);
+
 void BspInit(void) {
-	SetupEncoders();
 	SetupMotors();
+	SetupEncoders();
 	SetupButtons();
 	SetupLEDs();
 
@@ -58,15 +60,17 @@ void BspInit(void) {
 void SetupEncoders(void) {
 	// Pitch
 	AS5600Init(&pitchAS5600, &hi2c1);
+	AS5600RegisterErrorCallback(&pitchAS5600, HandleEncoderError);
 	EncoderInterface_t pitchEncoderI;
 	AS5600InterfaceInit(&pitchEncoderI, &pitchAS5600);
 	EncoderInit(&pitchEncoder, pitchEncoderI);
 
 	// Roll
-	AS5600Init(&rollAS5600, &hi2c3);
-	EncoderInterface_t rollEncoderI;
-	AS5600InterfaceInit(&rollEncoderI, &rollAS5600);
-	EncoderInit(&rollEncoder, rollEncoderI);
+//	AS5600Init(&rollAS5600, &hi2c3);
+//	AS5600RegisterErrorCallback(&rollAS5600, HandleEncoderError);
+//	EncoderInterface_t rollEncoderI;
+//	AS5600InterfaceInit(&rollEncoderI, &rollAS5600);
+//	EncoderInit(&rollEncoder, rollEncoderI);
 }
 
 void SetupMotors(void) {
@@ -81,6 +85,9 @@ void SetupMotors(void) {
 	// Initialize motor
 	MotorInit(&pitchMotor, pitchMotorI);
 
+	// Enable motor
+	BTS7960SetDriverEStop(&pitchDriver, false);
+
 	// Roll
 	// Initialize driver
 	BTS7960Init(&rollDriver, &htim3, TIM_ROLL_F_CH, TIM_ROLL_R_CH);
@@ -91,6 +98,9 @@ void SetupMotors(void) {
 
 	// Initialize motor
 	MotorInit(&rollMotor, rollMotorI);
+
+	// Enable motor
+	BTS7960SetDriverEStop(&rollDriver, false);
 }
 
 void SetupButtons(void) {
@@ -99,4 +109,16 @@ void SetupButtons(void) {
 
 void SetupLEDs(void) {
 	GPIOInit(&gpioStatus, STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+}
+
+void HandleEncoderError(AS5600_t *device) {
+	if(device == &pitchAS5600) {
+		BTS7960SetDriverEStop(&pitchDriver, true);
+	}
+	else if(device == &rollAS5600) {
+		BTS7960SetDriverEStop(&rollDriver, true);
+	}
+
+	// Indicate error
+	GPIOSetState(&gpioStatus, GPIO_LOW);
 }

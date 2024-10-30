@@ -16,13 +16,18 @@
 #include <stm32f4xx_hal.h>
 #include <stdint.h>
 
-typedef struct AS5600 {
+typedef struct AS5600 AS5600_t;
+
+struct AS5600 {
 	I2C_HandleTypeDef *hi2c;
-} AS5600_t;
+	void (*errorCallback)(AS5600_t *device);
+};
 
 
 void AS5600Init(AS5600_t *device, I2C_HandleTypeDef *hi2c);
 uint8_t AS5600GetStatus(AS5600_t *device);
 uint16_t AS5600GetAngle(AS5600_t *device);
+void AS5600RegisterErrorCallback(AS5600_t *device,
+		void (*errorCallback)(AS5600_t *device));
 
 #endif /* INC_AS5600_H_ */

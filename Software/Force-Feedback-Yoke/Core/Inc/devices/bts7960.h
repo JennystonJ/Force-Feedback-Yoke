@@ -19,6 +19,11 @@
 #define BTS7690_FORWARD_DIR_POWER_SCALE 1.0f
 #define BTS7690_REVERSE_DIR_POWER_SCALE 1.0f
 
+typedef enum {
+	BTS7960_POWER_BRAKE,
+	BTS7960_POWER_COAST,
+} BTS7960ControlMode_e;
+
 typedef struct BTS7960 {
 	bool enableInit;
 	GPIO_t forwardEn;
@@ -27,13 +32,18 @@ typedef struct BTS7960 {
 	uint32_t forwardPwmCh;
 	uint32_t reversePwmCh;
 	int power;
+	bool driverEStop;
+	BTS7960ControlMode_e controlMode;
 } BTS7960_t;
 
 void BTS7960InitEn(BTS7960_t *driver, GPIO_t forwardEn, GPIO_t reverseEn,
 		TIM_HandleTypeDef *htim, uint32_t forwardPwmCh, uint32_t reversePwmCh);
-void BTS7960Init(BTS7960_t *driver, TIM_HandleTypeDef *htim,
+void BTS7960InitPowerBrake(BTS7960_t *driver, TIM_HandleTypeDef *htim,
 		uint32_t forwardPwmCh, uint32_t reversePwmCh);
+void BTS7960InitPowerCoast(BTS7960_t *driver, TIM_HandleTypeDef *htim,
+		uint32_t pwmCh, GPIO_t forwardEn, GPIO_t reverseEn);
 void BTS7960SetPower(BTS7960_t *driver, int power);
 int BTS7960GetPower(BTS7960_t *driver);
+void BTS7960SetDriverEStop(BTS7960_t *driver, bool estop);
 
 #endif /* INC_DEVICES_BTS7960_H_ */
