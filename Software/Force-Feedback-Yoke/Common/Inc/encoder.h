@@ -12,74 +12,100 @@
 extern "C" {
 #endif
 
-#define ENCODER_DEFAULT_COUNT_PER_REV 4096
+#include <stdbool.h>
+
+#define ENCODER_DEFAULT_COUNT_PER_REV 65536
 
 typedef struct EncoderInterface EncoderInterface_t;
 
 struct EncoderInterface {
 	void *hardwareEncoder;
 	int (*GetEncoderSensorCount)(EncoderInterface_t *);
+	int (*GetEncoderSensorAbsCount)(EncoderInterface_t *);
 };
 
 typedef struct Encoder {
 	EncoderInterface_t interface;
-	int totalCount;
-	int prevHardCount;
+
+	bool reverse;
+	int offset;
+
+	int prevCount;
 	int countPerRev;
 	float speed;
+	float prevSpeed;
+	float acceleration;
 
 } Encoder_t;
 
 /*
  * Initializes encoder structure.
  * parameter encoder: pointer to encoder structure to initialize.
- * parameter interface: encoder interface that has already been initialized
+ * parameter interface: encoder interface that has already been initialized.
  */
-void EncoderInit(Encoder_t *encoder, EncoderInterface_t interface);
+void Encoder_Init(Encoder_t *encoder, EncoderInterface_t interface);
+
+/*
+ * Sets direction for encoder count.
+ * parameter encoder: pointer to encoder structure.
+ * parameter reverse: sets reverse parameter of encoder (true = reverse).
+ */
+void Encoder_SetReverse(Encoder_t *encoder, bool reverse);
 
 /*
  * Obtains encoder count.
  * parameter encoder: pointer to encoder structure.
  * returns: encoder count.
  */
-int EncoderGetCount(Encoder_t *encoder);
+int Encoder_GetCount(Encoder_t *encoder);
 
 /*
  * Assigns encoder count.
  * parameter encoder: pointer to encoder structure.
  * parameter count: count to be set to encoder.
  */
-void EncoderSetCount(Encoder_t *encoder, int count);
+void Encoder_SetCount(Encoder_t *encoder, int count);
 
 /*
  * Resets encoder count to 0.
  * parameter encoder: pointer to encoder structure.
  */
-void EncoderResetCount(Encoder_t *encoder);
+void Encoder_ResetCount(Encoder_t *encoder);
+
+/*
+ * Returns encoder hardware count.
+ * parameter encoder: pointer to encoder structure.
+ */
+int Encoder_GetHardCount(Encoder_t *encoder);
 
 /*
  * Obtains encoder speed in counts per millisecond.
  * parameter encoder: pointer to encoder structure.
  * returns: speed in counts per millisecond.
  */
-float EncoderGetSpeed(Encoder_t *encoder);
+float Encoder_GetSpeed(Encoder_t *encoder);
 
 /*
  * Obtains number of counts per each encoder revolution.
  * parameter encoder: pointer to encoder structure.
  * returns: number of counts per each encoder revolution.
  */
-int EncoderGetCountPerRev(Encoder_t *encoder);
-
-
+int Encoder_GetCountPerRev(Encoder_t *encoder);
 
 /*
- * Updates count and calculates speed in encoder structure.
+ * Assigns the number of counts per each encoder revolution.
+ * parameter encoder: pointer to encoder structure.
+ * parameter countPerRev: number of counts per each encoder revolution.
+ */
+void Encoder_SetCountPerRev(Encoder_t *encoder, int countPerRev);
+
+/*
+ * Updates count and calculates speed and acceleration in encoder structure.
  * parameter encoder: pointer to encoder structure.
  * parameter deltaTimeMs: change in time from current and previous call in
  * milliseconds.
  */
-void EncoderUpdate(Encoder_t *encoder, float deltaTimeMs);
+void Encoder_Update(Encoder_t *encoder, float deltaTimeMs);
 
 #ifdef __cplusplus
 }

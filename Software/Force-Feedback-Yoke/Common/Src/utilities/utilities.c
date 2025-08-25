@@ -36,6 +36,18 @@ float ConstrainFloat(float value, float min, float max) {
 	}
 }
 
+float signf(float x) {
+	if(x > 0.0f) {
+		return 1.0f;
+	}
+	else if(x < 0.0f) {
+		return -1.0f;
+	}
+	else {
+		return 0.0f;
+	}
+}
+
 int32_t Abs(int32_t x) {
 	return x > 0 ? x : -x;
 }
@@ -50,4 +62,16 @@ int32_t Min(int32_t a, int32_t b) {
 
 int32_t Max(int32_t a, int32_t b) {
 	return a > b ? a : b;
+}
+
+uint8_t CalcEvenParity(uint8_t *data, uint8_t len) {
+	// Start with 0 since parity should be even
+	int parityBit = 0;
+	for(int i = 0; i < len; i++) {
+		for(int bit = 0; bit < 8; bit++) {
+			parityBit ^= (data[i] >> bit) & 0x01;
+		}
+	}
+
+	return (uint8_t)parityBit;
 }

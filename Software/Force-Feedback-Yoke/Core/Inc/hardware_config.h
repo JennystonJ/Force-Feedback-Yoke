@@ -1,0 +1,66 @@
+/*
+ * config.h
+ *
+ *  Created on: Jul 7, 2025
+ *      Author: Jennyston
+ */
+
+#ifndef INC_HARDWARE_CONFIG_H_
+#define INC_HARDWARE_CONFIG_H_
+
+#define US_TIM htim6
+#define FFB_CONTROL_LOOP_TIM htim7
+
+// *** Encoder Configuration ***
+#define ENCODER_PITCH_SPI hspi3
+#define ENCODER_PITCH_TIM htim2
+#define ENCODER_PITCH_COUNTS_PER_REV 65536
+
+#define ENCODER_ROLL_SPI hspi3
+#define ENCODER_ROLL_TIM htim5
+#define ENCODER_ROLL_COUNTS_PER_REV 65536
+
+// *** Driver Configuration ***
+#define DRIVER_PITCH_TIM htim1
+#define DRIVER_PITCH_PHASE_U_CHANNEL TIM_CHANNEL_1
+#define DRIVER_PITCH_PHASE_V_CHANNEL TIM_CHANNEL_2
+#define DRIVER_PITCH_PHASE_W_CHANNEL TIM_CHANNEL_3
+#define DRIVER_PITCH_OC_ADC_SYNC_CHANNEL TIM_CHANNEL_4
+
+#define DRIVER_ROLL_TIM htim8
+#define DRIVER_ROLL_PHASE_U_CHANNEL TIM_CHANNEL_1
+#define DRIVER_ROLL_PHASE_V_CHANNEL TIM_CHANNEL_2
+#define DRIVER_ROLL_PHASE_W_CHANNEL TIM_CHANNEL_3
+
+// *** Current Sensor Configuration
+#define CURRENT_SENSE_PITCH_ADC hadc2
+#define CURRENT_SENSE_PITCH_ADC_VREF 3.3f
+// 20 bit ADC (16-bit + 16* over-sampling)
+#define CURRENT_SENSE_PITCH_ADC_COUNTS 65536
+#define CURRENT_SENSE_PITCH_A_CH 0
+#define CURRENT_SENSE_PITCH_B_CH 1
+#define CURRENT_SENSE_PITCH_C_CH 2
+#define CURRENT_SENSE_PITCH_REF_CH 3
+
+#define CURRENT_SENSE_ROLL_ADC hadc1
+#define CURRENT_SENSE_ROLL_ADC_VREF 3.3f
+// 18 bit ADC (16-bit + 4* over-sampling)
+#define CURRENT_SENSE_ROLL_ADC_COUNTS 262144
+#define CURRENT_SENSE_ROLL_A_CH 0
+#define CURRENT_SESNE_ROLL_B_CH 1
+#define CURRENT_SENSE_ROLL_C_CH 2
+#define CURRENT_SENSE_ROLL_REF_CH 3
+
+// Load Cell Configuration
+#define ADS1256_SPI hspi2
+#define ADS1256_ADC_COUNTS 16777216
+
+// *** Data Acquisition Configuration
+#define SERIAL_DAQ_UART huart2
+
+/*** Interrupt Configuration ***/
+#define PITCH_MOTOR_CONTROL_LOOP_PERIOD_MS 0.05f
+#define ROLL_MOTOR_CONTROL_LOOP_PERIOD_MS 0.05f
+#define FFB_CONTROL_LOOP_PERIOD_MS 1.0f
+
+#endif /* INC_HARDWARE_CONFIG_H_ */

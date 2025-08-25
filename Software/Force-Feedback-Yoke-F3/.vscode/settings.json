@@ -1,9 +1,0 @@
-{
-  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-  "cmake.configureOnOpen": true,
-  "files.associations": {
-    "main.h": "c",
-    "stdio.h": "c",
-    "stm32f3xx_hal.h": "c"
-  }
-}

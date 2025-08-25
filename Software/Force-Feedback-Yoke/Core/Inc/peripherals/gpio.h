@@ -8,7 +8,7 @@
 #ifndef INC_PERIPHERALS_GPIO_H_
 #define INC_PERIPHERALS_GPIO_H_
 
-#include "stm32f4xx.h"
+#include "stm32h7xx.h"
 #include <stdint.h>
 
 typedef enum {

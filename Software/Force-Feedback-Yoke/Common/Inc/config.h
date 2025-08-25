@@ -1,0 +1,77 @@
+/*
+ * config.h
+ *
+ *  Created on: Jul 7, 2025
+ *      Author: Jennyston
+ */
+
+#ifndef INC_CONFIG_H_
+#define INC_CONFIG_H_
+
+#include "hardware_config.h"
+
+#define DRIVER_PITCH_BUS_VOLTAGE 24.0f
+#define CURRENT_SENSE_PITCH_MAX_CURRENT 16.5f
+
+#define PITCH_MOTOR_CURRENT_LIMIT 1.25f
+
+#define MOTOR_PITCH_POLE_PAIRS 4
+#define MOTOR_PITCH_KT 0.166666667f
+//#define PITCH_ELECTRICAL_ANGLE_OFFSET (-14636)
+//#define PITCH_ELECTRICAL_ANGLE_OFFSET (-14760)
+//#define PITCH_ELECTRICAL_ANGLE_OFFSET (-12674)
+#define PITCH_ELECTRICAL_ANGLE_OFFSET (-14739)
+
+#define DRIVER_ROLL_BUS_VOLTAGE 24.0f
+#define CURRENT_SENSE_ROLL_MAX_CURRENT 16.5f
+#define MOTOR_ROLL_POLE_PAIRS 4
+
+#define PITCH_STEP_PER_MM ((ENCODER_PITCH_COUNTS_PER_REV*3)/(3.14159f*19.10f))
+#define PITCH_MM_PER_REV ((3.14159f*19.10f)/3)
+#define ROLL_STEP_PER_DEGREE ((ENCODER_ROLL_COUNTS_PER_REV*4)/(360.0f))
+#define ROLL_DEGREE_PER_REV (360.0f/4)
+
+#define SERIAL_TX_BUFFER_SIZE 64
+#define SERIAL_RX_BUFFER_SIZE 64
+
+// *** PID ***
+// Current/Torque Control PID
+#define MOTOR_PITCH_ID_KP 10.0f
+#define MOTOR_PITCH_ID_KI 0.6f
+#define MOTOR_PITCH_ID_KD 0.0f
+#define MOTOR_PITCH_ID_INTEGRAL_LIMIT 10.0f
+
+#define MOTOR_PITCH_IQ_KP 16.0f
+#define MOTOR_PITCH_IQ_KI 5.0f
+#define MOTOR_PITCH_IQ_KD 0.0f
+#define MOTOR_PITCH_IQ_INTEGRAL_LIMIT 10.0f
+
+// Velocity Control PID
+#define MOTOR_PITCH_VELOCITY_KP 0.008
+#define MOTOR_PITCH_VELOCITY_KI 0.05f
+#define MOTOR_PITCH_VELOCITY_KD 0.000f
+#define MOTOR_PITCH_VELOCITY_INTEGRAL_LIMIT 20.0f
+#define MOTOR_PITCH_VELOCITY_EPSILON 0.0005f
+
+// *** Filter Configuration ***
+// Current Sense Filter Configuration
+#define CURRENT_SENSE_PITCH_LPF_ALPHA 0.98f
+
+// Velocity Filter Configuration
+#define MOTOR_PITCH_VELOCITY_LPF_ALPHA 0.92f
+
+// Load Cell Filter Configuration
+#define LOAD_CELL_LPF_ALPHA 0.94f
+
+// *** Loop Frequency Division ***
+#define MOTOR_PITCH_VELOCITY_LOOP_FREQ_DIV 20
+
+// *** FFB Assist Configuration ***
+#define FFB_ASSIST_GAIN 0.000030f
+#define FFB_ASSIST_ACCEL_GAIN -12000.0f
+#define FFB_ASSIST_VELOCITY_GAIN 5.0f
+#define FFB_ASSIST_VELOCITY_SMALL_COMP 0.00001f
+
+
+
+#endif /* INC_CONFIG_H_ */

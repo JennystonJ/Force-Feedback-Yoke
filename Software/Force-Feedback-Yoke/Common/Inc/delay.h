@@ -18,6 +18,9 @@ extern "C"
 void delayMsInit(void (*delayMs_func)(uint32_t milliseconds));
 void delayMs(uint32_t milliseconds);
 
+void delayUsInit(void (*delayUs_func)(uint16_t microseconds));
+void delayUs(uint16_t microseconds);
+
 #ifdef __cplusplus
 }
 #endif

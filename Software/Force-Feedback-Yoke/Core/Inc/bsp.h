@@ -1,34 +1,65 @@
 /*
  * bsp.h
  *
- *  Created on: Jul 13, 2024
+ *  Created on: Jul 4, 2025
  *      Author: Jennyston
  */
 
 #ifndef INC_BSP_H_
 #define INC_BSP_H_
 
+#include "main.h"
 #include "encoder.h"
+#include "bldc_driver.h"
+#include "bldc_motor.h"
 #include "motor.h"
-#include "button.h"
+#include "load_cell.h"
 #include "peripherals/gpio.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include "devices/serial_daq.h"
 
-#include "stm32f4xx.h"
+// External variables
+extern bool bspInitialized;
 
-#define TIM_PITCH_F_CH TIM_CHANNEL_1
-#define TIM_PITCH_R_CH TIM_CHANNEL_2
-#define TIM_ROLL_F_CH TIM_CHANNEL_3
-#define TIM_ROLL_R_CH TIM_CHANNEL_4
-
+extern BLDCDriver_t pitchDriver;
+extern BLDCMotor_t pitchBLDCMotor;
+extern Motor_t pitchMotor;
 extern Encoder_t pitchEncoder;
+extern LoadCell_t pitchLoadCell;
+
 extern Encoder_t rollEncoder;
 
-extern Motor_t pitchMotor;
-extern Motor_t rollMotor;
+extern GPIO_t statusLedGpio;
+extern GPIO_t probeGpio;
+extern GPIO_t eStopGpio;
+extern SerialDAQ_t daq;
 
-extern GPIO_t gpioAccept;
-extern GPIO_t gpioStatus;
+void Bsp_Init(void);
 
-void BspInit(void);
+void Bsp_EStopIT(void);
+void Bsp_MotorControlLoopIT(Motor_t *motor, Encoder_t *encoder,
+		float deltaTimeMs);
+void Bsp_FFBControlLoopIT(float deltaTimeMs);
+void Bsp_SerialDAQTxIT(void);
+void Bsp_SerialDAQRxIT(void);
+void Bsp_ADCWatchDogIT(ADC_HandleTypeDef *hadc);
+
+void Bsp_ADS1256DrdyUpdate(uint16_t pin);
+void Bsp_ADS1256Update(void);
+
+void Bsp_RegisterSerialDAQTxCallback(void (*SerialDAQTxIT)
+		(SerialDAQ_t *serialDaq)) ;
+void Bsp_RegisterSerialDAQRxCallback(void (*SerialDAQRxIT)
+		(SerialDAQ_t *serialDaq));
+void Bsp_RegisterMotorControlLoopITCallback(void (*MotorControlLoopIT)
+		(Motor_t *motor, Encoder_t *encoder, float deltaTimeMs));
+void Bsp_RegisterFFBControlLoopITCallback(void (*FFBControlLoopIT)
+		(float deltaTimeMs));
+void Bsp_RegisterLoadCellReadCpltCallback(void (*LoadCellReadCpltIT));
+
+void Bsp_ADCUpdate(void);
+
+uint32_t Bsp_GetTick(void);
 
 #endif /* INC_BSP_H_ */
