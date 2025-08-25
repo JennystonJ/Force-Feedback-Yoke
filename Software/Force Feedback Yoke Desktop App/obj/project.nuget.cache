@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "pLn8ASHF8X0=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Force Feedback Yoke Desktop App.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Jennyston\\.nuget\\packages\\device.net\\4.2.1\\device.net.4.2.1.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\hid.net\\4.2.1\\hid.net.4.2.1.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\3.1.7\\microsoft.extensions.logging.abstractions.3.1.7.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\system.codedom\\9.0.8\\system.codedom.9.0.8.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\system.management\\9.0.8\\system.management.9.0.8.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\system.reactive\\6.0.1\\system.reactive.6.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
