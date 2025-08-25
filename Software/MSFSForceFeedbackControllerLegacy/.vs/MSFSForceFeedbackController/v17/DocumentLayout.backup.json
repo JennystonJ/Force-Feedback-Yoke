@@ -1,0 +1,465 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\ffbeffects\\elevatorgust.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\ffbeffects\\elevatorgust.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\simconnecthelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\simconnecthelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\ffbcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\ffbcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\filters\\lowpassfilter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\filters\\lowpassfilter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\filters\\highpassfilter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\filters\\highpassfilter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\ffbeffects\\elevatorweight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\ffbeffects\\elevatorweight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\ffbeffects\\ffbeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\ffbeffects\\ffbeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\ffbforces\\ffbforce.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\ffbforces\\ffbforce.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\ffbeffects\\airspeedstiffness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\ffbeffects\\airspeedstiffness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\msfsforcefeedbackcontroller\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\ffbforces\\ffbdamper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\ffbforces\\ffbdamper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\forceset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\forceset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\ffbdevice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\ffbdevice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\ffbforces\\ffbconstant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\ffbforces\\ffbconstant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\ffbforces\\ffbspring.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\ffbforces\\ffbspring.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\travelindicator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\travelindicator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\dbt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\dbt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\usbdevicemonitor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\usbdevicemonitor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\livelinegraph.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\livelinegraph.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\msfsforcefeedbackcontroller\\formvisualizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\formvisualizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\HID\\DeviceManagement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:MSFSForceFeedbackController\\HID\\DeviceManagement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|c:\\users\\jennyston\\onedrive\\documents\\visual studio 2022\\msfsforcefeedbackcontroller\\msfsforcefeedbackcontroller\\formvisualizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC5493D-1636-4DE2-80B5-2D5C01F23D87}|MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj|solutionrelative:msfsforcefeedbackcontroller\\formvisualizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\HID\\DeviceManagementDeclarations.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:MSFSForceFeedbackController\\HID\\DeviceManagementDeclarations.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Form1.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\Form1.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Form1.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\Form1.cs",
+              "ViewState": "AgIAAHABAAAAAAAAAAA8wLsCAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-12T17:03:31.646Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ElevatorGust.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBEffects\\ElevatorGust.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FFBEffects\\ElevatorGust.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBEffects\\ElevatorGust.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FFBEffects\\ElevatorGust.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwCEAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T14:11:18.146Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SimConnectHelper.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\SimConnectHelper.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\SimConnectHelper.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\SimConnectHelper.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\SimConnectHelper.cs",
+              "ViewState": "AgIAAFAAAAAAAAAAAAAowLkAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-04T19:59:28.751Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FFBController.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBController.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FFBController.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBController.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FFBController.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAswCAAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-25T18:25:49.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Program.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\Program.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Program.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-04T19:59:28.752Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "FFBEffect.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBEffects\\FFBEffect.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FFBEffects\\FFBEffect.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBEffects\\FFBEffect.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FFBEffects\\FFBEffect.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T14:05:45.731Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ElevatorWeight.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBEffects\\ElevatorWeight.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FFBEffects\\ElevatorWeight.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBEffects\\ElevatorWeight.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FFBEffects\\ElevatorWeight.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAACYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-09T00:50:12.873Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "FFBForce.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBForces\\FFBForce.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FFBForces\\FFBForce.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBForces\\FFBForce.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FFBForces\\FFBForce.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-23T19:00:07.717Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "HighPassFilter.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Filters\\HighPassFilter.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\Filters\\HighPassFilter.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Filters\\HighPassFilter.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\Filters\\HighPassFilter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T15:00:24.648Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "LowPassFilter.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Filters\\LowPassFilter.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\Filters\\LowPassFilter.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Filters\\LowPassFilter.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\Filters\\LowPassFilter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-24T21:28:04.671Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "AirSpeedStiffness.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBEffects\\AirSpeedStiffness.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FFBEffects\\AirSpeedStiffness.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBEffects\\AirSpeedStiffness.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FFBEffects\\AirSpeedStiffness.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-08T00:13:18.438Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "FFBDamper.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBForces\\FFBDamper.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FFBForces\\FFBDamper.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBForces\\FFBDamper.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FFBForces\\FFBDamper.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAYwCAAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-23T21:55:58.316Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "MSFSForceFeedbackController.csproj",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj",
+              "RelativeToolTip": "MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-08-24T13:33:08.581Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "ForceSet.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\ForceSet.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\ForceSet.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\ForceSet.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\ForceSet.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-23T16:56:29.924Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "FFBDevice.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBDevice.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FFBDevice.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBDevice.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FFBDevice.cs",
+              "ViewState": "AgIAAOsBAAAAAAAAAAAmwBwCAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-22T02:14:16.451Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "FFBConstant.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBForces\\FFBConstant.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FFBForces\\FFBConstant.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBForces\\FFBConstant.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FFBForces\\FFBConstant.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-08T00:02:12.911Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "FFBSpring.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBForces\\FFBSpring.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FFBForces\\FFBSpring.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FFBForces\\FFBSpring.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FFBForces\\FFBSpring.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAYwDEAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-07T23:36:46.294Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "TravelIndicator.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\TravelIndicator.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\TravelIndicator.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\TravelIndicator.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\TravelIndicator.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAWwDEAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-25T19:19:05.189Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Dbt.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Dbt.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\Dbt.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Dbt.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\Dbt.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-19T21:13:41.147Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "MSFSForceFeedbackController",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj",
+              "RelativeToolTip": "MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-08-16T17:23:06.42Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "LiveLineGraph.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\LiveLineGraph.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\LiveLineGraph.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\LiveLineGraph.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\LiveLineGraph.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T03:16:16.661Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "FormVisualizer.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FormVisualizer.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FormVisualizer.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FormVisualizer.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FormVisualizer.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAwBYAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T03:10:25.296Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "UsbDeviceMonitor.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\UsbDeviceMonitor.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\UsbDeviceMonitor.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\UsbDeviceMonitor.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\UsbDeviceMonitor.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAkwCcAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-05T15:34:46.921Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "DeviceManagementDeclarations.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\HID\\DeviceManagementDeclarations.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\HID\\DeviceManagementDeclarations.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\HID\\DeviceManagementDeclarations.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\HID\\DeviceManagementDeclarations.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-04T19:59:28.753Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "DeviceManagement.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\HID\\DeviceManagement.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\HID\\DeviceManagement.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\HID\\DeviceManagement.cs",
+              "RelativeToolTip": "MSFSForceFeedbackController\\HID\\DeviceManagement.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-04T19:59:28.755Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Form1.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Form1.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\Form1.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\Form1.cs [Design]",
+              "RelativeToolTip": "MSFSForceFeedbackController\\Form1.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-04T22:43:11.608Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "FormVisualizer.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FormVisualizer.cs",
+              "RelativeDocumentMoniker": "MSFSForceFeedbackController\\FormVisualizer.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\FormVisualizer.cs [Design]",
+              "RelativeToolTip": "MSFSForceFeedbackController\\FormVisualizer.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T03:14:10.757Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

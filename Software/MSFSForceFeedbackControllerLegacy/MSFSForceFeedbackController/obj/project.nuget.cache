@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "dgSpecHash": "CO54AtjkrK4=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Jennyston\\OneDrive\\Documents\\Visual Studio 2022\\MSFSForceFeedbackController\\MSFSForceFeedbackController\\MSFSForceFeedbackController.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Jennyston\\.nuget\\packages\\device.net\\4.2.1\\device.net.4.2.1.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\hid.net\\4.2.1\\hid.net.4.2.1.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\3.1.7\\microsoft.extensions.logging.abstractions.3.1.7.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\system.codedom\\7.0.0\\system.codedom.7.0.0.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\system.management\\7.0.1\\system.management.7.0.1.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\system.reactive\\6.0.0\\system.reactive.6.0.0.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.36\\microsoft.windowsdesktop.app.ref.6.0.36.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.36\\microsoft.netcore.app.ref.6.0.36.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.36\\microsoft.aspnetcore.app.ref.6.0.36.nupkg.sha512",
+    "C:\\Users\\Jennyston\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.36\\microsoft.netcore.app.host.win-x64.6.0.36.nupkg.sha512"
+  ],
+  "logs": []
+}
