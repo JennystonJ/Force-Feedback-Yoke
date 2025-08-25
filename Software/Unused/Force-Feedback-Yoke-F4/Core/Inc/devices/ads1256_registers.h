@@ -1,0 +1,25 @@
+/*
+ * ads1256_registers.h
+ *
+ *  Created on: Dec 17, 2024
+ *      Author: Jennyston
+ */
+
+#ifndef INC_DEVICES_ADS1256_REGISTERS_H_
+#define INC_DEVICES_ADS1256_REGISTERS_H_
+
+typedef enum {
+	ADS1256_STATUS = 0x00,
+	ADS1256_MUX = 0x01,
+	ADS1256_ADCON = 0x02,
+	ADS1256_DRATE = 0x03,
+	ADS1256_IO = 0x04,
+	ADS1256_OFC0 = 0x05,
+	ADS1256_OFC1 = 0x06,
+	ADS1256_OFC2 = 0x07,
+	ADS1256_FSC0 = 0x08,
+	ADS1256_FSC1 = 0x09,
+	ADS1256_FSC2 = 0x0A
+} ADS1256Reg_e;
+
+#endif /* INC_DEVICES_ADS1256_REGISTERS_H_ */
