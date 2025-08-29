@@ -5,9 +5,9 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Force_Feedback_Yoke_Desktop_App
+namespace Force_Feedback_Yoke_Desktop_App.FFBForces
 {
-    internal class FFBSpringForce : IFFBForce
+    internal class FFBSpring : FFBForce
     {
         public double Offset { get; set; }
         public double Strength { get; set; }
@@ -24,30 +24,37 @@ namespace Force_Feedback_Yoke_Desktop_App
             return 0;
         }
 
-        private double currentStrength()
+        private double CurrentStrength()
         {
             return Strength;
         }
-        private double currrentOffset()
+        private double CurrentOffset()
         {
             return Offset;
         }
-        public FFBSpringForce()
+        public FFBSpring()
         {
-            strengthDelegate = currentStrength;
-            offsetDelegate = currrentOffset;
+            strengthDelegate = CurrentStrength;
+            offsetDelegate = CurrentOffset;
         }
 
-        public FFBSpringForce(double strength, double offset)
+        public FFBSpring(double strength, double offset)
         {
             Offset = offset;
             Strength = strength;
+            strengthDelegate = CurrentStrength;
+            offsetDelegate = CurrentOffset;
+
         }
 
-        public double CalcForce(double measuredPosition, double dt)
+        public override ForceSet CalcForce(double measuredPosition, double dt)
         {
-            double error = offsetDelegate() - measuredPosition;
-            return error * strengthDelegate();
+            return new ForceSet
+            {
+                Constant = offsetDelegate(),
+                Spring = strengthDelegate(),
+                Damper = 0.0
+            };
         }
     }
 }

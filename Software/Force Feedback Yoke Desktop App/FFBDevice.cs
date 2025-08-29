@@ -8,36 +8,83 @@ using Hid.Net.Windows;
 using System.Management;
 using System.Runtime.InteropServices;
 using Timer = System.Threading.Timer;
+using Hid.Net;
+using System.Runtime.CompilerServices;
+using System.IO;
+using Microsoft.Win32.SafeHandles;
+using System.Formats.Asn1;
+using System.Collections.Concurrent;
 
 
 namespace Force_Feedback_Yoke_Desktop_App
 {
     public class FFBDevice
     {
-        public const string USB_VID = "0483";
-        public const string USB_PID = "5750";
+
+        [DllImport("hid.dll", SetLastError = true)]
+        static extern bool HidD_GetFeature(IntPtr hidDeviceObject, byte[] reportBuffer, int reportBufferLength);
+        [DllImport("hid.dll", SetLastError = true)]
+        static extern bool HidD_SetFeature(IntPtr hidDeviceObject, byte[] reportBuffer, int reportBufferLength);
+      
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern SafeFileHandle CreateFile(
+            string lpFileName,
+            uint dwDesiredAccess,
+            uint dwShareMode,
+            IntPtr lpSecurityAttributes,
+            uint dwCreationDisposition,
+            uint dwFlagsAndAttributes,
+            IntPtr hTemplateFile);
+
+        // Access and share flags
+        const uint GENERIC_READ = 0x80000000;
+        const uint GENERIC_WRITE = 0x40000000;
+        const uint FILE_SHARE_READ = 1;
+        const uint FILE_SHARE_WRITE = 2;
+        const uint OPEN_EXISTING = 3;
+
+        private const int HID_CONTROL_REPORT_ID = 1;
+        private const int HID_IN_REPORT_ID = 2;
+        private const int HID_OUT_REPORT_ID = 3;
+        private const int HID_CAPABILITIES_REPORT_ID = 4;
+
         private const int outBufferLength = 9;
 
-        private bool connected;
-
-        public delegate void HIDEvent();
-        public HIDEvent DataReadyEvent;
-
-        private UsbDeviceMonitor usbDeviceMonitor;
-        public delegate void FFBDeviceConnectedEvent();
-        public FFBDeviceConnectedEvent DeviceConnectedEvent;
-        public delegate void FFBDeviceDisconnectedEvent();
-        public FFBDeviceDisconnectedEvent DeviceDisconnectedEvent;
+        public event EventHandler? DataReadyEvent = null;
+        public event EventHandler? DeviceConnectedEvent = null;
+        public event EventHandler? DeviceDisconnectedEvent = null;
 
         public bool running { get; set; }
 
+        private SafeFileHandle deviceHandle;
+        private UsbDeviceMonitor monitor;
         private IDevice device;
         private byte[] outBuffer = new byte[outBufferLength + 1];
-        private byte[] inBuffer;
 
+        private byte[] inBuffer;
 
         private bool transferComplete = false;
         private Timer timer;
+
+        private Task ?hidReaderTask = null;
+        private Task ?hidWorkerTask = null;
+
+        private CancellationTokenSource hidReaderCts;
+        private CancellationTokenSource hidWorkerCts;
+
+        public const string USB_VID = "0483";
+        public const string USB_PID = "5750";
+
+        public const int FFB_HID_NUM_AXIS = 2;
+        public const int FFB_HID_PITCH_INDEX = 0;
+        public const int FFB_HID_ROLL_INDEX = 1;
+
+        private ForceSet hardwareForce = new ForceSet();
+
+        private readonly SemaphoreSlim transferLock = new SemaphoreSlim(1, 1);
+        private readonly ConcurrentQueue<byte[]> hidCommandQueue = new ConcurrentQueue<byte[]>();
+
+        public bool Connected { get; private set; }
 
         private enum ConnectStatus
         {
@@ -45,18 +92,32 @@ namespace Force_Feedback_Yoke_Desktop_App
             NOT_FOUND,
         };
 
+        public class CapabilityData
+        {
+            internal bool CapabilityInitialized { get; set; } = false;
+            public float PitchTravelRange { get; internal set; }
+            public float RollTravelRange { get; internal set; }
+            public float PitchMaxForce { get; internal set; }
+            public float RollMaxForce { get; internal set; }
+        }
+
         public class ControlData
         {
             internal bool modified { get; set; } = true;
             private bool ffbEnabled;
-            private int aileronRangeInDeg;
-            private int elevatorRangeInMM;
+            private float pitchLimitInMMMin;
+            private float pitchLimitInMMMax;
+            private float rollLimitInDegMin;
+            private float rollLimitInDegMax;
+
 
             public ControlData()
             {
                 ffbEnabled = false;
-                aileronRangeInDeg = 180;
-                elevatorRangeInMM = 0;
+                pitchLimitInMMMin = -50;
+                pitchLimitInMMMax = 50;
+                rollLimitInDegMin = -90;
+                rollLimitInDegMax = 90;
             }
             public bool FFBEnabled
             {
@@ -70,68 +131,105 @@ namespace Force_Feedback_Yoke_Desktop_App
                     ffbEnabled = value;
                 }
             }
-            public int AileronRangeInDeg
+
+            public float PitchLimitInMMMin
             {
-                get
-                {
-                    return aileronRangeInDeg;
-                }
+                get { return pitchLimitInMMMin; }
                 set
                 {
                     modified = true;
-                    aileronRangeInDeg = value;
+                    pitchLimitInMMMin = value;
                 }
             }
-            public int ElevatorRangeInMM
+            public float PitchLimitInMMMax
             {
-                get
-                {
-                    return elevatorRangeInMM;
-                }
+                get { return pitchLimitInMMMax; }
                 set
                 {
                     modified = true;
-                    elevatorRangeInMM = value;
+                    pitchLimitInMMMax = value;
                 }
             }
 
+            public float RollLimitInDegMin
+            {
+                get { return rollLimitInDegMin; }
+                set
+                {
+                    modified = true;
+                    rollLimitInDegMin = value;
+                }
+            }
+            public float RollLimitInDegMax
+            {
+                get { return rollLimitInDegMax; }
+                set
+                {
+                    modified = true;
+                    rollLimitInDegMax = value;
+                }
+            }
         }
-        public ControlData controlData { get; set; }
-        public class ForceData
+
+        private ControlData controlData;
+        public ControlData ControlParams {
+            get 
+            {
+                return controlData; 
+            } 
+            set 
+            { 
+                controlData = value;
+            } 
+        }
+        public CapabilityData Capabilities { get; set; }
+        public class ForceReport
         {
-            public float aileronForce { get; set; }
-            public float elevatorForce { get; set; }
+            internal byte ReportId { get; set; }
+            public float SpringForce { get; set; }
         }
-        public ForceData forceData { get; set; }
+        public ForceReport Force { get; set; }
 
         public struct HIDData
-        {
-            public short aileron;
-            public short elevator;
+        { 
+            public short pitchAxis;
+            public short rollAxis;
+            public short pitchForce;
+            public short rollForce;
         }
-        public HIDData hidData { get; set; }
-
-        public bool Connected {
-            get
-            {
-                return connected;
-            }
-        }
+        public HIDData HidData { get; set; }
 
         public FFBDevice()
         {
-            connected = false;
             running = false;
             controlData = new ControlData();
-            forceData = new ForceData();
+            Capabilities = new CapabilityData();
+            Force = new ForceReport();
 
-            usbDeviceMonitor = new UsbDeviceMonitor(USB_VID, USB_PID);
-            usbDeviceMonitor.RegisterDeviceArrived(usbDeviceConnected);
-            usbDeviceMonitor.RegisterDeviceRemoved(usbDeviceDisconnected);
+            hidReaderCts = new CancellationTokenSource();
+            hidWorkerCts = new CancellationTokenSource();
+
+            monitor = new UsbDeviceMonitor(USB_VID, USB_PID);
+            monitor.RegisterDeviceArrived(new EventArrivedEventHandler(UsbDeviceConnected));
+            monitor.RegisterDeviceRemoved(new EventArrivedEventHandler(UsbDeviceDisconnected));
+        }
+
+        private void UsbDeviceConnected(object sender, EventArrivedEventArgs e)
+        {
+            if(Connect())
+            {
+                DeviceConnectedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void UsbDeviceDisconnected(object sender, EventArrivedEventArgs e)
+        {
+            DeviceConnectedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public bool Connect()
         {
+
             Task<ConnectStatus> hidTask = ConnectHid();
             if (hidTask.Result == ConnectStatus.NOT_FOUND)
             {
@@ -143,19 +241,26 @@ namespace Force_Feedback_Yoke_Desktop_App
                 return false;
             }
 
-            connected = true;
+            Connected = true;
             return true;
         }
 
         public void Disconnect()
         {
-            Stop();
-            if (timer != null)
+            if (hidReaderTask != null)
             {
-                timer.Dispose();
+                hidReaderCts.Cancel();
+            }
+            if(hidWorkerTask != null)
+            {
+                hidCommandQueue.Enqueue(PrepareFFBReport(ForceSet.Empty));
+                hidWorkerCts.Cancel();
             }
 
-            connected = false;
+            deviceHandle?.Close();
+            device?.Close();
+
+            Connected = false;
         }
 
         public void Start()
@@ -170,29 +275,52 @@ namespace Force_Feedback_Yoke_Desktop_App
             controlData.FFBEnabled = false;
         }
 
-        private void usbDeviceConnected(object sender, EventArrivedEventArgs e)
+        public void WriteControlData()
         {
-            // Ensure a device isn't already connected
-            if (!connected)
-            {
-                if (Connect())
-                {
-                    // Connection successful
-                    DeviceConnectedEvent();
-                }
-            }
+            hidCommandQueue.Enqueue(ConvertControlToReport());
         }
 
-        private void usbDeviceDisconnected(object sender, EventArrivedEventArgs e)
+        public void SetForce(ForceSet force)
         {
+            byte[] forceReport = PrepareFFBReport(force);
+            hidCommandQueue.Enqueue(forceReport);
+        }
 
-            Disconnect();
-            DeviceDisconnectedEvent();
+        public double GetMeasuredPitchForce()
+        {
+            if (Capabilities.CapabilityInitialized &&
+                Capabilities.PitchMaxForce > 0)
+            {
+                return Utilities.Scale(HidData.pitchForce, -32767, 32767,
+                    -Capabilities.PitchMaxForce,
+                    Capabilities.PitchMaxForce);
+            }
+            else
+            {
+                // Axis max power is invalid
+                return 0.0;
+            }
+        }
+        public double GetMeasuredRollForce()
+        {
+            if (Capabilities.CapabilityInitialized &&
+                  Capabilities.RollMaxForce > 0)
+            {
+                return Utilities.Scale(HidData.rollForce, -32767, 32767,
+                    -Capabilities.RollMaxForce,
+                    Capabilities.RollMaxForce);
+            }
+            else
+            {
+                // Axis max power is invalid
+                return 0.0;
+            }
         }
 
         private async Task<ConnectStatus> ConnectHid()
         {
-            // Register the factory for creating Hid devices
+            
+            //// Register the factory for creating Hid devices
             uint vid = Convert.ToUInt32(USB_VID, 16);
             uint pid = Convert.ToUInt32(USB_PID, 16);
             var hidFactory = new FilterDeviceDefinition(vid, pid).CreateWindowsHidDeviceFactory();
@@ -212,11 +340,34 @@ namespace Force_Feedback_Yoke_Desktop_App
             Console.WriteLine("Device found.");
 
             // Obtain device from definitions
+            string devicePath = deviceDefinitions.First().DeviceId;
+
+            deviceHandle = CreateFile(
+                devicePath,
+                GENERIC_READ | GENERIC_WRITE,
+                FILE_SHARE_READ | FILE_SHARE_WRITE,
+                IntPtr.Zero,
+                OPEN_EXISTING,
+                0,
+                IntPtr.Zero);
+
+            if(deviceHandle.IsInvalid)
+            {
+                Console.WriteLine("Device not found.");
+                return ConnectStatus.NOT_FOUND;
+            }
+
             device = await hidFactory.GetDeviceAsync(deviceDefinitions.First()).ConfigureAwait(false);
 
             // Initialize device
             await device.InitializeAsync().ConfigureAwait(false);
 
+
+            // Create request buffer (must be 1 byte larger than report buffer)
+            var buffer = new byte[65];
+            buffer[1] = 0x02;
+
+            //var readBuffer = await device.WriteAndReadAsync(buffer).ConfigureAwait(false);
             return ConnectStatus.SUCCESS;
         }
 
@@ -229,22 +380,40 @@ namespace Force_Feedback_Yoke_Desktop_App
                 return 1;
             }
 
-            timer = new Timer(callback, null, 10000, Timeout.Infinite);
+            // Obtain force feedback capabilities 
+            //IntPtr handle = device.
+            //byte[] reportIdBuffer = new byte[1];
+            //buffer[0] = HID_CAPABILITIES_REPORT_ID;
 
-            transferComplete = false;
-            outBuffer[0] = 0x01;
-            Task transferHidTask = TransferHid();
+            //timer = new Timer(callback, null, 10000, Timeout.Infinite);
+
+            transferComplete = true;
+            outBuffer = new byte[19];
+            outBuffer[0] = HID_OUT_REPORT_ID;
+            RefreshCapabilities();
+
+            hidReaderCts = new CancellationTokenSource();
+            hidWorkerCts = new CancellationTokenSource();
+
+            hidWorkerTask = HidWorkerLoop(hidWorkerCts.Token);
+            hidReaderTask = HidReaderLoop(hidReaderCts.Token);
+            //Task transferHidTask = TransferHid();
+            //((IHidDevice)device).
 
             return 0;
         }
 
-        private async Task TransferHid()
+        private async Task<byte[]> TransferHid(byte[] outBuffer)
         {
-            inBuffer = await device.WriteAndReadAsync(outBuffer).ConfigureAwait(false);
-            transferComplete = true;
+           return await device.WriteAndReadAsync(outBuffer);
+        }
 
-            // 1 ms polling rate
-            timer.Change(1, Timeout.Infinite);
+        private async Task<byte[]> ReadCapabilities()
+        {
+            byte[] featureReport = new byte[19];
+            featureReport[0] = HID_CAPABILITIES_REPORT_ID;
+            await Task.Run(() => HidD_GetFeature(deviceHandle.DangerousGetHandle(), featureReport, featureReport.Length));
+            return featureReport;
         }
         private void HIDTransferHandle(object? state)
         {
@@ -252,66 +421,192 @@ namespace Force_Feedback_Yoke_Desktop_App
             {
                 return;
             }
+            else if (!Capabilities.CapabilityInitialized)
+            {
+                byte[] featureReport = ReadCapabilities().Result;
+                ProcessCapabilities(featureReport);
+            }
+            //else if(ControlParams.modified)
+            //{
+            //    WriteControl(ConvertControlToReport());
+            //    ControlParams.modified = false;
+            //}
             else
             {
-                ProcessHID(inBuffer);
-                DataReadyEvent();
-                // Control packet values did not change, transmit FFB
-                if (!controlData.modified)
+                switch (inBuffer[0])
                 {
-                    ProcessFFB();
-                }
-                // Control packet values did change, transmit new control packet
-                else
-                {
-                    controlData.modified = false;
-                    ProcessControl();
+                    case HID_IN_REPORT_ID:
+                        ProcessHID(inBuffer);
+                        DataReadyEvent?.Invoke(this, EventArgs.Empty);
+                        break;
+                    //case HID_CAPABILITIES_REPORT_ID:
+                    //    ProcessCapabilities(inBuffer);
+                    //    break;
+                    default:
+                        // Do nothing
+                        break;
+
                 }
             }
 
-            transferComplete = false;
-            Task transferHidTask = TransferHid();
+            //PrepareFFBReport();
+            //Task transferHidTask = TransferHid();
         }
 
         void ProcessHID(byte[] data)
         {
             // data without reportId
             var values = data[1..];
-            hidData = new HIDData
+            HidData = new HIDData
             {
-                aileron = ByteArrayToInt16(data[0..2]),
-                elevator = ByteArrayToInt16(data[2..4]),
+                pitchAxis = ByteArrayToInt16(values[0..2]),
+                rollAxis = ByteArrayToInt16(values[2..4]),
+                pitchForce = ByteArrayToInt16(values[4..6]),
+                rollForce = ByteArrayToInt16(values[6..8])
             };
         }
-        void ProcessFFB()
+        byte[] PrepareFFBReport(ForceSet force)
         {
-            // Clamp aileron force between 0.0 to 1.0
-            Math.Clamp(forceData.aileronForce, 0.0f, 1.0f);
-            // Convert aileron force float to bytes
-            byte[] aileronForceOutBytes = BitConverter.GetBytes(forceData.aileronForce);
+            byte[] outBuffer = new byte[13];
+            outBuffer[0] = HID_OUT_REPORT_ID;
 
-            // Clamp elevator force between 0.0 to 1.0
-            Math.Clamp(forceData.elevatorForce, 0.0f, 1.0f);
-            // Convert elevator force float to bytes
-            byte[] elevatorForceOutBytes = BitConverter.GetBytes(forceData.elevatorForce);
+            float maxForce = Capabilities.PitchMaxForce;
 
-            // Copy byte array data to ouput array buffer
-            Array.Copy(aileronForceOutBytes, 0, outBuffer, 1, aileronForceOutBytes.Length);
-            Array.Copy(elevatorForceOutBytes, 0, outBuffer, aileronForceOutBytes.Length + 1,
-                elevatorForceOutBytes.Length);
-            outBuffer[0] = 0x01; // reportId byte (force data)
+            float[] forces = new float[3];
+            // Clamp all forces
+            forces[0] = (float)Math.Clamp(force.Constant, -maxForce, maxForce);
+            forces[1] = (float)Math.Clamp(force.Spring, -maxForce, maxForce);
+            forces[2] = (float)Math.Clamp(force.Damper, -maxForce, maxForce);
+
+            // Copy pitch forces to byte array
+            byte[] pitchForceOutBytes = new byte[sizeof(float) * forces.Length];
+            for(int i = 0; i < forces.Length; i++)
+            {
+                byte[] bytes = BitConverter.GetBytes(forces[i]);
+                Array.Copy(bytes, 0, pitchForceOutBytes, i * sizeof(float), bytes.Length);
+            }
+
+            Array.Copy(pitchForceOutBytes, 0, outBuffer, 1, pitchForceOutBytes.Length);
+
+            return outBuffer;
+        }
+        private async Task WriteControl(byte[] controlReport)
+        {
+            await Task.Run(() => HidD_SetFeature(deviceHandle.DangerousGetHandle(), controlReport, controlReport.Length));
+        }
+        private void RefreshCapabilities()
+        {
+            hidCommandQueue.Enqueue(new byte[] { HID_CAPABILITIES_REPORT_ID });
+        }
+        private async Task HidReaderLoop(CancellationToken cancellationToken)
+        {
+            while (true) 
+            { 
+                await transferLock.WaitAsync();
+                try
+                {
+                    byte[] hidBuffer = await device.ReadAsync(cancellationToken);
+                    if (hidBuffer[0] == HID_IN_REPORT_ID)
+                    {
+                        ProcessHID(hidBuffer);
+                    }
+                }
+                finally
+                {
+                    transferLock.Release();
+                }
+
+                DataReadyEvent?.Invoke(this, EventArgs.Empty);
+
+                if(cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                await Task.Delay(2);
+            }
+        }
+        private async Task HidWorkerLoop(CancellationToken cancellationToken)
+        {
+            while (true)
+            {
+                if(hidCommandQueue.TryDequeue(out var command))
+                {
+                    //bool hidReceived = false;
+                    await transferLock.WaitAsync();
+                    try
+                    {
+                        switch(command[0])
+                        {
+                            case HID_CONTROL_REPORT_ID:
+                                await WriteControl(command);
+                                break;
+                            case HID_IN_REPORT_ID:
+                                break;
+                            case HID_OUT_REPORT_ID:
+                                await device.WriteAsync(command);
+                                break;
+                            case HID_CAPABILITIES_REPORT_ID:
+                                byte[] capabilitiesBuffer = await ReadCapabilities();
+                                ProcessCapabilities(capabilitiesBuffer);
+                                // Re-read capabilities if it's not yet initialized
+                                if(!Capabilities.CapabilityInitialized)
+                                {
+                                    RefreshCapabilities();
+                                }
+                                break;
+                            default:
+                                // Do nothing
+                                break;
+                        }
+
+                    }
+                    finally
+                    {
+                        transferLock.Release(); 
+                    }
+                }
+                else
+                {
+                    if(cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+                    await Task.Delay(1);
+                }
+            }
+        }
+        private byte[] ConvertControlToReport()
+        {
+            byte[] buffer = new byte[18];
+            buffer[0] = HID_CONTROL_REPORT_ID; // reportId byte (control)
+            buffer[1] = running ? (byte)0x01 : (byte)0x00; // ffb disable
+
+            byte[] pitchLimitInMMMin = BitConverter.GetBytes(controlData.PitchLimitInMMMin);
+            Array.Copy(pitchLimitInMMMin, 0, buffer, 2, pitchLimitInMMMin.Length);
+
+            byte[] pitchLimitInMMMax = BitConverter.GetBytes(controlData.PitchLimitInMMMax);
+            Array.Copy(pitchLimitInMMMax, 0, buffer, 6, pitchLimitInMMMax.Length);
+
+            byte[] rollLimitInDegMin = BitConverter.GetBytes(controlData.RollLimitInDegMin);
+            Array.Copy(rollLimitInDegMin, 0, buffer, 10, rollLimitInDegMin.Length);
+
+            byte[] rollLimitInDegMax = BitConverter.GetBytes(controlData.RollLimitInDegMax);
+            Array.Copy(rollLimitInDegMax, 0, buffer, 14, rollLimitInDegMax.Length);
+
+            return buffer;
         }
 
-        void ProcessControl()
+        private void ProcessCapabilities(byte[] data)
         {
-            outBuffer[0] = 0x02; // reportId byte (control)
-            outBuffer[1] = running ? (byte)0x01 : (byte)0x00; // ffb disable
-
-            byte[] aileronRangeInDegBytes = BitConverter.GetBytes(controlData.AileronRangeInDeg);
-            Array.Copy(aileronRangeInDegBytes, 0, outBuffer, 2, aileronRangeInDegBytes.Length);
-
-            byte[] elevatorRangeInMMBytes = BitConverter.GetBytes(controlData.ElevatorRangeInMM);
-            Array.Copy(elevatorRangeInMMBytes, 0, outBuffer, 6, elevatorRangeInMMBytes.Length);
+            // data without reportId
+            var values = data[1..];
+            Capabilities.CapabilityInitialized = values[0] == 1;
+            Capabilities.PitchTravelRange = BitConverter.ToSingle(values, 1);
+            Capabilities.RollTravelRange = BitConverter.ToSingle(values, 5);
+            Capabilities.PitchMaxForce = BitConverter.ToSingle(values, 9);
+            Capabilities.RollMaxForce = BitConverter.ToSingle(values, 13);
+            //Capabilities.MaxSupportedForces = values[17];
         }
         private static Int16 ByteArrayToInt16(byte[] arr)
         {

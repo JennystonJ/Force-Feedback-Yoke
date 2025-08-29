@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Force_Feedback_Yoke_Desktop_App.FFBForces
+{
+    internal abstract class FFBForce
+    {
+        public abstract ForceSet CalcForce(double measuredPosition, double dt);
+    }
+}

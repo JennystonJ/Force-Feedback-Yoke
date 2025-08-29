@@ -162,7 +162,7 @@ namespace Force_Feedback_Yoke_Desktop_App
                 -32767, 32767, -100, 100),
                 tiPitchPosition);
             // Calculate pitch position in mm
-            double pitchTravelRangeMM = ffbDevice.ControlParams.PitchLimitInMMMax -
+            double pitchTravelRangeMM = ffbDevice.ControlParams.PitchLimitInMMMax - 
                 ffbDevice.ControlParams.PitchLimitInMMMin;
             double pitchPositionMM = (pitchTravelRangeMM / 2.0) * pitchPosition / 32767.0;
             // Set label indicator

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Force_Feedback_Yoke_Desktop_App.FFBForces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Force_Feedback_Yoke_Desktop_App
         public double MaxForce { get; set; }
         public double Travel { get; set; }
         public double TravelLimitStrength { get; set; }
-        public List<IFFBForce> Forces { get; set; }
+        public List<FFBForce> Forces { get; set; }
 
         public FFBController()
         {
@@ -22,35 +23,23 @@ namespace Force_Feedback_Yoke_Desktop_App
             MaxForce = 0;
             Travel = 100;
             TravelLimitStrength = 0;
-            Forces = new List<IFFBForce>();
+            Forces = new List<FFBForce>();
         }
 
-        public double CalcForces(double measuredPosition, double dt)
+        public ForceSet CalcForces(double measuredPosition, double dt)
         {
             if (!Enable)
             {
-                return 0;
+                return new ForceSet();
             }
 
-            // Handle travel end stops motor strength
-            //if (measuredPosition < -Travel / 2)
-            //{
-            //    return TravelLimitStrength;
-            //}
-            //else if (measuredPosition > Travel / 2)
-            //{
-            //    return -TravelLimitStrength;
-            //}
-
-            double netForce = 0;
-            foreach (IFFBForce f in Forces)
+            ForceSet netForceSet = new ForceSet();
+            foreach (FFBForce f in Forces)
             {
-                netForce += f.CalcForce(measuredPosition, dt);
+                netForceSet += f.CalcForce(measuredPosition, dt);
             }
 
-            double scaledNetForce = netForce * Gain;
-            //Console.WriteLine("Unclamped Force: {0}", scaledNetForce);
-            return Math.Clamp(scaledNetForce, -MaxForce, MaxForce);
+            return netForceSet * Gain;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MSFSForceFeedbackController
+namespace Force_Feedback_Yoke_Desktop_App
 {
     public class TravelIndicator : Panel
     {

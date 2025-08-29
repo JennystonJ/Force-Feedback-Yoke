@@ -7,9 +7,6 @@
     <Compile Update="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="SimConnectHelper.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Update="TravelIndicator.cs">
       <SubType>Component</SubType>
     </Compile>
