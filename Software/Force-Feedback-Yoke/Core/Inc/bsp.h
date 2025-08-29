@@ -19,6 +19,9 @@
 #include <stdint.h>
 #include "devices/serial_daq.h"
 
+#define PITCH_ADC_ID 0
+#define ROLL_ADC_ID 1
+
 // External variables
 extern bool bspInitialized;
 
@@ -28,6 +31,9 @@ extern Motor_t pitchMotor;
 extern Encoder_t pitchEncoder;
 extern LoadCell_t pitchLoadCell;
 
+extern BLDCDriver_t rollDriver;
+extern BLDCMotor_t rollBLDCMotor;
+extern Motor_t rollMotor;
 extern Encoder_t rollEncoder;
 
 extern GPIO_t statusLedGpio;
@@ -38,7 +44,7 @@ extern SerialDAQ_t daq;
 void Bsp_Init(void);
 
 void Bsp_EStopIT(void);
-void Bsp_MotorControlLoopIT(Motor_t *motor, Encoder_t *encoder,
+void Bsp_MotorControlLoopIT(Motor_t *motor, Encoder_t *encoder, int adcId,
 		float deltaTimeMs);
 void Bsp_FFBControlLoopIT(float deltaTimeMs);
 void Bsp_SerialDAQTxIT(void);
@@ -53,12 +59,12 @@ void Bsp_RegisterSerialDAQTxCallback(void (*SerialDAQTxIT)
 void Bsp_RegisterSerialDAQRxCallback(void (*SerialDAQRxIT)
 		(SerialDAQ_t *serialDaq));
 void Bsp_RegisterMotorControlLoopITCallback(void (*MotorControlLoopIT)
-		(Motor_t *motor, Encoder_t *encoder, float deltaTimeMs));
+		(Motor_t *motor, Encoder_t *encoder, int adcId, float deltaTimeMs));
 void Bsp_RegisterFFBControlLoopITCallback(void (*FFBControlLoopIT)
 		(float deltaTimeMs));
 void Bsp_RegisterLoadCellReadCpltCallback(void (*LoadCellReadCpltIT));
 
-void Bsp_ADCUpdate(void);
+void Bsp_ADCUpdate(int adcId);
 
 uint32_t Bsp_GetTick(void);
 

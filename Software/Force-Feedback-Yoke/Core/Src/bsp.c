@@ -40,19 +40,25 @@ static MT6835_t pitchMt6835;
 static MT6835_t rollMt6835;
 
 static InternalInjectedADC_t pitchCurrentSensorADC;
+static InternalInjectedADC_t rollCurrentSensorADC;
 static ADS1256_t adsADC;
 
 static AnalogSensor_t pitchCurrentChA;
 static AnalogSensor_t pitchCurrentChB;
 static AnalogSensor_t pitchCurrentChC;
 
+static AnalogSensor_t rollCurrentChA;
+static AnalogSensor_t rollCurrentChB;
+static AnalogSensor_t rollCurrentChC;
+
 static AnalogSensor_t pitchLoadCellCh;
 
 static DRV8301_t pitchDrv8301;
+static DRV8301_t rollDrv8301;
 
 static struct {
 	void (*MotorControlLoopIT)(Motor_t *motor, Encoder_t *encoder,
-			float deltaTimeMs);
+			int adcId, float deltaTimeMs);
 	void (*SerialDAQTxIT)(SerialDAQ_t *serialDaq);
 	void (*SerialDAQRxIT)(SerialDAQ_t *serialDaq);
 	void (*FFBControlLoopIT)(float deltaTimeMs);
@@ -70,12 +76,19 @@ CurrentSensor_t pitchCurrentA;
 CurrentSensor_t pitchCurrentB;
 CurrentSensor_t pitchCurrentC;
 
+CurrentSensor_t rollCurrentA;
+CurrentSensor_t rollCurrentB;
+CurrentSensor_t rollCurrentC;
+
 BLDCDriver_t pitchDriver;
 BLDCMotor_t pitchBLDCMotor;
 Motor_t pitchMotor;
 Encoder_t pitchEncoder;
 LoadCell_t pitchLoadCell;
 
+BLDCDriver_t rollDriver;
+BLDCMotor_t rollBLDCMotor;
+Motor_t rollMotor;
 Encoder_t rollEncoder;
 
 GPIO_t statusLedGpio;
@@ -121,10 +134,10 @@ void Bsp_Init(void) {
 	Bsp_StartADCs();
 	Bsp_StartTimers();
 
-//	while(true) {
-//		pitchEncoderSPIAngle = MT6835_ReadAngle(&pitchMt6835) >> 5;
-//		pitchEncoderAngle = Encoder_GetHardCount(&pitchEncoder);
-//	}
+	//	while(true) {
+	//		pitchEncoderSPIAngle = MT6835_ReadAngle(&pitchMt6835) >> 5;
+	//		pitchEncoderAngle = Encoder_GetHardCount(&pitchEncoder);
+	//	}
 
 	bspInitialized = true;
 }
@@ -142,14 +155,14 @@ void Bsp_EStopIT(void) {
 	}
 }
 
-void Bsp_MotorControlLoopIT(Motor_t *motor, Encoder_t *encoder,
+void Bsp_MotorControlLoopIT(Motor_t *motor, Encoder_t *encoder, int adcId,
 		float deltaTimeMs) {
 	if(pitchDrv8301.dutyU == 1.0f || pitchDrv8301.dutyV == 1.0f ||
 			pitchDrv8301.dutyW == 1.0f) {
 		//__BKPT(255);
 	}
 	if(callbacks.MotorControlLoopIT != NULL) {
-		callbacks.MotorControlLoopIT(motor, encoder, deltaTimeMs);
+		callbacks.MotorControlLoopIT(motor, encoder, adcId, deltaTimeMs);
 	}
 }
 
@@ -198,7 +211,7 @@ void Bsp_ADS1256Update(void) {
 }
 
 void Bsp_RegisterMotorControlLoopITCallback(void (*MotorControlLoopIT)
-		(Motor_t *motor, Encoder_t *encoder, float deltaTimeMs)) {
+		(Motor_t *motor, Encoder_t *encoder, int adcId, float deltaTimeMs)) {
 	callbacks.MotorControlLoopIT = MotorControlLoopIT;
 }
 
@@ -272,21 +285,21 @@ static void Bsp_EncodersInit(void) {
 
 	Encoder_Init(&rollEncoder, rollEncoderI);
 	Encoder_SetCountPerRev(&rollEncoder, ENCODER_ROLL_COUNTS_PER_REV);
-	Encoder_SetReverse(&rollEncoder, true);
+	Encoder_SetReverse(&rollEncoder, false);
 }
 
 static void Bsp_CurrentSensorsInit(void) {
 
-	// Set up pitch current sensors
+	// *** Set up pitch current sensors ***
 	InternalInjectedADC_Init(&pitchCurrentSensorADC, &CURRENT_SENSE_PITCH_ADC,
 			CURRENT_SENSE_PITCH_ADC_VREF);
 
 	// Pitch current sensor ADC
-	ADCInterface_t adcI;
-	InternalInjectedADCInterface_Init(&adcI, &pitchCurrentSensorADC);
+	ADCInterface_t pitchAdcI;
+	InternalInjectedADCInterface_Init(&pitchAdcI, &pitchCurrentSensorADC);
 
 	// Current sensor A
-	AnalogSensor_Init(&pitchCurrentChA, adcI, CURRENT_SENSE_PITCH_A_CH,
+	AnalogSensor_Init(&pitchCurrentChA, pitchAdcI, CURRENT_SENSE_PITCH_A_CH,
 			CURRENT_SENSE_PITCH_ADC_COUNTS-1);
 	AnalogSensor_SetDifferential(&pitchCurrentChA, CURRENT_SENSE_PITCH_REF_CH);
 	CurrentSensor_Init(&pitchCurrentA, &pitchCurrentChA,
@@ -295,7 +308,7 @@ static void Bsp_CurrentSensorsInit(void) {
 			CURRENT_SENSE_PITCH_LPF_ALPHA);
 
 	// Current sensor B
-	AnalogSensor_Init(&pitchCurrentChB, adcI, CURRENT_SENSE_PITCH_B_CH,
+	AnalogSensor_Init(&pitchCurrentChB, pitchAdcI, CURRENT_SENSE_PITCH_B_CH,
 			CURRENT_SENSE_PITCH_ADC_COUNTS-1);
 	AnalogSensor_SetDifferential(&pitchCurrentChB, CURRENT_SENSE_PITCH_REF_CH);
 	CurrentSensor_Init(&pitchCurrentB, &pitchCurrentChB,
@@ -304,7 +317,7 @@ static void Bsp_CurrentSensorsInit(void) {
 			CURRENT_SENSE_PITCH_LPF_ALPHA);
 
 	// Current sensor C
-	AnalogSensor_Init(&pitchCurrentChC, adcI, CURRENT_SENSE_PITCH_C_CH,
+	AnalogSensor_Init(&pitchCurrentChC, pitchAdcI, CURRENT_SENSE_PITCH_C_CH,
 			CURRENT_SENSE_PITCH_ADC_COUNTS-1);
 	AnalogSensor_SetDifferential(&pitchCurrentChC, CURRENT_SENSE_PITCH_REF_CH);
 	CurrentSensor_Init(&pitchCurrentC, &pitchCurrentChC,
@@ -312,25 +325,58 @@ static void Bsp_CurrentSensorsInit(void) {
 	CurrentSensor_SetLowPassAlpha(&pitchCurrentC,
 			CURRENT_SENSE_PITCH_LPF_ALPHA);
 
-	// TODO: Set up roll current sensors
+	// *** Set up roll current sensors ***
+	InternalInjectedADC_Init(&rollCurrentSensorADC, &CURRENT_SENSE_ROLL_ADC,
+			CURRENT_SENSE_ROLL_ADC_VREF);
+
+	// Roll current sensor ADC
+	ADCInterface_t rollAdcI;
+	InternalInjectedADCInterface_Init(&rollAdcI, &rollCurrentSensorADC);
+
+	// Current sensor A
+	AnalogSensor_Init(&rollCurrentChA, rollAdcI, CURRENT_SENSE_ROLL_A_CH,
+			CURRENT_SENSE_ROLL_ADC_COUNTS-1);
+	AnalogSensor_SetDifferential(&rollCurrentChA, CURRENT_SENSE_ROLL_REF_CH);
+	CurrentSensor_Init(&rollCurrentA, &rollCurrentChA,
+			CURRENT_SENSE_ROLL_MAX_CURRENT);
+	CurrentSensor_SetLowPassAlpha(&rollCurrentA,
+			CURRENT_SENSE_ROLL_LPF_ALPHA);
+
+	// Current sensor B
+	AnalogSensor_Init(&rollCurrentChB, rollAdcI, CURRENT_SENSE_ROLL_B_CH,
+			CURRENT_SENSE_ROLL_ADC_COUNTS-1);
+	AnalogSensor_SetDifferential(&rollCurrentChB, CURRENT_SENSE_ROLL_REF_CH);
+	CurrentSensor_Init(&rollCurrentB, &rollCurrentChB,
+			CURRENT_SENSE_ROLL_MAX_CURRENT);
+	CurrentSensor_SetLowPassAlpha(&rollCurrentB,
+			CURRENT_SENSE_ROLL_LPF_ALPHA);
+
+	// Current sensor C
+	AnalogSensor_Init(&rollCurrentChC, rollAdcI, CURRENT_SENSE_ROLL_C_CH,
+			CURRENT_SENSE_ROLL_ADC_COUNTS-1);
+	AnalogSensor_SetDifferential(&rollCurrentChC, CURRENT_SENSE_ROLL_REF_CH);
+	CurrentSensor_Init(&rollCurrentC, &rollCurrentChC,
+			CURRENT_SENSE_ROLL_MAX_CURRENT);
+	CurrentSensor_SetLowPassAlpha(&rollCurrentC,
+			CURRENT_SENSE_ROLL_LPF_ALPHA);
 }
 
 static void Bsp_MotorsInit(void) {
 
-	// Initialize pitch driver
+	// *** Initialize pitch driver ***
 	// Set up driver enable pin for pitch driver
-	GPIO_t gpioDriverEn;
-	GPIOInit(&gpioDriverEn, M1_DRIVER_EN_GPIO_Port, M1_DRIVER_EN_Pin);
+	GPIO_t gpioPitchDriverEn;
+	GPIOInit(&gpioPitchDriverEn, M1_DRIVER_EN_GPIO_Port, M1_DRIVER_EN_Pin);
 
-	DRV8301_Init(&pitchDrv8301, gpioDriverEn, &DRIVER_PITCH_TIM,
+	DRV8301_Init(&pitchDrv8301, gpioPitchDriverEn, &DRIVER_PITCH_TIM,
 			DRIVER_PITCH_PHASE_U_CHANNEL,
 			DRIVER_PITCH_PHASE_V_CHANNEL,
 			DRIVER_PITCH_PHASE_W_CHANNEL, DRIVER_PITCH_BUS_VOLTAGE);
 
-	BLDCDriverInterface_t bldcDriverI;
-	DRV8301Interface_Init(&bldcDriverI, &pitchDrv8301);
+	BLDCDriverInterface_t pitchBLDCDriverI;
+	DRV8301Interface_Init(&pitchBLDCDriverI, &pitchDrv8301);
 
-	BLDCDriver_Init(&pitchDriver, bldcDriverI);
+	BLDCDriver_Init(&pitchDriver, pitchBLDCDriverI);
 
 	// Initialize pitch motor and assign current sensors
 	BLDCMotor_Init(&pitchBLDCMotor, &pitchDriver, &pitchEncoder,
@@ -353,7 +399,45 @@ static void Bsp_MotorsInit(void) {
 	BLDCMotorInterface_Init(&pitchMotorI, &pitchBLDCMotor);
 
 	Motor_Init(&pitchMotor, pitchMotorI);
-	// TODO: Initialize roll driver
+
+	// *** Initialize roll driver ***
+	// Set up driver enable pin for roll driver
+	GPIO_t gpioRollDriverEn;
+	GPIOInit(&gpioRollDriverEn, M2_DRIVER_EN_GPIO_Port, M2_DRIVER_EN_Pin);
+
+	DRV8301_Init(&rollDrv8301, gpioRollDriverEn, &DRIVER_ROLL_TIM,
+			DRIVER_ROLL_PHASE_U_CHANNEL,
+			DRIVER_ROLL_PHASE_V_CHANNEL,
+			DRIVER_ROLL_PHASE_W_CHANNEL, DRIVER_ROLL_BUS_VOLTAGE);
+
+	BLDCDriverInterface_t rollBLDCDriverI;
+	DRV8301Interface_Init(&rollBLDCDriverI, &rollDrv8301);
+
+	BLDCDriver_Init(&rollDriver, rollBLDCDriverI);
+
+	// Initialize roll motor and assign current sensors
+	BLDCMotor_Init(&rollBLDCMotor, &rollDriver, &rollEncoder,
+			MOTOR_ROLL_POLE_PAIRS);
+	BLDCMotor_SetCurrentSensors(&rollBLDCMotor, &rollCurrentA,
+			&rollCurrentB, &rollCurrentC);
+	BLDCMotor_SetTorqueConstant(&rollBLDCMotor, MOTOR_ROLL_KT);
+
+	// Set roll motor PID parameters
+	FOC_t *rollFoc = BLDCMotor_GetFOC(&rollBLDCMotor);
+	PID_SetGains(FOC_GetIdPID(rollFoc), MOTOR_ROLL_ID_KP, MOTOR_ROLL_ID_KI,
+			MOTOR_ROLL_ID_KD);
+	PID_SetIntegralLimit(FOC_GetIdPID(rollFoc), MOTOR_ROLL_ID_INTEGRAL_LIMIT);
+
+	PID_SetGains(FOC_GetIqPID(rollFoc), MOTOR_ROLL_IQ_KP, MOTOR_ROLL_IQ_KI,
+			MOTOR_ROLL_IQ_KD);
+	PID_SetIntegralLimit(FOC_GetIqPID(rollFoc), MOTOR_ROLL_IQ_INTEGRAL_LIMIT);
+
+	MotorInterface_t rollMotorI;
+	BLDCMotorInterface_Init(&rollMotorI, &rollBLDCMotor);
+
+	Motor_Init(&rollMotor, rollMotorI);
+
+
 }
 
 static void Bsp_LoadCellInit(void) {
@@ -380,7 +464,7 @@ static void Bsp_DaqInit(void) {
 
 static void Bsp_StartADCs(void) {
 	InternalInjectedADC_StartIT(&pitchCurrentSensorADC);
-	// TODO: Start roll current sensor ADC
+	InternalInjectedADC_StartIT(&rollCurrentSensorADC);
 }
 
 static void Bsp_StartTimers(void) {
@@ -392,6 +476,7 @@ static void Bsp_StartTimers(void) {
 	__HAL_DBGMCU_FREEZE_TIM1();
 	__HAL_DBGMCU_FREEZE_TIM8();
 
+	// *** Start pitch driver timer and PWM channels ***
 	HAL_TIM_Base_Start(&DRIVER_PITCH_TIM);
 
 	HAL_TIM_PWM_Start(&DRIVER_PITCH_TIM, DRIVER_PITCH_PHASE_U_CHANNEL);
@@ -405,7 +490,21 @@ static void Bsp_StartTimers(void) {
 
 	HAL_TIM_OC_Start_IT(&DRIVER_PITCH_TIM, DRIVER_PITCH_OC_ADC_SYNC_CHANNEL);
 
-	// TODO: Start roll driver timer and PWM channels
+	// *** Start roll driver timer and PWM channels ***
+	HAL_TIM_Base_Start(&DRIVER_ROLL_TIM);
+
+	HAL_TIM_PWM_Start(&DRIVER_ROLL_TIM, DRIVER_ROLL_PHASE_U_CHANNEL);
+	HAL_TIMEx_PWMN_Start(&DRIVER_ROLL_TIM, DRIVER_ROLL_PHASE_U_CHANNEL);
+
+	HAL_TIM_PWM_Start(&DRIVER_ROLL_TIM, DRIVER_ROLL_PHASE_V_CHANNEL);
+	HAL_TIMEx_PWMN_Start(&DRIVER_ROLL_TIM, DRIVER_ROLL_PHASE_V_CHANNEL);
+
+	HAL_TIM_PWM_Start(&DRIVER_ROLL_TIM, DRIVER_ROLL_PHASE_W_CHANNEL);
+	HAL_TIMEx_PWMN_Start(&DRIVER_ROLL_TIM, DRIVER_ROLL_PHASE_W_CHANNEL);
+
+	HAL_TIM_OC_Start_IT(&DRIVER_ROLL_TIM, DRIVER_ROLL_OC_ADC_SYNC_CHANNEL);
+
+
 
 	// Encoder Timers
 	HAL_TIM_Encoder_Start(&ENCODER_PITCH_TIM, TIM_CHANNEL_1);
@@ -418,8 +517,18 @@ static void Bsp_StartTimers(void) {
 	HAL_TIM_Base_Start_IT(&FFB_CONTROL_LOOP_TIM);
 }
 
-void Bsp_ADCUpdate(void) {
-	InternalInjectedADC_UpdateIT(&pitchCurrentSensorADC);
+void Bsp_ADCUpdate(int adcId) {
+	switch(adcId) {
+		case PITCH_ADC_ID:
+			InternalInjectedADC_UpdateIT(&pitchCurrentSensorADC);
+			break;
+		case ROLL_ADC_ID:
+			InternalInjectedADC_UpdateIT(&rollCurrentSensorADC);
+			break;
+		default:
+			// Invalid ID, do nothing
+			break;
+	}
 }
 
 

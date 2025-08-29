@@ -21,12 +21,17 @@ static float ConvertMotorToFFBVelocity(FFBController_t *ffb,
 static float ConvertEncoderCountsToFFBUnits(FFBController_t *ffb,
 		int counts);
 
+static void FFB_SetMotorCurrent(FFBController_t *ffb, float current);
+static void FFB_SetMotorVelocity(FFBController_t *ffb, float velocity);
+static float FFB_GetMotorVelocity(FFBController_t *ffb);
+static float FFB_GetMotorTorque(FFBController_t *ffb);
+
 void UpdateFFBSpeed(FFBController_t *ffb, float dt) {
-	int currentEncoderCount = Encoder_GetCount(ffb->encoder);
+	int currentEncoderCount = FFB_GetRawAxisCount(ffb);
 
 //	float currentSpeed = LowPassFilterUpdate(&ffb->lpfSpeed,
 //			(currentEncoderCount - ffb->prevEncoderCount)/dt);
-	float currentSpeed = Motor_GetVelocity(ffb->motor);
+	float currentSpeed = FFB_GetMotorVelocity(ffb);
 	ffb->acceleration = LowPassFilter_Update(&ffb->lpfAccel,
 			(currentSpeed - ffb->speed)/dt);
 
@@ -47,7 +52,7 @@ void UpdateFFBSpeed(FFBController_t *ffb, float dt) {
 
 	// Update previous variables
 	ffb->prevEncoderCount = currentEncoderCount;
-	ffb->speed = currentSpeed;;
+	ffb->speed = currentSpeed;
 }
 
 void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
@@ -57,6 +62,8 @@ void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 	ffb->motor = motor;
 	ffb->encoder = encoder;
 	ffb->loadCell = NULL;
+
+	ffb->axisReverse = false;
 
 	ffb->constantGain = 1.0f;
 	ffb->periodicGain = 0.0f;
@@ -77,7 +84,7 @@ void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 	ffb->lockKd = 0.002f;
 	ffb->lockHysterisis = 8000;
 
-	ffb->prevEncoderCountAvg = Encoder_GetCount(encoder);
+	ffb->prevEncoderCountAvg = FFB_GetRawAxisCount(ffb);
 	ffb->speed = 0;
 	LowPassFilter_Init(&ffb->lpfSpeed, 0.10f);
 	ffb->acceleration = 0;
@@ -96,8 +103,28 @@ void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 	FFBAssist_Init(&ffb->ffbAssist);
 }
 
+
+void FFB_SetAxisReverse(FFBController_t *ffb, bool reverse) {
+	ffb->axisReverse = reverse;
+}
+
+int FFB_GetRawAxisCount(FFBController_t *ffb) {
+	return ffb->axisReverse ? -Encoder_GetCount(ffb->encoder) :
+			Encoder_GetCount(ffb->encoder);
+}
+
+void FFB_SetAxisCount(FFBController_t *ffb, int count) {
+	ffb->axisReverse ? Encoder_SetCount(ffb->encoder, -count) :
+			Encoder_SetCount(ffb->encoder, count);
+}
+
 void FFBSetLoadCell(FFBController_t *ffb, LoadCell_t *loadCell) {
 	ffb->loadCell = loadCell;
+}
+
+void FFB_SetLockGains(FFBController_t *ffb, float lockKp, float lockKd) {
+	ffb->lockKp = lockKp;
+	ffb->lockKd = lockKd;
 }
 
 void FFBSetAssistEnable(FFBController_t *ffb, bool enabled) {
@@ -208,7 +235,7 @@ float FFBCalcForces(FFBController_t *ffb, float measuredPosition,
 
 			force += FFBAssist_Calc(&ffb->ffbAssist,
 					-LoadCell_GetValue(ffb->loadCell),
-					Motor_GetTorque(ffb->motor),
+					FFB_GetMotorTorque(ffb),
 					ffb->speed, ffb->acceleration, deltaTime);
 
 //			float loadCellValue = LoadCellGetValue(ffb->loadCell);
@@ -277,10 +304,10 @@ void FFBUpdate(FFBController_t *ffb, float deltaTimeMs) {
 		// TODO: constrain to bus voltage
 		float motorPower =
 				ConstrainFloat(FFBCalcForces(ffb,
-						Encoder_GetCount(ffb->encoder),
+						FFB_GetRawAxisCount(ffb),
 						deltaTimeMs), -10.0f,
 						10.0f);
-		Motor_SetCurrent(ffb->motor, motorPower);
+		FFB_SetMotorCurrent(ffb, motorPower);
 		break;
 	case FFB_IDLE:
 		break;
@@ -343,15 +370,15 @@ void FFBHome(FFBController_t *ffb) {
 	Motor_SetEnable(ffb->motor, true);
 	/* Find home start */
 	// Record motor position
-	int previousPosition = Encoder_GetCount(ffb->encoder);
+	int previousPosition = FFB_GetRawAxisCount(ffb);
 	// Reverse motor
-	Motor_SetVelocity(ffb->motor,
+	FFB_SetMotorVelocity(ffb,
 			ConvertFFBToMotorVelocity(ffb, -FFB_CONTROL_HOME_VELOCITY));
 	delayMs(200);
 	// Wait until motor stops moving (hit end)
 	int steadyCount = 0;
 	do {
-		int currentPosition = Encoder_GetCount(ffb->encoder);
+		int currentPosition = FFB_GetRawAxisCount(ffb);
 		if(Abs(currentPosition-previousPosition) < 10) {
 			steadyCount++;
 		}
@@ -362,24 +389,24 @@ void FFBHome(FFBController_t *ffb) {
 		delayMs(10);
 	} while(steadyCount < 25);
 	// Record start position
-	int startPosition = Encoder_GetCount(ffb->encoder);
+	int startPosition = FFB_GetRawAxisCount(ffb);
 	// Stop motor
-	Motor_SetCurrent(ffb->motor, 0);
+	FFB_SetMotorCurrent(ffb, 0);
 	delayMs(1000);
 
 
 	/* Find home end */
 	// Record motor position
-	previousPosition = Encoder_GetCount(ffb->encoder);
+	previousPosition = FFB_GetRawAxisCount(ffb);
 
 	// Move motor forward
-	Motor_SetVelocity(ffb->motor,
+	FFB_SetMotorVelocity(ffb,
 			ConvertFFBToMotorVelocity(ffb, FFB_CONTROL_HOME_VELOCITY));
 	delayMs(200);
 	// Wait until motor stops moving (hit end)
 	steadyCount = 0;
 	do {
-		int currentPosition = Encoder_GetCount(ffb->encoder);
+		int currentPosition = FFB_GetRawAxisCount(ffb);
 		if(Abs(currentPosition-previousPosition) < 10) {
 			steadyCount++;
 		}
@@ -390,9 +417,9 @@ void FFBHome(FFBController_t *ffb) {
 		delayMs(10);
 	} while(steadyCount < 25);
 	// Record end position
-	int endPosition = Encoder_GetCount(ffb->encoder);
+	int endPosition = FFB_GetRawAxisCount(ffb);
 	// Stop motor
-	Motor_SetCurrent(ffb->motor, 0);
+	FFB_SetMotorCurrent(ffb, 0);
 	delayMs(1000);
 
 	if(endPosition < startPosition) {
@@ -404,17 +431,17 @@ void FFBHome(FFBController_t *ffb) {
 
 	/* Calibrate center */
 	int center = (endPosition - startPosition)/2;
-	Encoder_SetCount(ffb->encoder, center);
+	FFB_SetAxisCount(ffb, center);
 	ffb->prevEncoderCountAvg = 0;
 
 	/* Go to center */
-	FFBSetSpring(ffb, 0.000001f);
+	FFBSetSpring(ffb, 0.0001f);
 
 	// Start
 	FFBStart(ffb);
 
 	// Wait for center to be reached
-	while(Abs(Encoder_GetCount(ffb->encoder) - center) > 50) {
+	while(Abs(FFB_GetRawAxisCount(ffb) - center) > 50) {
 		delayMs(10);
 	}
 
@@ -496,4 +523,24 @@ static float ConvertEncoderCountsToFFBUnits(FFBController_t *ffb,
 		int counts) {
 	return (counts/(float)Encoder_GetCountPerRev(ffb->encoder)) *
 			ffb->unitPerRev;
+}
+
+static void FFB_SetMotorCurrent(FFBController_t *ffb, float current) {
+	ffb->axisReverse ? Motor_SetCurrent(ffb->motor, -current) :
+			Motor_SetCurrent(ffb->motor, current);
+}
+
+static void FFB_SetMotorVelocity(FFBController_t *ffb, float velocity) {
+	ffb->axisReverse ? Motor_SetVelocity(ffb->motor, -velocity) :
+			Motor_SetVelocity(ffb->motor, velocity);
+}
+
+static float FFB_GetMotorVelocity(FFBController_t *ffb) {
+	return ffb->axisReverse ? Motor_GetVelocity(ffb->motor) :
+			Motor_GetVelocity(ffb->motor);
+}
+
+static float FFB_GetMotorTorque(FFBController_t *ffb) {
+	return ffb->axisReverse ? -Motor_GetTorque(ffb->motor) :
+			Motor_GetTorque(ffb->motor);
 }
