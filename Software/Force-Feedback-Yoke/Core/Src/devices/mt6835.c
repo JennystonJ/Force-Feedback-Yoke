@@ -54,8 +54,8 @@ void MT6835_Init(MT6835_t *device, SPI_HandleTypeDef *hspi, GPIO_t nCS) {
 	UnassertCS(device);
 
 	// For Debug
-	uint8_t upperByte = ReadRegister(device, MT6835Reg_ABZ_RES_13_6);
-	uint8_t lowerByte = ReadRegister(device, MT6835Reg_ABZ_RES_5_0_OFF_SWAP);
+//	uint8_t upperByte = ReadRegister(device, MT6835Reg_ABZ_RES_13_6);
+//	uint8_t lowerByte = ReadRegister(device, MT6835Reg_ABZ_RES_5_0_OFF_SWAP);
 
 //	// Set number of ABZ pulses to 16384, ABZ ON, Swap OFF
 	WriteRegister(device, MT6835Reg_ABZ_RES_13_6, 0xFF);

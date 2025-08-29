@@ -17,11 +17,12 @@ void BspIT_TimIT(TIM_HandleTypeDef *htim) {
 
 void BspIT_ADCIT(ADC_HandleTypeDef *hadc) {
 	if(hadc == &CURRENT_SENSE_PITCH_ADC) {
-		Bsp_MotorControlLoopIT(&pitchMotor, &pitchEncoder,
+		Bsp_MotorControlLoopIT(&pitchMotor, &pitchEncoder, PITCH_ADC_ID,
 				PITCH_MOTOR_CONTROL_LOOP_PERIOD_MS);
 	}
 	else if(hadc == &CURRENT_SENSE_ROLL_ADC) {
-		// TODO: implement roll motor first
+		Bsp_MotorControlLoopIT(&rollMotor, &rollEncoder, ROLL_ADC_ID,
+				ROLL_MOTOR_CONTROL_LOOP_PERIOD_MS);
 	}
 	else {
 		// Do nothing (invalid interrupt)

@@ -113,10 +113,10 @@ static RxDataType_e ProcessDAQRxData(const uint8_t *data, size_t len) {
 
 	if(len == sizeof(float)*4) {
 		size_t index = 0;
-		float setPoint = ReadNextFloat(data, &index);
-		float kP = ReadNextFloat(data, &index);
-		float kI = ReadNextFloat(data, &index);
-		float kD = ReadNextFloat(data, &index);
+//		float setPoint = ReadNextFloat(data, &index);
+//		float kP = ReadNextFloat(data, &index);
+//		float kI = ReadNextFloat(data, &index);
+//		float kD = ReadNextFloat(data, &index);
 
 //		PID_SetGains(pidTuner.pidVar, kP, kI, kD);
 //		pidTuner.setSetPointFunc(setPoint);

@@ -59,6 +59,8 @@ typedef struct FFBController {
 	Motor_t *motor;
 	float motorKtConstant;
 
+	bool axisReverse;
+
 	Encoder_t *encoder;
 	LoadCell_t *loadCell;
 
@@ -118,9 +120,17 @@ typedef struct FFBController {
  */
 void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder);
 
+void FFB_SetAxisReverse(FFBController_t *ffb, bool reverse);
+
+void FFB_SetAxisCount(FFBController_t *ffb, int count);
+
+int FFB_GetRawAxisCount(FFBController_t *ffb);
+
 void FFBSetAssistEnable(FFBController_t *ffb, bool enabled);
 
 void FFBSetLoadCell(FFBController_t *ffb, LoadCell_t *loadCell);
+
+void FFB_SetLockGains(FFBController_t *ffb, float lockKp, float lockKd);
 
 FFBAssist_t *FFB_GetFFBAssist(FFBController_t *ffb);
 
