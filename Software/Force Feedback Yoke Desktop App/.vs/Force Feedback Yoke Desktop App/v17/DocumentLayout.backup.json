@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|c:\\users\\jennyston\\onedrive\\documents\\git\\force-feedback-yoke\\software\\force feedback yoke desktop app\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|c:\\users\\jennyston\\onedrive\\documents\\git\\force-feedback-yoke\\software\\force feedback yoke desktop app\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|c:\\users\\jennyston\\onedrive\\documents\\git\\force-feedback-yoke\\software\\force feedback yoke desktop app\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|solutionrelative:form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|c:\\users\\jennyston\\onedrive\\documents\\git\\force-feedback-yoke\\software\\force feedback yoke desktop app\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|c:\\users\\jennyston\\onedrive\\documents\\git\\force-feedback-yoke\\software\\force feedback yoke desktop app\\ffbdevice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -121,25 +121,46 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
               "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs",
               "RelativeToolTip": "Form1.cs",
-              "ViewState": "AgIAAMwAAAAAAAAAAAAgwN8AAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAN0AAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-17T14:51:31.752Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Form1.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs",
+              "RelativeDocumentMoniker": "Form1.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs [Design]",
+              "RelativeToolTip": "Form1.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-29T17:31:52.945Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Form1.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.Designer.cs",
+              "RelativeDocumentMoniker": "Form1.Designer.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.Designer.cs",
+              "RelativeToolTip": "Form1.Designer.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAtwBwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-29T17:29:56.864Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -167,18 +188,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Form1.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs",
-              "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs [Design]",
-              "RelativeToolTip": "Form1.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T21:02:06.663Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 3,
               "Title": "FFBDevice.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBDevice.cs",
@@ -187,8 +196,7 @@
               "RelativeToolTip": "FFBDevice.cs",
               "ViewState": "AgIAAPQAAAAAAAAAAAAowAQBAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T21:13:34.347Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-19T21:13:34.347Z"
             },
             {
               "$type": "Document",
@@ -237,19 +245,6 @@
               "ViewState": "AgIAABYAAAAAAAAAAAAWwCUAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-26T22:55:25.606Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Form1.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.Designer.cs",
-              "RelativeDocumentMoniker": "Form1.Designer.cs",
-              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.Designer.cs",
-              "RelativeToolTip": "Form1.Designer.cs",
-              "ViewState": "AgIAALADAAAAAAAAAAAIwMYDAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-26T23:02:46.928Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -464,6 +459,10 @@
               "ViewState": "AgIAACIAAAAAAAAAAABBwDMAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001203|",
               "WhenOpened": "2025-08-16T17:34:49.582Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         }

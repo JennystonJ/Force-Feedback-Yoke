@@ -11,6 +11,10 @@
       "RelativeMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|c:\\users\\jennyston\\onedrive\\documents\\git\\force-feedback-yoke\\software\\force feedback yoke desktop app\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|solutionrelative:form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|c:\\users\\jennyston\\onedrive\\documents\\git\\force-feedback-yoke\\software\\force feedback yoke desktop app\\ffbdevice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{16E655DA-B05B-4334-BA91-B95810EF44CA}|Force Feedback Yoke Desktop App.csproj|solutionrelative:ffbdevice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -117,7 +121,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
@@ -125,21 +129,42 @@
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs*",
-              "RelativeToolTip": "Form1.cs*",
-              "ViewState": "AgIAAGsAAAAAAAAAAAAuwN0AAAA0AAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs",
+              "RelativeToolTip": "Form1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAN0AAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-17T14:51:31.752Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Form1.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs",
+              "RelativeDocumentMoniker": "Form1.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs [Design]",
+              "RelativeToolTip": "Form1.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-29T17:31:52.945Z",
+              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 2,
+              "Title": "Form1.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.Designer.cs",
+              "RelativeDocumentMoniker": "Form1.Designer.cs",
+              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.Designer.cs",
+              "RelativeToolTip": "Form1.Designer.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAtwBwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-29T17:29:56.864Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "SimConnectHelper.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\SimConnectHelper.cs",
               "RelativeDocumentMoniker": "SimConnectHelper.cs",
@@ -151,7 +176,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "FFBConstant.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBForces\\FFBConstant.cs",
               "RelativeDocumentMoniker": "FFBForces\\FFBConstant.cs",
@@ -163,19 +188,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Form1.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs",
-              "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Form1.cs [Design]*",
-              "RelativeToolTip": "Form1.cs [Design]*",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T21:02:06.663Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "FFBDevice.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBDevice.cs",
               "RelativeDocumentMoniker": "FFBDevice.cs",
@@ -183,12 +196,11 @@
               "RelativeToolTip": "FFBDevice.cs",
               "ViewState": "AgIAAPQAAAAAAAAAAAAowAQBAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-19T21:13:34.347Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-19T21:13:34.347Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "FFBEffect.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBEffects\\FFBEffect.cs",
               "RelativeDocumentMoniker": "FFBEffects\\FFBEffect.cs",
@@ -200,7 +212,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -212,7 +224,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "ForceSet.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\ForceSet.cs",
               "RelativeDocumentMoniker": "ForceSet.cs",
@@ -224,7 +236,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "Dbt.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Dbt.cs",
               "RelativeDocumentMoniker": "Dbt.cs",
@@ -236,7 +248,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "UsbDeviceMonitor.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\UsbDeviceMonitor.cs",
               "RelativeDocumentMoniker": "UsbDeviceMonitor.cs",
@@ -248,7 +260,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "ElevatorWeight.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBEffects\\ElevatorWeight.cs",
               "RelativeDocumentMoniker": "FFBEffects\\ElevatorWeight.cs",
@@ -260,7 +272,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "ElevatorGust.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBEffects\\ElevatorGust.cs",
               "RelativeDocumentMoniker": "FFBEffects\\ElevatorGust.cs",
@@ -272,7 +284,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "FFBController.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBController.cs",
               "RelativeDocumentMoniker": "FFBController.cs",
@@ -284,7 +296,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "FFBDamper.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBForces\\FFBDamper.cs",
               "RelativeDocumentMoniker": "FFBForces\\FFBDamper.cs",
@@ -296,7 +308,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "AirSpeedStiffness.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBEffects\\AirSpeedStiffness.cs",
               "RelativeDocumentMoniker": "FFBEffects\\AirSpeedStiffness.cs",
@@ -308,7 +320,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "TablessControl.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Controls\\TablessControl.cs",
               "RelativeDocumentMoniker": "Controls\\TablessControl.cs",
@@ -320,7 +332,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "FFBSpring.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBForces\\FFBSpring.cs",
               "RelativeDocumentMoniker": "FFBForces\\FFBSpring.cs",
@@ -332,7 +344,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "FFBForce.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\FFBForces\\FFBForce.cs",
               "RelativeDocumentMoniker": "FFBForces\\FFBForce.cs",
@@ -344,7 +356,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "LowPassFilter.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Filters\\LowPassFilter.cs",
               "RelativeDocumentMoniker": "Filters\\LowPassFilter.cs",
@@ -356,7 +368,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "HighPassFilter.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Filters\\HighPassFilter.cs",
               "RelativeDocumentMoniker": "Filters\\HighPassFilter.cs",
@@ -368,7 +380,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "CircularBuffer.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\CircularBuffer.cs",
               "RelativeDocumentMoniker": "CircularBuffer.cs",
@@ -380,7 +392,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "Microsoft.FlightSimulator.SimConnect.dll",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Microsoft.FlightSimulator.SimConnect.dll",
               "RelativeDocumentMoniker": "Microsoft.FlightSimulator.SimConnect.dll",
@@ -391,7 +403,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 23,
               "Title": "TravelIndicator.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\TravelIndicator.cs",
               "RelativeDocumentMoniker": "TravelIndicator.cs",
@@ -403,7 +415,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 24,
               "Title": "Utilities.cs",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Utilities.cs",
               "RelativeDocumentMoniker": "Utilities.cs",
@@ -415,7 +427,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 26,
               "Title": "Microsoft.Common.CurrentVersion.targets",
               "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
@@ -427,7 +439,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 25,
               "Title": "Force Feedback Yoke Desktop App",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\Force Feedback Yoke Desktop App.csproj",
               "RelativeDocumentMoniker": "Force Feedback Yoke Desktop App.csproj",
@@ -438,7 +450,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 27,
               "Title": "app.manifest",
               "DocumentMoniker": "C:\\Users\\Jennyston\\OneDrive\\Documents\\git\\Force-Feedback-Yoke\\Software\\Force Feedback Yoke Desktop App\\app.manifest",
               "RelativeDocumentMoniker": "app.manifest",
@@ -447,6 +459,10 @@
               "ViewState": "AgIAACIAAAAAAAAAAABBwDMAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001203|",
               "WhenOpened": "2025-08-16T17:34:49.582Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         }

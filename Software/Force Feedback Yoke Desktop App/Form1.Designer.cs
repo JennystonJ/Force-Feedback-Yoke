@@ -36,22 +36,16 @@
             lblPitchPosition = new Label();
             label9 = new Label();
             lblPitchUserForceValue = new Label();
-            tiPitchUserForce = new TravelIndicator();
             lblPitchForceValue = new Label();
-            tiPitchForce = new TravelIndicator();
             lblPitchPosValue = new Label();
-            tiPitchPosition = new TravelIndicator();
             rollMonitorPanel = new TableLayoutPanel();
             lblRollUserTorque = new Label();
             lblRollTorque = new Label();
             lblRollPosition = new Label();
             lblRollMonitor = new Label();
             lblRollUserTorqueValue = new Label();
-            tiRollUserTorque = new TravelIndicator();
             lblRollTorqueValue = new Label();
-            tiRollTorque = new TravelIndicator();
             lblRollPosValue = new Label();
-            tiRollPosition = new TravelIndicator();
             lblStatus = new Label();
             lblMonitor = new Label();
             btnHome = new Button();
@@ -71,12 +65,12 @@
             cbProfileAutoSelect = new CheckBox();
             profilesPage = new TabPage();
             tableLayoutPanel2 = new TableLayoutPanel();
+            listBox1 = new ListBox();
             yokeDataPage = new TabPage();
             BottomToolStripPanel = new ToolStripPanel();
             TopToolStripPanel = new ToolStripPanel();
             RightToolStripPanel = new ToolStripPanel();
             LeftToolStripPanel = new ToolStripPanel();
-            listBox1 = new ListBox();
             mainTableLayoutPanel.SuspendLayout();
             menuTableLayoutPanel.SuspendLayout();
             pitchMonitorPanel.SuspendLayout();
@@ -93,17 +87,17 @@
             // 
             mainTableLayoutPanel.BackColor = Color.Gray;
             mainTableLayoutPanel.ColumnCount = 2;
-            mainTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 241F));
+            mainTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 448F));
             mainTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             mainTableLayoutPanel.Controls.Add(menuTableLayoutPanel, 0, 0);
             mainTableLayoutPanel.Controls.Add(tablessControlContent, 1, 0);
             mainTableLayoutPanel.Dock = DockStyle.Fill;
             mainTableLayoutPanel.Location = new Point(0, 0);
-            mainTableLayoutPanel.Margin = new Padding(2);
+            mainTableLayoutPanel.Margin = new Padding(4, 4, 4, 4);
             mainTableLayoutPanel.Name = "mainTableLayoutPanel";
             mainTableLayoutPanel.RowCount = 1;
             mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            mainTableLayoutPanel.Size = new Size(887, 529);
+            mainTableLayoutPanel.Size = new Size(1647, 1129);
             mainTableLayoutPanel.TabIndex = 0;
             // 
             // menuTableLayoutPanel
@@ -136,8 +130,8 @@
             menuTableLayoutPanel.RowStyles.Add(new RowStyle());
             menuTableLayoutPanel.RowStyles.Add(new RowStyle());
             menuTableLayoutPanel.RowStyles.Add(new RowStyle());
-            menuTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 9F));
-            menuTableLayoutPanel.Size = new Size(241, 529);
+            menuTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 19F));
+            menuTableLayoutPanel.Size = new Size(448, 1129);
             menuTableLayoutPanel.TabIndex = 0;
             // 
             // pitchMonitorPanel
@@ -152,23 +146,20 @@
             pitchMonitorPanel.Controls.Add(lblPitchPosition, 0, 1);
             pitchMonitorPanel.Controls.Add(label9, 0, 0);
             pitchMonitorPanel.Controls.Add(lblPitchUserForceValue, 2, 3);
-            pitchMonitorPanel.Controls.Add(tiPitchUserForce, 1, 3);
             pitchMonitorPanel.Controls.Add(lblPitchForceValue, 2, 2);
-            pitchMonitorPanel.Controls.Add(tiPitchForce, 1, 2);
             pitchMonitorPanel.Controls.Add(lblPitchPosValue, 2, 1);
-            pitchMonitorPanel.Controls.Add(tiPitchPosition, 1, 1);
             pitchMonitorPanel.Dock = DockStyle.Fill;
-            pitchMonitorPanel.Location = new Point(0, 226);
+            pitchMonitorPanel.Location = new Point(0, 582);
             pitchMonitorPanel.Margin = new Padding(0);
             pitchMonitorPanel.Name = "pitchMonitorPanel";
-            pitchMonitorPanel.Padding = new Padding(5, 0, 0, 0);
+            pitchMonitorPanel.Padding = new Padding(9, 0, 0, 0);
             pitchMonitorPanel.RowCount = 4;
             pitchMonitorPanel.RowStyles.Add(new RowStyle());
             pitchMonitorPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
             pitchMonitorPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333359F));
             pitchMonitorPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333359F));
-            pitchMonitorPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 9F));
-            pitchMonitorPanel.Size = new Size(241, 108);
+            pitchMonitorPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 19F));
+            pitchMonitorPanel.Size = new Size(448, 220);
             pitchMonitorPanel.TabIndex = 10;
             // 
             // lblPitchUserForce
@@ -178,11 +169,11 @@
             lblPitchUserForce.Dock = DockStyle.Bottom;
             lblPitchUserForce.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblPitchUserForce.ForeColor = Color.WhiteSmoke;
-            lblPitchUserForce.Location = new Point(7, 81);
-            lblPitchUserForce.Margin = new Padding(2, 0, 2, 0);
+            lblPitchUserForce.Location = new Point(13, 165);
+            lblPitchUserForce.Margin = new Padding(4, 0, 4, 0);
             lblPitchUserForce.Name = "lblPitchUserForce";
-            lblPitchUserForce.Padding = new Padding(6);
-            lblPitchUserForce.Size = new Size(31, 27);
+            lblPitchUserForce.Padding = new Padding(11, 13, 11, 13);
+            lblPitchUserForce.Size = new Size(58, 55);
             lblPitchUserForce.TabIndex = 15;
             lblPitchUserForce.Text = "U:";
             lblPitchUserForce.TextAlign = ContentAlignment.MiddleLeft;
@@ -194,11 +185,11 @@
             lblPitchForce.Dock = DockStyle.Bottom;
             lblPitchForce.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblPitchForce.ForeColor = Color.WhiteSmoke;
-            lblPitchForce.Location = new Point(7, 53);
-            lblPitchForce.Margin = new Padding(2, 0, 2, 0);
+            lblPitchForce.Location = new Point(13, 109);
+            lblPitchForce.Margin = new Padding(4, 0, 4, 0);
             lblPitchForce.Name = "lblPitchForce";
-            lblPitchForce.Padding = new Padding(6);
-            lblPitchForce.Size = new Size(31, 27);
+            lblPitchForce.Padding = new Padding(11, 13, 11, 13);
+            lblPitchForce.Size = new Size(58, 55);
             lblPitchForce.TabIndex = 14;
             lblPitchForce.Text = "F:";
             lblPitchForce.TextAlign = ContentAlignment.MiddleLeft;
@@ -210,11 +201,11 @@
             lblPitchPosition.Dock = DockStyle.Bottom;
             lblPitchPosition.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblPitchPosition.ForeColor = Color.WhiteSmoke;
-            lblPitchPosition.Location = new Point(7, 27);
-            lblPitchPosition.Margin = new Padding(2, 0, 2, 0);
+            lblPitchPosition.Location = new Point(13, 55);
+            lblPitchPosition.Margin = new Padding(4, 0, 4, 0);
             lblPitchPosition.Name = "lblPitchPosition";
-            lblPitchPosition.Padding = new Padding(6);
-            lblPitchPosition.Size = new Size(31, 26);
+            lblPitchPosition.Padding = new Padding(11, 13, 11, 13);
+            lblPitchPosition.Size = new Size(58, 54);
             lblPitchPosition.TabIndex = 13;
             lblPitchPosition.Text = "P:";
             lblPitchPosition.TextAlign = ContentAlignment.MiddleLeft;
@@ -227,11 +218,11 @@
             label9.Dock = DockStyle.Bottom;
             label9.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label9.ForeColor = Color.WhiteSmoke;
-            label9.Location = new Point(7, 0);
-            label9.Margin = new Padding(2, 0, 2, 0);
+            label9.Location = new Point(13, 0);
+            label9.Margin = new Padding(4, 0, 4, 0);
             label9.Name = "label9";
-            label9.Padding = new Padding(6);
-            label9.Size = new Size(232, 27);
+            label9.Padding = new Padding(11, 13, 11, 13);
+            label9.Size = new Size(431, 55);
             label9.TabIndex = 12;
             label9.Text = "Pitch:";
             label9.TextAlign = ContentAlignment.MiddleLeft;
@@ -243,32 +234,15 @@
             lblPitchUserForceValue.Dock = DockStyle.Fill;
             lblPitchUserForceValue.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblPitchUserForceValue.ForeColor = Color.WhiteSmoke;
-            lblPitchUserForceValue.Location = new Point(160, 80);
-            lblPitchUserForceValue.Margin = new Padding(2, 0, 2, 0);
-            lblPitchUserForceValue.MinimumSize = new Size(66, 0);
+            lblPitchUserForceValue.Location = new Point(297, 164);
+            lblPitchUserForceValue.Margin = new Padding(4, 0, 4, 0);
+            lblPitchUserForceValue.MinimumSize = new Size(123, 0);
             lblPitchUserForceValue.Name = "lblPitchUserForceValue";
-            lblPitchUserForceValue.Padding = new Padding(6);
-            lblPitchUserForceValue.Size = new Size(79, 28);
+            lblPitchUserForceValue.Padding = new Padding(11, 13, 11, 13);
+            lblPitchUserForceValue.Size = new Size(147, 56);
             lblPitchUserForceValue.TabIndex = 11;
             lblPitchUserForceValue.Text = "--.-- N";
             lblPitchUserForceValue.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // tiPitchUserForce
-            // 
-            tiPitchUserForce.BackColor = Color.Gray;
-            tiPitchUserForce.CenterLineColor = Color.FromArgb(203, 0, 215);
-            tiPitchUserForce.Dock = DockStyle.Fill;
-            tiPitchUserForce.ForeColor = Color.FromArgb(203, 0, 215);
-            tiPitchUserForce.Location = new Point(45, 89);
-            tiPitchUserForce.Margin = new Padding(5, 9, 5, 9);
-            tiPitchUserForce.Maximum = 100;
-            tiPitchUserForce.MaximumSize = new Size(0, 8);
-            tiPitchUserForce.Minimum = -100;
-            tiPitchUserForce.Name = "tiPitchUserForce";
-            tiPitchUserForce.Size = new Size(108, 8);
-            tiPitchUserForce.TabIndex = 10;
-            tiPitchUserForce.Type = TravelIndicator.TravelIndicatorType.Centered;
-            tiPitchUserForce.Value = 0;
             // 
             // lblPitchForceValue
             // 
@@ -277,32 +251,15 @@
             lblPitchForceValue.Dock = DockStyle.Fill;
             lblPitchForceValue.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblPitchForceValue.ForeColor = Color.WhiteSmoke;
-            lblPitchForceValue.Location = new Point(160, 53);
-            lblPitchForceValue.Margin = new Padding(2, 0, 2, 0);
-            lblPitchForceValue.MinimumSize = new Size(66, 0);
+            lblPitchForceValue.Location = new Point(297, 109);
+            lblPitchForceValue.Margin = new Padding(4, 0, 4, 0);
+            lblPitchForceValue.MinimumSize = new Size(123, 0);
             lblPitchForceValue.Name = "lblPitchForceValue";
-            lblPitchForceValue.Padding = new Padding(6);
-            lblPitchForceValue.Size = new Size(79, 27);
+            lblPitchForceValue.Padding = new Padding(11, 13, 11, 13);
+            lblPitchForceValue.Size = new Size(147, 55);
             lblPitchForceValue.TabIndex = 9;
             lblPitchForceValue.Text = "--.-- N";
             lblPitchForceValue.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // tiPitchForce
-            // 
-            tiPitchForce.BackColor = Color.Gray;
-            tiPitchForce.CenterLineColor = Color.FromArgb(215, 95, 0);
-            tiPitchForce.Dock = DockStyle.Fill;
-            tiPitchForce.ForeColor = Color.FromArgb(215, 95, 0);
-            tiPitchForce.Location = new Point(45, 62);
-            tiPitchForce.Margin = new Padding(5, 9, 5, 9);
-            tiPitchForce.Maximum = 100;
-            tiPitchForce.MaximumSize = new Size(0, 8);
-            tiPitchForce.Minimum = -100;
-            tiPitchForce.Name = "tiPitchForce";
-            tiPitchForce.Size = new Size(108, 8);
-            tiPitchForce.TabIndex = 8;
-            tiPitchForce.Type = TravelIndicator.TravelIndicatorType.Centered;
-            tiPitchForce.Value = 0;
             // 
             // lblPitchPosValue
             // 
@@ -311,32 +268,15 @@
             lblPitchPosValue.Dock = DockStyle.Fill;
             lblPitchPosValue.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblPitchPosValue.ForeColor = Color.WhiteSmoke;
-            lblPitchPosValue.Location = new Point(160, 27);
-            lblPitchPosValue.Margin = new Padding(2, 0, 2, 0);
-            lblPitchPosValue.MinimumSize = new Size(79, 0);
+            lblPitchPosValue.Location = new Point(297, 55);
+            lblPitchPosValue.Margin = new Padding(4, 0, 4, 0);
+            lblPitchPosValue.MinimumSize = new Size(147, 0);
             lblPitchPosValue.Name = "lblPitchPosValue";
-            lblPitchPosValue.Padding = new Padding(6);
-            lblPitchPosValue.Size = new Size(79, 26);
+            lblPitchPosValue.Padding = new Padding(11, 13, 11, 13);
+            lblPitchPosValue.Size = new Size(147, 54);
             lblPitchPosValue.TabIndex = 7;
             lblPitchPosValue.Text = "----.- mm";
             lblPitchPosValue.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // tiPitchPosition
-            // 
-            tiPitchPosition.BackColor = Color.Gray;
-            tiPitchPosition.CenterLineColor = Color.FromArgb(12, 215, 0);
-            tiPitchPosition.Dock = DockStyle.Fill;
-            tiPitchPosition.ForeColor = Color.FromArgb(12, 215, 0);
-            tiPitchPosition.Location = new Point(45, 36);
-            tiPitchPosition.Margin = new Padding(5, 9, 5, 9);
-            tiPitchPosition.Maximum = 100;
-            tiPitchPosition.MaximumSize = new Size(0, 8);
-            tiPitchPosition.Minimum = -100;
-            tiPitchPosition.Name = "tiPitchPosition";
-            tiPitchPosition.Size = new Size(108, 8);
-            tiPitchPosition.TabIndex = 0;
-            tiPitchPosition.Type = TravelIndicator.TravelIndicatorType.Centered;
-            tiPitchPosition.Value = 0;
             // 
             // rollMonitorPanel
             // 
@@ -349,22 +289,19 @@
             rollMonitorPanel.Controls.Add(lblRollPosition, 0, 1);
             rollMonitorPanel.Controls.Add(lblRollMonitor, 0, 0);
             rollMonitorPanel.Controls.Add(lblRollUserTorqueValue, 2, 3);
-            rollMonitorPanel.Controls.Add(tiRollUserTorque, 1, 3);
             rollMonitorPanel.Controls.Add(lblRollTorqueValue, 2, 2);
-            rollMonitorPanel.Controls.Add(tiRollTorque, 1, 2);
             rollMonitorPanel.Controls.Add(lblRollPosValue, 2, 1);
-            rollMonitorPanel.Controls.Add(tiRollPosition, 1, 1);
             rollMonitorPanel.Dock = DockStyle.Fill;
-            rollMonitorPanel.Location = new Point(0, 334);
+            rollMonitorPanel.Location = new Point(0, 802);
             rollMonitorPanel.Margin = new Padding(0);
             rollMonitorPanel.Name = "rollMonitorPanel";
-            rollMonitorPanel.Padding = new Padding(5, 0, 0, 0);
+            rollMonitorPanel.Padding = new Padding(9, 0, 0, 0);
             rollMonitorPanel.RowCount = 4;
             rollMonitorPanel.RowStyles.Add(new RowStyle());
             rollMonitorPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
             rollMonitorPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333359F));
             rollMonitorPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333359F));
-            rollMonitorPanel.Size = new Size(241, 105);
+            rollMonitorPanel.Size = new Size(448, 224);
             rollMonitorPanel.TabIndex = 9;
             // 
             // lblRollUserTorque
@@ -374,11 +311,11 @@
             lblRollUserTorque.Dock = DockStyle.Bottom;
             lblRollUserTorque.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblRollUserTorque.ForeColor = Color.WhiteSmoke;
-            lblRollUserTorque.Location = new Point(7, 78);
-            lblRollUserTorque.Margin = new Padding(2, 0, 2, 0);
+            lblRollUserTorque.Location = new Point(13, 169);
+            lblRollUserTorque.Margin = new Padding(4, 0, 4, 0);
             lblRollUserTorque.Name = "lblRollUserTorque";
-            lblRollUserTorque.Padding = new Padding(6);
-            lblRollUserTorque.Size = new Size(31, 27);
+            lblRollUserTorque.Padding = new Padding(11, 13, 11, 13);
+            lblRollUserTorque.Size = new Size(58, 55);
             lblRollUserTorque.TabIndex = 15;
             lblRollUserTorque.Text = "U:";
             lblRollUserTorque.TextAlign = ContentAlignment.MiddleLeft;
@@ -390,11 +327,11 @@
             lblRollTorque.Dock = DockStyle.Bottom;
             lblRollTorque.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblRollTorque.ForeColor = Color.WhiteSmoke;
-            lblRollTorque.Location = new Point(7, 52);
-            lblRollTorque.Margin = new Padding(2, 0, 2, 0);
+            lblRollTorque.Location = new Point(13, 112);
+            lblRollTorque.Margin = new Padding(4, 0, 4, 0);
             lblRollTorque.Name = "lblRollTorque";
-            lblRollTorque.Padding = new Padding(6);
-            lblRollTorque.Size = new Size(31, 26);
+            lblRollTorque.Padding = new Padding(11, 13, 11, 13);
+            lblRollTorque.Size = new Size(58, 55);
             lblRollTorque.TabIndex = 14;
             lblRollTorque.Text = "F:";
             lblRollTorque.TextAlign = ContentAlignment.MiddleLeft;
@@ -406,11 +343,11 @@
             lblRollPosition.Dock = DockStyle.Bottom;
             lblRollPosition.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblRollPosition.ForeColor = Color.WhiteSmoke;
-            lblRollPosition.Location = new Point(7, 27);
-            lblRollPosition.Margin = new Padding(2, 0, 2, 0);
+            lblRollPosition.Location = new Point(13, 56);
+            lblRollPosition.Margin = new Padding(4, 0, 4, 0);
             lblRollPosition.Name = "lblRollPosition";
-            lblRollPosition.Padding = new Padding(6);
-            lblRollPosition.Size = new Size(31, 25);
+            lblRollPosition.Padding = new Padding(11, 13, 11, 13);
+            lblRollPosition.Size = new Size(58, 55);
             lblRollPosition.TabIndex = 13;
             lblRollPosition.Text = "P:";
             lblRollPosition.TextAlign = ContentAlignment.MiddleLeft;
@@ -423,11 +360,11 @@
             lblRollMonitor.Dock = DockStyle.Bottom;
             lblRollMonitor.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblRollMonitor.ForeColor = Color.WhiteSmoke;
-            lblRollMonitor.Location = new Point(7, 0);
-            lblRollMonitor.Margin = new Padding(2, 0, 2, 0);
+            lblRollMonitor.Location = new Point(13, 0);
+            lblRollMonitor.Margin = new Padding(4, 0, 4, 0);
             lblRollMonitor.Name = "lblRollMonitor";
-            lblRollMonitor.Padding = new Padding(6);
-            lblRollMonitor.Size = new Size(232, 27);
+            lblRollMonitor.Padding = new Padding(11, 13, 11, 13);
+            lblRollMonitor.Size = new Size(431, 55);
             lblRollMonitor.TabIndex = 12;
             lblRollMonitor.Text = "Roll:";
             lblRollMonitor.TextAlign = ContentAlignment.MiddleLeft;
@@ -439,32 +376,15 @@
             lblRollUserTorqueValue.Dock = DockStyle.Fill;
             lblRollUserTorqueValue.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblRollUserTorqueValue.ForeColor = Color.WhiteSmoke;
-            lblRollUserTorqueValue.Location = new Point(160, 78);
-            lblRollUserTorqueValue.Margin = new Padding(2, 0, 2, 0);
-            lblRollUserTorqueValue.MinimumSize = new Size(66, 0);
+            lblRollUserTorqueValue.Location = new Point(297, 167);
+            lblRollUserTorqueValue.Margin = new Padding(4, 0, 4, 0);
+            lblRollUserTorqueValue.MinimumSize = new Size(123, 0);
             lblRollUserTorqueValue.Name = "lblRollUserTorqueValue";
-            lblRollUserTorqueValue.Padding = new Padding(6);
-            lblRollUserTorqueValue.Size = new Size(79, 27);
+            lblRollUserTorqueValue.Padding = new Padding(11, 13, 11, 13);
+            lblRollUserTorqueValue.Size = new Size(147, 57);
             lblRollUserTorqueValue.TabIndex = 11;
             lblRollUserTorqueValue.Text = "--.-- Nm";
             lblRollUserTorqueValue.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // tiRollUserTorque
-            // 
-            tiRollUserTorque.BackColor = Color.Gray;
-            tiRollUserTorque.CenterLineColor = Color.FromArgb(203, 0, 215);
-            tiRollUserTorque.Dock = DockStyle.Fill;
-            tiRollUserTorque.ForeColor = Color.FromArgb(203, 0, 215);
-            tiRollUserTorque.Location = new Point(45, 87);
-            tiRollUserTorque.Margin = new Padding(5, 9, 5, 9);
-            tiRollUserTorque.Maximum = 100;
-            tiRollUserTorque.MaximumSize = new Size(0, 8);
-            tiRollUserTorque.Minimum = -100;
-            tiRollUserTorque.Name = "tiRollUserTorque";
-            tiRollUserTorque.Size = new Size(108, 8);
-            tiRollUserTorque.TabIndex = 50;
-            tiRollUserTorque.Type = TravelIndicator.TravelIndicatorType.Centered;
-            tiRollUserTorque.Value = 0;
             // 
             // lblRollTorqueValue
             // 
@@ -473,32 +393,15 @@
             lblRollTorqueValue.Dock = DockStyle.Fill;
             lblRollTorqueValue.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblRollTorqueValue.ForeColor = Color.WhiteSmoke;
-            lblRollTorqueValue.Location = new Point(160, 52);
-            lblRollTorqueValue.Margin = new Padding(2, 0, 2, 0);
-            lblRollTorqueValue.MinimumSize = new Size(66, 0);
+            lblRollTorqueValue.Location = new Point(297, 111);
+            lblRollTorqueValue.Margin = new Padding(4, 0, 4, 0);
+            lblRollTorqueValue.MinimumSize = new Size(123, 0);
             lblRollTorqueValue.Name = "lblRollTorqueValue";
-            lblRollTorqueValue.Padding = new Padding(6);
-            lblRollTorqueValue.Size = new Size(79, 26);
+            lblRollTorqueValue.Padding = new Padding(11, 13, 11, 13);
+            lblRollTorqueValue.Size = new Size(147, 56);
             lblRollTorqueValue.TabIndex = 9;
             lblRollTorqueValue.Text = "--.-- Nm";
             lblRollTorqueValue.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // tiRollTorque
-            // 
-            tiRollTorque.BackColor = Color.Gray;
-            tiRollTorque.CenterLineColor = Color.FromArgb(215, 95, 0);
-            tiRollTorque.Dock = DockStyle.Fill;
-            tiRollTorque.ForeColor = Color.FromArgb(215, 95, 0);
-            tiRollTorque.Location = new Point(45, 61);
-            tiRollTorque.Margin = new Padding(5, 9, 5, 9);
-            tiRollTorque.Maximum = 100;
-            tiRollTorque.MaximumSize = new Size(0, 8);
-            tiRollTorque.Minimum = -100;
-            tiRollTorque.Name = "tiRollTorque";
-            tiRollTorque.Size = new Size(108, 8);
-            tiRollTorque.TabIndex = 8;
-            tiRollTorque.Type = TravelIndicator.TravelIndicatorType.Centered;
-            tiRollTorque.Value = 0;
             // 
             // lblRollPosValue
             // 
@@ -507,32 +410,15 @@
             lblRollPosValue.Dock = DockStyle.Fill;
             lblRollPosValue.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblRollPosValue.ForeColor = Color.WhiteSmoke;
-            lblRollPosValue.Location = new Point(160, 27);
-            lblRollPosValue.Margin = new Padding(2, 0, 2, 0);
-            lblRollPosValue.MinimumSize = new Size(79, 0);
+            lblRollPosValue.Location = new Point(297, 55);
+            lblRollPosValue.Margin = new Padding(4, 0, 4, 0);
+            lblRollPosValue.MinimumSize = new Size(147, 0);
             lblRollPosValue.Name = "lblRollPosValue";
-            lblRollPosValue.Padding = new Padding(6);
-            lblRollPosValue.Size = new Size(79, 25);
+            lblRollPosValue.Padding = new Padding(11, 13, 11, 13);
+            lblRollPosValue.Size = new Size(147, 56);
             lblRollPosValue.TabIndex = 7;
             lblRollPosValue.Text = "---.- deg";
             lblRollPosValue.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // tiRollPosition
-            // 
-            tiRollPosition.BackColor = Color.Gray;
-            tiRollPosition.CenterLineColor = Color.FromArgb(12, 215, 0);
-            tiRollPosition.Dock = DockStyle.Fill;
-            tiRollPosition.ForeColor = Color.FromArgb(12, 215, 0);
-            tiRollPosition.Location = new Point(45, 36);
-            tiRollPosition.Margin = new Padding(5, 9, 5, 9);
-            tiRollPosition.Maximum = 100;
-            tiRollPosition.MaximumSize = new Size(0, 8);
-            tiRollPosition.Minimum = -100;
-            tiRollPosition.Name = "tiRollPosition";
-            tiRollPosition.Size = new Size(108, 7);
-            tiRollPosition.TabIndex = 0;
-            tiRollPosition.Type = TravelIndicator.TravelIndicatorType.Centered;
-            tiRollPosition.Value = 0;
             // 
             // lblStatus
             // 
@@ -541,11 +427,11 @@
             lblStatus.Dock = DockStyle.Bottom;
             lblStatus.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblStatus.ForeColor = Color.WhiteSmoke;
-            lblStatus.Location = new Point(2, 439);
-            lblStatus.Margin = new Padding(2, 0, 2, 0);
+            lblStatus.Location = new Point(4, 1026);
+            lblStatus.Margin = new Padding(4, 0, 4, 0);
             lblStatus.Name = "lblStatus";
-            lblStatus.Padding = new Padding(6);
-            lblStatus.Size = new Size(237, 32);
+            lblStatus.Padding = new Padding(11, 13, 11, 13);
+            lblStatus.Size = new Size(440, 63);
             lblStatus.TabIndex = 8;
             lblStatus.Text = "Status: Disconnected";
             lblStatus.TextAlign = ContentAlignment.MiddleLeft;
@@ -557,11 +443,11 @@
             lblMonitor.Dock = DockStyle.Bottom;
             lblMonitor.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblMonitor.ForeColor = Color.WhiteSmoke;
-            lblMonitor.Location = new Point(2, 194);
-            lblMonitor.Margin = new Padding(2, 0, 2, 0);
+            lblMonitor.Location = new Point(4, 519);
+            lblMonitor.Margin = new Padding(4, 0, 4, 0);
             lblMonitor.Name = "lblMonitor";
-            lblMonitor.Padding = new Padding(6);
-            lblMonitor.Size = new Size(237, 32);
+            lblMonitor.Padding = new Padding(11, 13, 11, 13);
+            lblMonitor.Size = new Size(440, 63);
             lblMonitor.TabIndex = 5;
             lblMonitor.Text = "Yoke Monitor";
             lblMonitor.TextAlign = ContentAlignment.MiddleLeft;
@@ -576,11 +462,11 @@
             btnHome.FlatStyle = FlatStyle.Flat;
             btnHome.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnHome.ForeColor = Color.WhiteSmoke;
-            btnHome.Location = new Point(9, 38);
-            btnHome.Margin = new Padding(9, 6, 9, 6);
+            btnHome.Location = new Point(17, 76);
+            btnHome.Margin = new Padding(17, 13, 17, 13);
             btnHome.Name = "btnHome";
-            btnHome.Padding = new Padding(6);
-            btnHome.Size = new Size(223, 42);
+            btnHome.Padding = new Padding(11, 13, 11, 13);
+            btnHome.Size = new Size(414, 126);
             btnHome.TabIndex = 4;
             btnHome.Text = "Home";
             btnHome.TextAlign = ContentAlignment.MiddleLeft;
@@ -597,11 +483,11 @@
             btnYokeData.FlatStyle = FlatStyle.Flat;
             btnYokeData.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnYokeData.ForeColor = Color.WhiteSmoke;
-            btnYokeData.Location = new Point(9, 146);
-            btnYokeData.Margin = new Padding(9, 6, 9, 6);
+            btnYokeData.Location = new Point(17, 380);
+            btnYokeData.Margin = new Padding(17, 13, 17, 13);
             btnYokeData.Name = "btnYokeData";
-            btnYokeData.Padding = new Padding(6);
-            btnYokeData.Size = new Size(223, 42);
+            btnYokeData.Padding = new Padding(11, 13, 11, 13);
+            btnYokeData.Size = new Size(414, 126);
             btnYokeData.TabIndex = 3;
             btnYokeData.Text = "Yoke Data";
             btnYokeData.TextAlign = ContentAlignment.MiddleLeft;
@@ -615,11 +501,11 @@
             lblMenu.Dock = DockStyle.Fill;
             lblMenu.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblMenu.ForeColor = Color.WhiteSmoke;
-            lblMenu.Location = new Point(2, 0);
-            lblMenu.Margin = new Padding(2, 0, 2, 0);
+            lblMenu.Location = new Point(4, 0);
+            lblMenu.Margin = new Padding(4, 0, 4, 0);
             lblMenu.Name = "lblMenu";
-            lblMenu.Padding = new Padding(6);
-            lblMenu.Size = new Size(237, 32);
+            lblMenu.Padding = new Padding(11, 13, 11, 13);
+            lblMenu.Size = new Size(440, 63);
             lblMenu.TabIndex = 0;
             lblMenu.Text = "Menu";
             lblMenu.TextAlign = ContentAlignment.MiddleLeft;
@@ -634,11 +520,11 @@
             btnProfiles.FlatStyle = FlatStyle.Flat;
             btnProfiles.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnProfiles.ForeColor = Color.WhiteSmoke;
-            btnProfiles.Location = new Point(9, 92);
-            btnProfiles.Margin = new Padding(9, 6, 9, 6);
+            btnProfiles.Location = new Point(17, 228);
+            btnProfiles.Margin = new Padding(17, 13, 17, 13);
             btnProfiles.Name = "btnProfiles";
-            btnProfiles.Padding = new Padding(6);
-            btnProfiles.Size = new Size(223, 42);
+            btnProfiles.Padding = new Padding(11, 13, 11, 13);
+            btnProfiles.Size = new Size(414, 126);
             btnProfiles.TabIndex = 1;
             btnProfiles.Text = "Profiles";
             btnProfiles.TextAlign = ContentAlignment.MiddleLeft;
@@ -651,10 +537,10 @@
             flowLayoutPanel1.Controls.Add(btnConnect);
             flowLayoutPanel1.Controls.Add(btnFfbOn);
             flowLayoutPanel1.Dock = DockStyle.Fill;
-            flowLayoutPanel1.Location = new Point(0, 471);
+            flowLayoutPanel1.Location = new Point(0, 1089);
             flowLayoutPanel1.Margin = new Padding(0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(241, 60);
+            flowLayoutPanel1.Size = new Size(448, 111);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // btnConnect
@@ -667,12 +553,12 @@
             btnConnect.FlatStyle = FlatStyle.Flat;
             btnConnect.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnConnect.ForeColor = Color.WhiteSmoke;
-            btnConnect.Location = new Point(9, 9);
-            btnConnect.Margin = new Padding(9);
-            btnConnect.MinimumSize = new Size(111, 0);
+            btnConnect.Location = new Point(17, 19);
+            btnConnect.Margin = new Padding(17, 19, 17, 19);
+            btnConnect.MinimumSize = new Size(206, 0);
             btnConnect.Name = "btnConnect";
-            btnConnect.Padding = new Padding(6);
-            btnConnect.Size = new Size(111, 42);
+            btnConnect.Padding = new Padding(11, 13, 11, 13);
+            btnConnect.Size = new Size(206, 73);
             btnConnect.TabIndex = 3;
             btnConnect.Text = "Connect";
             btnConnect.UseVisualStyleBackColor = false;
@@ -690,11 +576,11 @@
             btnFfbOn.FlatStyle = FlatStyle.Flat;
             btnFfbOn.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFfbOn.ForeColor = Color.WhiteSmoke;
-            btnFfbOn.Location = new Point(138, 9);
-            btnFfbOn.Margin = new Padding(9);
+            btnFfbOn.Location = new Point(257, 19);
+            btnFfbOn.Margin = new Padding(17, 19, 17, 19);
             btnFfbOn.Name = "btnFfbOn";
-            btnFfbOn.Padding = new Padding(6);
-            btnFfbOn.Size = new Size(89, 42);
+            btnFfbOn.Padding = new Padding(11, 13, 11, 13);
+            btnFfbOn.Size = new Size(168, 73);
             btnFfbOn.TabIndex = 4;
             btnFfbOn.Text = "FFB ON";
             btnFfbOn.UseVisualStyleBackColor = false;
@@ -705,22 +591,22 @@
             tablessControlContent.Controls.Add(profilesPage);
             tablessControlContent.Controls.Add(yokeDataPage);
             tablessControlContent.Dock = DockStyle.Fill;
-            tablessControlContent.Location = new Point(241, 0);
+            tablessControlContent.Location = new Point(448, 0);
             tablessControlContent.Margin = new Padding(0);
             tablessControlContent.Name = "tablessControlContent";
             tablessControlContent.SelectedIndex = 0;
-            tablessControlContent.Size = new Size(646, 529);
+            tablessControlContent.Size = new Size(1199, 1129);
             tablessControlContent.TabIndex = 1;
             // 
             // homePage
             // 
             homePage.BackColor = Color.Gray;
             homePage.Controls.Add(homeTableLayoutPanel);
-            homePage.Location = new Point(4, 24);
-            homePage.Margin = new Padding(2);
+            homePage.Location = new Point(8, 46);
+            homePage.Margin = new Padding(4, 4, 4, 4);
             homePage.Name = "homePage";
-            homePage.Padding = new Padding(2);
-            homePage.Size = new Size(638, 501);
+            homePage.Padding = new Padding(4, 4, 4, 4);
+            homePage.Size = new Size(1183, 1075);
             homePage.TabIndex = 0;
             homePage.Text = "Home";
             // 
@@ -736,14 +622,14 @@
             homeTableLayoutPanel.Controls.Add(cboProfile, 1, 1);
             homeTableLayoutPanel.Controls.Add(cbProfileAutoSelect, 2, 1);
             homeTableLayoutPanel.Dock = DockStyle.Fill;
-            homeTableLayoutPanel.Location = new Point(2, 2);
-            homeTableLayoutPanel.Margin = new Padding(2, 1, 2, 1);
+            homeTableLayoutPanel.Location = new Point(4, 4);
+            homeTableLayoutPanel.Margin = new Padding(4, 2, 4, 2);
             homeTableLayoutPanel.Name = "homeTableLayoutPanel";
             homeTableLayoutPanel.RowCount = 3;
             homeTableLayoutPanel.RowStyles.Add(new RowStyle());
             homeTableLayoutPanel.RowStyles.Add(new RowStyle());
-            homeTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 309F));
-            homeTableLayoutPanel.Size = new Size(634, 497);
+            homeTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 659F));
+            homeTableLayoutPanel.Size = new Size(1175, 1067);
             homeTableLayoutPanel.TabIndex = 0;
             // 
             // lblCurrentProfile
@@ -752,12 +638,12 @@
             lblCurrentProfile.Dock = DockStyle.Fill;
             lblCurrentProfile.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold);
             lblCurrentProfile.ForeColor = Color.WhiteSmoke;
-            lblCurrentProfile.Location = new Point(2, 54);
-            lblCurrentProfile.Margin = new Padding(2, 0, 2, 0);
-            lblCurrentProfile.MinimumSize = new Size(0, 34);
+            lblCurrentProfile.Location = new Point(4, 152);
+            lblCurrentProfile.Margin = new Padding(4, 0, 4, 0);
+            lblCurrentProfile.MinimumSize = new Size(0, 73);
             lblCurrentProfile.Name = "lblCurrentProfile";
-            lblCurrentProfile.Padding = new Padding(6);
-            lblCurrentProfile.Size = new Size(142, 35);
+            lblCurrentProfile.Padding = new Padding(11, 13, 11, 13);
+            lblCurrentProfile.Size = new Size(270, 73);
             lblCurrentProfile.TabIndex = 6;
             lblCurrentProfile.Text = "Current Profile:";
             lblCurrentProfile.TextAlign = ContentAlignment.MiddleLeft;
@@ -772,12 +658,12 @@
             btnConnectSim.FlatStyle = FlatStyle.Flat;
             btnConnectSim.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnConnectSim.ForeColor = Color.WhiteSmoke;
-            btnConnectSim.Location = new Point(514, 6);
-            btnConnectSim.Margin = new Padding(9, 6, 9, 6);
-            btnConnectSim.MinimumSize = new Size(111, 0);
+            btnConnectSim.Location = new Point(848, 13);
+            btnConnectSim.Margin = new Padding(17, 13, 17, 13);
+            btnConnectSim.MinimumSize = new Size(206, 0);
             btnConnectSim.Name = "btnConnectSim";
-            btnConnectSim.Padding = new Padding(6);
-            btnConnectSim.Size = new Size(111, 42);
+            btnConnectSim.Padding = new Padding(11, 13, 11, 13);
+            btnConnectSim.Size = new Size(310, 126);
             btnConnectSim.TabIndex = 5;
             btnConnectSim.Text = "Connect";
             btnConnectSim.UseVisualStyleBackColor = false;
@@ -789,12 +675,12 @@
             lblConnectSimStatus.Dock = DockStyle.Fill;
             lblConnectSimStatus.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold);
             lblConnectSimStatus.ForeColor = Color.WhiteSmoke;
-            lblConnectSimStatus.Location = new Point(2, 0);
-            lblConnectSimStatus.Margin = new Padding(2, 0, 2, 0);
-            lblConnectSimStatus.MinimumSize = new Size(0, 34);
+            lblConnectSimStatus.Location = new Point(4, 0);
+            lblConnectSimStatus.Margin = new Padding(4, 0, 4, 0);
+            lblConnectSimStatus.MinimumSize = new Size(0, 73);
             lblConnectSimStatus.Name = "lblConnectSimStatus";
-            lblConnectSimStatus.Padding = new Padding(6);
-            lblConnectSimStatus.Size = new Size(501, 54);
+            lblConnectSimStatus.Padding = new Padding(11, 13, 11, 13);
+            lblConnectSimStatus.Size = new Size(823, 152);
             lblConnectSimStatus.TabIndex = 0;
             lblConnectSimStatus.Text = "Simulator Status: Disconnected";
             lblConnectSimStatus.TextAlign = ContentAlignment.MiddleLeft;
@@ -804,10 +690,10 @@
             cboProfile.Dock = DockStyle.Fill;
             cboProfile.FlatStyle = FlatStyle.Flat;
             cboProfile.FormattingEnabled = true;
-            cboProfile.Location = new Point(155, 60);
-            cboProfile.Margin = new Padding(9, 6, 9, 6);
+            cboProfile.Location = new Point(295, 165);
+            cboProfile.Margin = new Padding(17, 13, 17, 13);
             cboProfile.Name = "cboProfile";
-            cboProfile.Size = new Size(341, 23);
+            cboProfile.Size = new Size(519, 40);
             cboProfile.TabIndex = 7;
             // 
             // cbProfileAutoSelect
@@ -816,10 +702,10 @@
             cbProfileAutoSelect.Dock = DockStyle.Fill;
             cbProfileAutoSelect.Font = new Font("Microsoft Sans Serif", 9F);
             cbProfileAutoSelect.ForeColor = Color.WhiteSmoke;
-            cbProfileAutoSelect.Location = new Point(514, 60);
-            cbProfileAutoSelect.Margin = new Padding(9, 6, 9, 6);
+            cbProfileAutoSelect.Location = new Point(848, 165);
+            cbProfileAutoSelect.Margin = new Padding(17, 13, 17, 13);
             cbProfileAutoSelect.Name = "cbProfileAutoSelect";
-            cbProfileAutoSelect.Size = new Size(111, 23);
+            cbProfileAutoSelect.Size = new Size(310, 47);
             cbProfileAutoSelect.TabIndex = 8;
             cbProfileAutoSelect.Text = "Auto Select";
             cbProfileAutoSelect.UseVisualStyleBackColor = true;
@@ -828,11 +714,11 @@
             // 
             profilesPage.BackColor = Color.Gray;
             profilesPage.Controls.Add(tableLayoutPanel2);
-            profilesPage.Location = new Point(4, 24);
-            profilesPage.Margin = new Padding(2);
+            profilesPage.Location = new Point(8, 46);
+            profilesPage.Margin = new Padding(4, 4, 4, 4);
             profilesPage.Name = "profilesPage";
-            profilesPage.Padding = new Padding(2);
-            profilesPage.Size = new Size(638, 501);
+            profilesPage.Padding = new Padding(4, 4, 4, 4);
+            profilesPage.Size = new Size(1184, 1075);
             profilesPage.TabIndex = 1;
             profilesPage.Text = "Profiles";
             // 
@@ -843,22 +729,32 @@
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.7192421F));
             tableLayoutPanel2.Controls.Add(listBox1, 0, 0);
             tableLayoutPanel2.Dock = DockStyle.Fill;
-            tableLayoutPanel2.Location = new Point(2, 2);
+            tableLayoutPanel2.Location = new Point(4, 4);
+            tableLayoutPanel2.Margin = new Padding(6, 6, 6, 6);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 2;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 87.3239441F));
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 12.6760559F));
-            tableLayoutPanel2.Size = new Size(634, 497);
+            tableLayoutPanel2.Size = new Size(1176, 1067);
             tableLayoutPanel2.TabIndex = 0;
+            // 
+            // listBox1
+            // 
+            listBox1.FormattingEnabled = true;
+            listBox1.Location = new Point(6, 6);
+            listBox1.Margin = new Padding(6, 6, 6, 6);
+            listBox1.Name = "listBox1";
+            listBox1.Size = new Size(966, 900);
+            listBox1.TabIndex = 0;
             // 
             // yokeDataPage
             // 
             yokeDataPage.BackColor = Color.Gray;
-            yokeDataPage.Location = new Point(4, 24);
-            yokeDataPage.Margin = new Padding(2);
+            yokeDataPage.Location = new Point(8, 46);
+            yokeDataPage.Margin = new Padding(4, 4, 4, 4);
             yokeDataPage.Name = "yokeDataPage";
-            yokeDataPage.Padding = new Padding(2);
-            yokeDataPage.Size = new Size(638, 501);
+            yokeDataPage.Padding = new Padding(4, 4, 4, 4);
+            yokeDataPage.Size = new Size(1184, 1075);
             yokeDataPage.TabIndex = 2;
             yokeDataPage.Text = "Yoke Data";
             // 
@@ -896,22 +792,13 @@
             LeftToolStripPanel.RowMargin = new Padding(3, 0, 0, 0);
             LeftToolStripPanel.Size = new Size(0, 0);
             // 
-            // listBox1
-            // 
-            listBox1.FormattingEnabled = true;
-            listBox1.ItemHeight = 15;
-            listBox1.Location = new Point(3, 3);
-            listBox1.Name = "listBox1";
-            listBox1.Size = new Size(522, 424);
-            listBox1.TabIndex = 0;
-            // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(887, 529);
+            ClientSize = new Size(1647, 1129);
             Controls.Add(mainTableLayoutPanel);
-            Margin = new Padding(2);
+            Margin = new Padding(4, 4, 4, 4);
             Name = "Form1";
             Text = "Force Feedback Yoke Desktop App";
             FormClosed += Form1_FormClosed;
