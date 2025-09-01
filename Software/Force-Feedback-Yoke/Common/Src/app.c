@@ -365,8 +365,8 @@ void ProcessUsbControlData(UsbReport_t *usbReport) {
 // Private functions
 
 static void ProcessFFBHidForce(FFBHid_t *hid) {
-	FFBForces_t forces = FFBHid_GetForceData(hid);
-	FFBSetForces(&pitchFFB, forces);
+	FFBSetForces(&pitchFFB, FFBHid_GetForceData(hid, HID_PITCH));
+	FFBSetForces(&rollFFB, FFBHid_GetForceData(&ffbHid, HID_ROLL));
 }
 
 static void ProcessFFBHidControl(FFBHid_t *hid) {
@@ -403,18 +403,27 @@ static void ProcessFFBHidDataUpdate(FFBHid_t *hid) {
 			-32767, 32767);
 
 	// Prepare aileron axis
-	float rollAngle = ROLL_DEGREE_PER_REV *
-			Encoder_GetCount(&rollEncoder)/65536.0f;
-	float rollAngleConstrained = ConstrainFloat(rollAngle, -90.0f, 90.0f);
+//	float rollAngle = ROLL_DEGREE_PER_REV *
+//			Encoder_GetCount(&rollEncoder)/65536.0f;
+//	float rollAngleConstrained = ConstrainFloat(rollAngle, -90.0f, 90.0f);
 //		int rollEncoderCountConstrained = Constrain(EncoderGetCount(
 //				&rollEncoder),
 //				FFBGetMinControlRange(&ffbRoll),
 //				FFBGetMaxControlRange(&ffbRoll));
 
 	// Map roll values to roll control range
-	int16_t rollAxis = (int16_t)Map(rollAngleConstrained,
-			-90.0f,
-			90.0f,
+//	int16_t rollAxis = (int16_t)Map(rollAngleConstrained,
+//			-90.0f,
+//			90.0f,
+//			-32767, 32767);
+
+	int rollAxisCountConstrained = Constrain(FFB_GetRawAxisCount(&rollFFB),
+			FFBGetMinControlRange(&rollFFB),
+			FFBGetMaxControlRange(&rollFFB));
+
+	int16_t rollAxis = (int16_t)Map(rollAxisCountConstrained,
+			FFBGetMinControlRange(&rollFFB),
+			FFBGetMaxControlRange(&rollFFB),
 			-32767, 32767);
 
 	FFBHid_SetAxis(hid, HID_PITCH, pitchAxis);

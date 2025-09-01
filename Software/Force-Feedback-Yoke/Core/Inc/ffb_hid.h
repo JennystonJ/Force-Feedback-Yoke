@@ -41,7 +41,7 @@ struct FFBHid {
 	USBD_HandleTypeDef *husbd;
 
 	uint8_t forceDataFrontBufferIndex;
-	FFBForces_t forceData[2];
+	FFBForces_t forceData[FFB_HID_NUM_AXIS][2];
 
 	FFBHidControlData_t controlData;
 	FFBHidCapabilities_t capabilities;
@@ -61,7 +61,7 @@ void FFBHid_SetAxis(FFBHid_t *ffbHid, uint8_t axis, int16_t value);
 void FFBHid_SetForceOutput(FFBHid_t *ffbHid, uint8_t axis, int16_t value);
 bool FFBHid_GetFFBEnable(FFBHid_t *ffbHid);
 TravelMinMax_t FFBHid_GetAxisTravel(FFBHid_t *ffbHid, uint8_t axis);
-FFBForces_t FFBHid_GetForceData(FFBHid_t *ffbHid);
+FFBForces_t FFBHid_GetForceData(FFBHid_t *ffbHid, uint8_t axis);
 void FFBHid_RegisterForceReceivedCallback(FFBHid_t *ffbHid,
 		void (*ForceReceivedCallback)(FFBHid_t *ffbHid));
 void FFBHid_RegisterControlReceivedCallback(FFBHid_t *ffbHid,

@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define FFB_HID_RX_BUFFER_SIZE 12
+#define FFB_HID_RX_BUFFER_SIZE 24
 #define FFB_HID_RX_CONTROL_BUFFER_SIZE 6
 
 typedef struct __attribute__((packed)) FFBHIDReceivePacket {
@@ -58,8 +58,8 @@ TravelMinMax_t FFBHid_GetAxisTravel(FFBHid_t *ffbHid, uint8_t axis) {
 	return ffbHid->controlData.axisLimits[axis];
 }
 
-FFBForces_t FFBHid_GetForceData(FFBHid_t *ffbHid) {
-	return ffbHid->forceData[ffbHid->forceDataFrontBufferIndex];
+FFBForces_t FFBHid_GetForceData(FFBHid_t *ffbHid, uint8_t axis) {
+	return ffbHid->forceData[axis][ffbHid->forceDataFrontBufferIndex];
 }
 
 void FFBHid_RegisterForceReceivedCallback(FFBHid_t *ffbHid,
@@ -82,12 +82,16 @@ void FFBHid_Update(FFBHid_t *ffbHid) {
 
 		if(HID_GetReceiveReady()) {
 			uint8_t *buffer = HID_ReadReceiveBuffer();
-			FFBHIDReceivePacket packet;
-			memcpy(&packet, buffer, FFB_HID_RX_BUFFER_SIZE);
-			// Unpack to back buffer
-			FFB_ForceUnpack(&ffbHid->
-					forceData[!ffbHid->forceDataFrontBufferIndex],
-					&packet.packedForce);
+
+			// Unpack receive buffer
+			for(int i = 0; i < FFB_HID_NUM_AXIS; i++) {
+				FFBHIDReceivePacket packet;
+				memcpy(&packet, buffer + sizeof(packet)*i, sizeof(packet));
+				// Unpack to back buffer
+				FFB_ForceUnpack(&ffbHid->
+						forceData[i][!ffbHid->forceDataFrontBufferIndex],
+						&packet.packedForce);
+			}
 			// Swap buffers
 			ffbHid->forceDataFrontBufferIndex =
 					!ffbHid->forceDataFrontBufferIndex;
