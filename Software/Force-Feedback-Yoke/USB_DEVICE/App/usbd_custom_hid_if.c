@@ -125,7 +125,7 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DES
 		0x15, 0x00, // LOGICAL_MINIMUM (0)
 		0x26, 0xff, 0x00, // LOGICAL_MAXIMUM (255)
 		0x75, 0x08, // REPORT_SIZE (8)
-		0x95, 0x0C, // REPORT_COUNT (12)
+		0x95, 0x18, // REPORT_COUNT (24)
 		0x91, 0x02, // OUTPUT (Data,Var,Abs)
 
 		// ----- Feature Report (Capabilities) -----
