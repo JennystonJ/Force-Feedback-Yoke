@@ -115,6 +115,12 @@ void Application_Init(void) {
 	FFBSetLoadCell(&pitchFFB, &pitchLoadCell);
 	FFB_SetUnitPerRevConstant(&pitchFFB, PITCH_MM_PER_REV);
 	FFB_SetLockGains(&rollFFB, FFB_PITCH_LOCK_KP, FFB_PITCH_LOCK_KD);
+	FFBForces_t pitchHomeCenterForces = {
+			.constantForce = 0.0f,
+			.springForce = FFB_PITCH_HOME_SPRING,
+			.damperForce = FFB_PITCH_HOME_DAMPER
+	};
+	FFB_SetHomeCenterForces(&pitchFFB, pitchHomeCenterForces);
 
 	// Pitch FFB Assist setup
 	FFBAssist_t *pitchFFBAssist = FFB_GetFFBAssist(&pitchFFB);
@@ -129,6 +135,12 @@ void Application_Init(void) {
 	FFB_SetAxisReverse(&rollFFB, true);
 	FFB_SetUnitPerRevConstant(&rollFFB, ROLL_DEGREE_PER_REV);
 	FFB_SetLockGains(&rollFFB, FFB_ROLL_LOCK_KP, FFB_ROLL_LOCK_KD);
+	FFBForces_t rollHomeCenterForces = {
+			.constantForce = 0.0f,
+			.springForce = FFB_ROLL_HOME_SPRING,
+			.damperForce = FFB_ROLL_HOME_DAMPER
+	};
+	FFB_SetHomeCenterForces(&rollFFB, rollHomeCenterForces);
 
 	// Electrical angle offset
 	BLDCMotor_SetElectricalAngleOffsetCount(&pitchBLDCMotor,
