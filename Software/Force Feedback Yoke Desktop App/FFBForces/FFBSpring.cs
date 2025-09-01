@@ -47,7 +47,7 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBForces
 
         }
 
-        public override ForceSet CalcForce(double measuredPosition, double dt)
+        public override ForceSet CalcForce()
         {
             return new ForceSet
             {

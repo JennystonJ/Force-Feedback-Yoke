@@ -1,4 +1,5 @@
-﻿using Force_Feedback_Yoke_Desktop_App.FFBForces;
+﻿using Force_Feedback_Yoke_Desktop_App.FFBEffects;
+using Force_Feedback_Yoke_Desktop_App.FFBForces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,7 @@ namespace Force_Feedback_Yoke_Desktop_App
         public double Gain { get; set; }
         public double MaxForce { get; set; }
         public double Travel { get; set; }
-        public double TravelLimitStrength { get; set; }
-        public List<FFBForce> Forces { get; set; }
+        public List<FFBEffect> Effects { get; set; }
 
         public FFBController()
         {
@@ -22,11 +22,10 @@ namespace Force_Feedback_Yoke_Desktop_App
             Gain = 0; 
             MaxForce = 0;
             Travel = 100;
-            TravelLimitStrength = 0;
-            Forces = new List<FFBForce>();
+            Effects = new List<FFBEffect>();
         }
 
-        public ForceSet CalcForces(double measuredPosition, double dt)
+        public ForceSet CalcForces()
         {
             if (!Enable)
             {
@@ -34,9 +33,12 @@ namespace Force_Feedback_Yoke_Desktop_App
             }
 
             ForceSet netForceSet = new ForceSet();
-            foreach (FFBForce f in Forces)
+            foreach (FFBEffect effect in Effects)
             {
-                netForceSet += f.CalcForce(measuredPosition, dt);
+                foreach(FFBForce force in effect.Forces)
+                {
+                    netForceSet += force.CalcForce();
+                }
             }
 
             return netForceSet * Gain;

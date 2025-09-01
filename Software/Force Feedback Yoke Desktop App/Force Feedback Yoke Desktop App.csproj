@@ -8,13 +8,21 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Microsoft.FlightSimulator.SimConnect.dll" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Hid.Net" Version="4.2.1" />
     <PackageReference Include="System.Management" Version="9.0.8" />
     <PackageReference Include="System.Reactive" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controls\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,120 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Device.Net/4.2.1": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "3.1.7"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Device.Net.dll": {
+            "assemblyVersion": "4.2.1.0",
+            "fileVersion": "4.2.1.0"
+          }
+        }
+      },
+      "Hid.Net/4.2.1": {
+        "dependencies": {
+          "Device.Net": "4.2.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Hid.Net.dll": {
+            "assemblyVersion": "4.2.1.0",
+            "fileVersion": "4.2.1.0"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/3.1.7": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "3.1.7.0",
+            "fileVersion": "3.100.720.37108"
+          }
+        }
+      },
+      "System.CodeDom/9.0.8": {
+        "runtime": {
+          "lib/net8.0/System.CodeDom.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36511"
+          }
+        }
+      },
+      "System.Management/9.0.8": {
+        "dependencies": {
+          "System.CodeDom": "9.0.8"
+        },
+        "runtime": {
+          "lib/net8.0/System.Management.dll": {
+            "assemblyVersion": "9.0.0.8",
+            "fileVersion": "9.0.825.36511"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net8.0/System.Management.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "9.0.0.8",
+            "fileVersion": "9.0.825.36511"
+          }
+        }
+      },
+      "System.Reactive/6.0.1": {
+        "runtime": {
+          "lib/net6.0/System.Reactive.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.1.7420"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Device.Net/4.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7wm8ys25Jazz7bwb7jdu8UEKEQHQzMykGkpRvFo48b0ig9YsoQDaA9SrGPYlWjDZV3kXCYqWI73HVKY8oaljMg==",
+      "path": "device.net/4.2.1",
+      "hashPath": "device.net.4.2.1.nupkg.sha512"
+    },
+    "Hid.Net/4.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fDU8xZC4gktw1xPnK/TperpSriVjCX4hnvmkVcUOgbgCBngK/XX+P0/7tMhT0hNHzuVHbEO/0xVByIoD0pGidg==",
+      "path": "hid.net/4.2.1",
+      "hashPath": "hid.net.4.2.1.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/3.1.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-oD7LQbMuaqq/yAz8PKX0hl4+H/vDFTQHo8rxbKB36P1/bG8FG7JUVKBoHkSt1MaJUtgyiHrH1AlAhaucKUKyEg==",
+      "path": "microsoft.extensions.logging.abstractions/3.1.7",
+      "hashPath": "microsoft.extensions.logging.abstractions.3.1.7.nupkg.sha512"
+    },
+    "System.CodeDom/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kxg1TE/BMUAaMve/lPH9Bds+CFF4JPrN9WkQqHejc7UP6PO4KDAjZNF0uhvpZmoLR+EvHdRt232J++ZDI7aGqA==",
+      "path": "system.codedom/9.0.8",
+      "hashPath": "system.codedom.9.0.8.nupkg.sha512"
+    },
+    "System.Management/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-D7icHff0OpEEIOLsTgnPL+Ff1VmJ3tzA8y20LNKgv4hx1MFMA3XGAVlWMCkLQfBkyvEwib6rMG6nP27lf98KRA==",
+      "path": "system.management/9.0.8",
+      "hashPath": "system.management.9.0.8.nupkg.sha512"
+    },
+    "System.Reactive/6.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rHaWtKDwCi9qJ3ObKo8LHPMuuwv33YbmQi7TcUK1C264V3MFnOr5Im7QgCTdLniztP3GJyeiSg5x8NqYJFqRmg==",
+      "path": "system.reactive/6.0.1",
+      "hashPath": "system.reactive.6.0.1.nupkg.sha512"
+    }
+  }
+}

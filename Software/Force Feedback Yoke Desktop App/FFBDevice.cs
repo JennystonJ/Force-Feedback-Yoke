@@ -253,7 +253,7 @@ namespace Force_Feedback_Yoke_Desktop_App
             }
             if(hidWorkerTask != null)
             {
-                hidCommandQueue.Enqueue(PrepareFFBReport(ForceSet.Empty));
+                hidCommandQueue.Enqueue(PrepareFFBReport(ForceSet.Empty, ForceSet.Empty));
                 hidWorkerCts.Cancel();
             }
 
@@ -280,9 +280,9 @@ namespace Force_Feedback_Yoke_Desktop_App
             hidCommandQueue.Enqueue(ConvertControlToReport());
         }
 
-        public void SetForce(ForceSet force)
+        public void SetForces(ForceSet pitchForce, ForceSet rollForce)
         {
-            byte[] forceReport = PrepareFFBReport(force);
+            byte[] forceReport = PrepareFFBReport(pitchForce, rollForce);
             hidCommandQueue.Enqueue(forceReport);
         }
 
@@ -465,28 +465,34 @@ namespace Force_Feedback_Yoke_Desktop_App
                 rollForce = ByteArrayToInt16(values[6..8])
             };
         }
-        byte[] PrepareFFBReport(ForceSet force)
+        byte[] PrepareFFBReport(ForceSet pitchForce, ForceSet rollForce)
         {
-            byte[] outBuffer = new byte[13];
+            byte[] outBuffer = new byte[25];
             outBuffer[0] = HID_OUT_REPORT_ID;
 
             float maxForce = Capabilities.PitchMaxForce;
 
-            float[] forces = new float[3];
+            float[] forces = new float[6];
             // Clamp all forces
-            forces[0] = (float)Math.Clamp(force.Constant, -maxForce, maxForce);
-            forces[1] = (float)Math.Clamp(force.Spring, -maxForce, maxForce);
-            forces[2] = (float)Math.Clamp(force.Damper, -maxForce, maxForce);
+            // Pitch
+            forces[0] = (float)Math.Clamp(pitchForce.Constant, -maxForce, maxForce);
+            forces[1] = (float)Math.Clamp(pitchForce.Spring, -maxForce, maxForce);
+            forces[2] = (float)Math.Clamp(pitchForce.Damper, -maxForce, maxForce);
 
-            // Copy pitch forces to byte array
-            byte[] pitchForceOutBytes = new byte[sizeof(float) * forces.Length];
+            // Roll
+            forces[3] = (float)Math.Clamp(rollForce.Constant, -maxForce, maxForce);
+            forces[4] = (float)Math.Clamp(rollForce.Spring, -maxForce, maxForce);
+            forces[5] = (float)Math.Clamp(rollForce.Damper, -maxForce, maxForce);
+
+            // Copy roll and pitch forces to byte array
+            byte[] forceOutBytes = new byte[sizeof(float) * forces.Length];
             for(int i = 0; i < forces.Length; i++)
             {
                 byte[] bytes = BitConverter.GetBytes(forces[i]);
-                Array.Copy(bytes, 0, pitchForceOutBytes, i * sizeof(float), bytes.Length);
+                Array.Copy(bytes, 0, forceOutBytes, i * sizeof(float), bytes.Length);
             }
 
-            Array.Copy(pitchForceOutBytes, 0, outBuffer, 1, pitchForceOutBytes.Length);
+            Array.Copy(forceOutBytes, 0, outBuffer, 1, forceOutBytes.Length);
 
             return outBuffer;
         }
@@ -580,7 +586,7 @@ namespace Force_Feedback_Yoke_Desktop_App
         {
             byte[] buffer = new byte[18];
             buffer[0] = HID_CONTROL_REPORT_ID; // reportId byte (control)
-            buffer[1] = running ? (byte)0x01 : (byte)0x00; // ffb disable
+            buffer[1] = controlData.FFBEnabled ? (byte)0x01 : (byte)0x00; // ffb disable
 
             byte[] pitchLimitInMMMin = BitConverter.GetBytes(controlData.PitchLimitInMMMin);
             Array.Copy(pitchLimitInMMMin, 0, buffer, 2, pitchLimitInMMMin.Length);

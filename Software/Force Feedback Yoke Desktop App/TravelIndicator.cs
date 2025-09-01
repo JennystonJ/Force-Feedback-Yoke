@@ -53,8 +53,8 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private void PaintNormal(PaintEventArgs e)
         {
-            float fillRatio = (float)(Value - _minimum) / (float)(_maximum - _minimum);
-            int fillTo = (int)((float)Width * fillRatio);
+            float fillRatio = (Value - _minimum) / (float)(_maximum - _minimum);
+            int fillTo = (int)(Width * fillRatio);
 
             e.Graphics.FillRectangle(_background, 0, 0, Width, Height);
             e.Graphics.FillRectangle(_brush, 0, 0, fillTo, Height);
@@ -64,8 +64,8 @@ namespace Force_Feedback_Yoke_Desktop_App
         private void PaintCentered(PaintEventArgs e)
         {
             float range = _maximum - _minimum;
-            float center = Width - (Width / range) * (range + _minimum);
-            float fillRatio = (float)(Value - _minimum) / range;
+            float center = Width - Width / range * (range + _minimum);
+            float fillRatio = (Value - _minimum) / range;
             float fillWidth = (int)(Width * fillRatio) - center;
 
             // Determine fill x position from bar direction

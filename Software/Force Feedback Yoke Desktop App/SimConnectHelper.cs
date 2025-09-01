@@ -68,8 +68,9 @@ namespace Force_Feedback_Yoke_Desktop_App
 
     public class SimConnectHelper : Control
     {
-        public event EventHandler ?DataReadyEvent;
-        public event EventHandler ?SimPauseChangedEvent;
+        public event EventHandler? DataReadyEvent;
+        public event EventHandler? SimPauseChangedEvent;
+        public event EventHandler? SimConnectionClosedEvent;
 
         public WeatherData Weather { get; private set; }
         public AircraftData Aircraft { get; private set; }
@@ -123,6 +124,7 @@ namespace Force_Feedback_Yoke_Desktop_App
         {
             if (simConnect != null)
             {
+                connected = false;
                 simConnect.Dispose();
                 simConnect = null;
             }
@@ -138,6 +140,7 @@ namespace Force_Feedback_Yoke_Desktop_App
         {
             Console.WriteLine("Microsoft Flight Simulator disconnected!");
             CloseConnection();
+            SimConnectionClosedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void SimConnect_OnRecvSimobjectData(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA data)

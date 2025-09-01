@@ -22,10 +22,12 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
 
             springForce = new FFBSpring();
             damperForce = new FFBDamper();
-            springForce.strengthDelegate = AirSpeedStiffnessSpringFunction;
-            damperForce.strengthDelegate = AirSpeedStiffnessDamperFunction;
 
-            Forces = new FFBForce[] { springForce, damperForce };
+            Forces = [springForce, damperForce];
+
+            // Ensure delegates start disabled
+            Enabled = false;
+            OnEnabledChanged(false);
         }
 
         public double AirSpeedStiffnessSpringFunction()
@@ -38,5 +40,25 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
             return DamperGain/10000.0 * Math.Sqrt(AirSpeed);
         }
 
+        protected override void OnEnabledChanged(bool enabled)
+        {
+            springForce.strengthDelegate = enabled ? AirSpeedStiffnessSpringFunction : Zero;
+            damperForce.strengthDelegate = enabled ? AirSpeedStiffnessDamperFunction : Zero;
+        }
+
+        public override void LoadParameters(Dictionary<string, double> parameters)
+        {
+            SpringGain = parameters["spring_gain"];
+            DamperGain = parameters["damper_gain"];
+        }
+
+        public override Dictionary<string, double> SaveParameters()
+        {
+            return new Dictionary<string, double>
+            {
+                { "spring_gain", SpringGain },
+                { "damper_gain", DamperGain },
+            };
+        }
     }
 }

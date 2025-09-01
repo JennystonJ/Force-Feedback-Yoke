@@ -10,32 +10,28 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
     internal class ElevatorWeight : FFBEffect
     {
         public double Weight { get; set; }
-        public double EngineRPM { get; set; }
-        public double EngineRPMStrength { get; set; }
         public double DamperGain { get; set; }
+        public double EngineRPMStrength { get; set; }
+        public double EngineRPM { get; set; }
 
         private FFBSpring springForce;
         private FFBConstant constantForce;
         private FFBDamper damperForce;
-
         public ElevatorWeight(double weight, double engineRPMStrength, double damperGain=0.025)
         {
             Weight = weight;
             EngineRPMStrength = engineRPMStrength;
             DamperGain = damperGain;
 
-            springForce = new FFBSpring();
-            springForce.strengthDelegate = ElevatorWeightCenterStrengthFunction;
-
             constantForce = new FFBConstant(weight);
-            constantForce.forceDelegate = ElevatorWeightFunction;
-
+            springForce = new FFBSpring();
             damperForce = new FFBDamper();
-            damperForce.strengthDelegate = ElevatorWeightDamperFunction;
 
-            Forces = new FFBForce[] { springForce, constantForce, damperForce };
-            
+            Forces = [springForce, constantForce, damperForce];
 
+            // Ensure delegates start disabled
+            Enabled = false;
+            OnEnabledChanged(false);
         }
         public double ElevatorWeightCenterStrengthFunction()
         {
@@ -49,6 +45,30 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
         public double ElevatorWeightDamperFunction()
         {
             return DamperGain / 1000.0 * Math.Sqrt(EngineRPM);
+        }
+
+        protected override void OnEnabledChanged(bool enabled)
+        {
+            constantForce.forceDelegate = enabled ? ElevatorWeightFunction : Zero;
+            springForce.strengthDelegate = enabled ? ElevatorWeightCenterStrengthFunction : Zero;
+            damperForce.strengthDelegate = enabled ? ElevatorWeightDamperFunction : Zero;
+        }
+
+        public override void LoadParameters(Dictionary<string, double> parameters)
+        {
+            Weight = parameters["weight"];
+            EngineRPMStrength = parameters["engine_rpm_strength"];
+            DamperGain = parameters["damper_gain"];
+        }
+
+        public override Dictionary<string, double> SaveParameters()
+        {
+            return new Dictionary<string, double>
+            {
+                { "weight", Weight },
+                { "engine_rpm_strength", EngineRPMStrength },
+                { "damper_gain", DamperGain },
+            };
         }
     }
 }

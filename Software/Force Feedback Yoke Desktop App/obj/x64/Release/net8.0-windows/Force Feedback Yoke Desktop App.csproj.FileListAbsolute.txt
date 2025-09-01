@@ -1,0 +1,28 @@
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.exe
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.deps.json
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.runtimeconfig.json
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.pdb
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\Device.Net.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\Hid.Net.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\System.CodeDom.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\System.Management.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\System.Reactive.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Management.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\bin\x64\Release\net8.0-windows\Microsoft.FlightSimulator.SimConnect.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.csproj.AssemblyReference.cache
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force_Feedback_Yoke_Desktop_App.Form1.resources
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force_Feedback_Yoke_Desktop_App.SaveAsDialog.resources
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.csproj.GenerateResource.cache
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.AssemblyInfoInputs.cache
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.AssemblyInfo.cs
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.csproj.CoreCompileInputs.cache
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.sourcelink.json
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Fe.8A41EDA8.Up2Date
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\refint\Force Feedback Yoke Desktop App.dll
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.pdb
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\Force Feedback Yoke Desktop App.genruntimeconfig.cache
+C:\Users\Jennyston\OneDrive\Documents\git\Force-Feedback-Yoke\Software\Force Feedback Yoke Desktop App\obj\x64\Release\net8.0-windows\ref\Force Feedback Yoke Desktop App.dll

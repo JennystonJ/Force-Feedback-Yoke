@@ -18,6 +18,8 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
 
         public WeatherData Wind { get; set; }
         public AircraftData Aircraft { get; set; }
+        public double HeaveGain { get; set; } = 0.2;
+        public double AoaGain { get; set; } = 0.5;
 
         private HighPassFilter highPassHeave;
         private LowPassFilter lowPassHeave;
@@ -34,9 +36,12 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
             lowPassAoa= new LowPassFilter(200, 0.02);
 
             constantForce = new FFBConstant();
-            constantForce.forceDelegate = ElevatorGustFunction;
 
-            Forces = new FFBForce[] { constantForce };
+            Forces = [constantForce];
+
+            // Ensure delegate starts disabled
+            Enabled = false;
+            OnEnabledChanged(false);
         }
 
         public double ElevatorGustFunction()
@@ -50,13 +55,13 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
             // Heave force
             double heaveIn = highPassHeave.Update(
                 lowPassHeave.Update(Wind.accelBodyZ_ftps2));
-            double gHeave = 0.3 * q;
+            double gHeave = HeaveGain * q;
             double fHeave = gHeave * heaveIn;
 
             // AoA force
             double deltaAlpha = highPassAoa.Update(
                 lowPassAoa.Update(Aircraft.incidenceAlpha));
-            double gAoa = 1 * q;
+            double gAoa = AoaGain * q;
             double fAoa = gAoa * deltaAlpha;
 
             double result = fHeave + fAoa;
@@ -78,6 +83,26 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
             double windFactor = 1.0 + (windVel_kts / 10.0); // scales wind, tune divisor
 
             return airspeedFactor * windFactor;
+        }
+
+        protected override void OnEnabledChanged(bool enabled)
+        {
+            constantForce.forceDelegate = enabled ? ElevatorGustFunction : Zero;
+        }
+
+        public override void LoadParameters(Dictionary<string, double> parameters)
+        {
+            HeaveGain = parameters["heave_gain"];
+            AoaGain = parameters["aoa_gain"];
+        }
+
+        public override Dictionary<string, double> SaveParameters()
+        {
+            return new Dictionary<string, double>
+            {
+                { "heave_gain", HeaveGain},
+                { "aoa_gain", AoaGain},
+            };
         }
     }
 }
