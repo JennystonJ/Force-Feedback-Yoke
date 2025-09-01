@@ -156,6 +156,10 @@ void FFBSetForces(FFBController_t *ffb, FFBForces_t forces) {
 	ffb->forces = forces;
 }
 
+void FFB_SetHomeCenterForces(FFBController_t *ffb, FFBForces_t homeCenterForces) {
+	ffb->homeCenterForce = homeCenterForces;
+}
+
 float FFBCalcForces(FFBController_t *ffb, float measuredPosition,
 		float deltaTime) {
 
@@ -435,27 +439,36 @@ void FFBHome(FFBController_t *ffb) {
 	ffb->prevEncoderCountAvg = 0;
 
 	/* Go to center */
-	FFBSetSpring(ffb, 0.0001f);
+//	FFBSetForces(ffb, ffb->homeCenterForce);
+
+	FFB_SetMotorVelocity(ffb,
+			ConvertFFBToMotorVelocity(ffb, -FFB_CONTROL_HOME_VELOCITY));
 
 	// Start
-	FFBStart(ffb);
+//	FFBStart(ffb);
 
 	// Wait for center to be reached
-	while(Abs(FFB_GetRawAxisCount(ffb) - center) > 50) {
+	while(Abs(FFB_GetRawAxisCount(ffb)) > 5000) {
 		delayMs(10);
 	}
+
+	delayMs(500);
+
+	FFB_ResetForces(ffb);
 
 	// Restore current limit
 	Motor_SetCurrentLimit(ffb->motor, motorPrevCurrentLimit);
 	// Return to previous state
-	if(prevState != FFB_RUNNING) {
+	if(prevState == FFB_RUNNING) {
+		FFBStart(ffb);
+	}
+	else {
 		FFBStop(ffb);
 	}
 
 //	// Zero center position
 //	EncoderResetCount(ffb->encoder);
 //
-	FFBSetSpring(ffb, 0.0f);
 }
 
 void FFB_SetUnitPerRevConstant(FFBController_t *ffb, float unitPerRev) {
@@ -536,7 +549,7 @@ static void FFB_SetMotorVelocity(FFBController_t *ffb, float velocity) {
 }
 
 static float FFB_GetMotorVelocity(FFBController_t *ffb) {
-	return ffb->axisReverse ? Motor_GetVelocity(ffb->motor) :
+	return ffb->axisReverse ? -Motor_GetVelocity(ffb->motor) :
 			Motor_GetVelocity(ffb->motor);
 }
 

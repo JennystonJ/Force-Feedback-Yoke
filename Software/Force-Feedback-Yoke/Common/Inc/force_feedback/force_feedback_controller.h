@@ -29,7 +29,7 @@ extern "C" {
 #define FFB_CONTROL_HOME_POWER (1.0f)
 
 // TODO: Change to variables
-#define FFB_CONTROL_HOME_VELOCITY 40.0f
+#define FFB_CONTROL_HOME_VELOCITY 50.0f
 #define FFB_CONTROL_HOME_CURRENT_LIMIT 1.1f
 
 #define FFB_AVG_SPEED_DT 5000
@@ -110,6 +110,7 @@ typedef struct FFBController {
 	} param;
 
 	FFBForces_t forces;
+	FFBForces_t homeCenterForce;
 
 } FFBController_t;
 
@@ -163,11 +164,20 @@ void FFBSetSpring(FFBController_t *ffb, float strength);
 void FFBSetDamper(FFBController_t *ffb, float damperStrength);
 
 /*
- * Assigns all forces for FFBForces structure.
+ * Assigns currently used forces for FFBForces structure.
  * parameter ffb: pointer to force feedback controller structure.
  * parameter forces: forces to be assigned.
  */
 void FFBSetForces(FFBController_t *ffb, FFBForces_t forces);
+
+/*
+ * Assigns center forces used for homing.
+ * parameter ffb: pointer to force feedback controller structure.
+ * parameter homeCenterForces: forces to be assigned for centering during
+ * homing.
+ */
+void FFB_SetHomeCenterForces(FFBController_t *ffb,
+		FFBForces_t homeCenterForces);
 
 /*
  * Calculates output force from given parameters.
