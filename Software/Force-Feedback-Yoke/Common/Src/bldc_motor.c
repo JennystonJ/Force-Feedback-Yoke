@@ -228,8 +228,7 @@ void BLDCMotor_Update(BLDCMotor_t *motor, float deltaTimeMs) {
 		// Calculate phase voltages
 		PhaseVoltages_t phaseVoltages = FOCMath_CalcPhaseVoltages(0.0f,
 				motor->voltage/2.0f,
-				motor->electricalAngle,
-				BLDCDriver_GetBusVoltage(motor->driver));
+				motor->electricalAngle);
 
 		// Assign phase voltages
 		BLDCDriver_SetVoltages(motor->driver, phaseVoltages.a,

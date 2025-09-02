@@ -17,10 +17,6 @@ ABCurrent_t FOCMath_CalcABCurrent(PhaseCurrents_t currents) {
 
 	// Clarke transform (source: SimpleFOC)
 	float mid = (currents.a + currents.b + currents.c)/3.0f;
-//	float a = currents.a - mid;
-//	float b = currents.b - mid;
-//	abCurrent.alpha = a;
-//	abCurrent.beta = _SQRT3_2 * a + _1_SQRT3 * b;
 
     float a = currents.a - mid;
     float b = currents.b - mid;
@@ -44,8 +40,7 @@ DQCurrent_t FOCMath_CalcDQCurrent(ABCurrent_t abCurrent, float angleElec) {
 	return dqCurrent;
 }
 
-PhaseVoltages_t FOCMath_CalcPhaseVoltages(float ud, float uq, float angleElec,
-		float busVoltage){
+PhaseVoltages_t FOCMath_CalcPhaseVoltages(float ud, float uq, float angleElec){
 
 	float cosResult = cosf(angleElec);
 	float sinResult = sinf(angleElec);
@@ -55,11 +50,10 @@ PhaseVoltages_t FOCMath_CalcPhaseVoltages(float ud, float uq, float angleElec,
 	float uBeta = ud * sinResult + uq * cosResult;
 
 	PhaseVoltages_t voltages;
-	float center = 0;
 	// Inverse Clarke transform
-	voltages.a = uAlpha + center;
-	voltages.b = -0.5f * uAlpha + _SQRT3_2 * uBeta + center;
-	voltages.c = -0.5f * uAlpha - _SQRT3_2 * uBeta + center;
+	voltages.a = uAlpha;
+	voltages.b = -0.5f * uAlpha + _SQRT3_2 * uBeta;
+	voltages.c = -0.5f * uAlpha - _SQRT3_2 * uBeta;
 
 	return voltages;
 }

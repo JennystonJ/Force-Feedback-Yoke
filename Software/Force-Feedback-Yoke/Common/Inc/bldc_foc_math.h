@@ -12,8 +12,7 @@
 
 DQCurrent_t FOCMath_CalcDQCurrent(ABCurrent_t abCurrent, float angleElec);
 ABCurrent_t FOCMath_CalcABCurrent(PhaseCurrents_t currents);
-PhaseVoltages_t FOCMath_CalcPhaseVoltages(float ud, float uq, float angleElec,
-		float busVoltage);
+PhaseVoltages_t FOCMath_CalcPhaseVoltages(float ud, float uq, float angleElec);
 
 
 #endif /* INC_BLDC_FOC_MATH_H_ */

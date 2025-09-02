@@ -59,7 +59,7 @@ PhaseVoltages_t FOC_Calc(FOC_t *foc, PhaseCurrents_t phaseCurrents,
 			deltaTimeMs);
 
 	foc->phaseVoltages = FOCMath_CalcPhaseVoltages(dVoltage, qVoltage,
-			angleElec, foc->busVoltage);
+			angleElec);
 
 	return foc->phaseVoltages;
 }
