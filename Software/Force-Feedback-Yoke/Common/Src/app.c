@@ -110,9 +110,9 @@ void Application_Init(void) {
 	LoadCell_SetLowPassAlpha(&pitchLoadCell, LOAD_CELL_LPF_ALPHA);
 
 	// Pitch FFB setup
-	FFBInit(&pitchFFB, &pitchMotor, &pitchEncoder);
+	FFB_Init(&pitchFFB, &pitchMotor, &pitchEncoder);
 	FFB_SetAxisReverse(&rollFFB, false);
-	FFBSetLoadCell(&pitchFFB, &pitchLoadCell);
+	FFB_SetLoadCell(&pitchFFB, &pitchLoadCell);
 	FFB_SetUnitPerRevConstant(&pitchFFB, PITCH_MM_PER_REV);
 	FFB_SetLockGains(&rollFFB, FFB_PITCH_LOCK_KP, FFB_PITCH_LOCK_KD);
 	FFBForces_t pitchHomeCenterForces = {
@@ -132,7 +132,7 @@ void Application_Init(void) {
 			FFB_ASSIST_VELOCITY_SMALL_COMP);
 
 	// Roll FFB setup
-	FFBInit(&rollFFB, &rollMotor, &rollEncoder);
+	FFB_Init(&rollFFB, &rollMotor, &rollEncoder);
 	FFB_SetAxisReverse(&rollFFB, true);
 	FFB_SetUnitPerRevConstant(&rollFFB, ROLL_DEGREE_PER_REV);
 	FFB_SetLockGains(&rollFFB, FFB_ROLL_LOCK_KP, FFB_ROLL_LOCK_KD);
@@ -203,19 +203,19 @@ void Application_Run(void) {
 	Motor_SetTorqueLimit(&rollMotor, ROLL_MOTOR_TORQUE_LIMIT);
 	Motor_SetEnable(&rollMotor, true);
 
-	FFBHome(&pitchFFB);
-	FFBHome(&rollFFB);
+	FFB_Home(&pitchFFB);
+	FFB_Home(&rollFFB);
 
 	FFBHid_SetAxisTravelLimit(&ffbHid, HID_PITCH,
-			FFBGetTravelRangeInUnit(&pitchFFB));
+			FFB_GetTravelRangeInUnit(&pitchFFB));
 	FFBHid_SetAxisTravelLimit(&ffbHid, HID_ROLL,
-			FFBGetTravelRangeInUnit(&rollFFB));
+			FFB_GetTravelRangeInUnit(&rollFFB));
 	FFBHid_EnableCapabilities(&ffbHid);
 
-	FFBStart(&pitchFFB);
-	FFBSetAssistEnable(&pitchFFB, true);
+	FFB_Start(&pitchFFB);
+	FFB_SetAssistEnable(&pitchFFB, true);
 
-	FFBStart(&rollFFB);
+	FFB_Start(&rollFFB);
 
 	GPIOSetState(&statusLedGpio, GPIO_HIGH);
 
@@ -231,25 +231,25 @@ void ProcessFFBHid(FFBHid_t *hid) {
 	// Prepare pitch axis
 	int pitchAxisCountConstrained = Constrain(FFB_GetRawAxisCount(
 			&pitchFFB),
-			FFBGetMinControlRange(&pitchFFB),
-			FFBGetMaxControlRange(&pitchFFB));
+			FFB_GetMinControlRange(&pitchFFB),
+			FFB_GetMaxControlRange(&pitchFFB));
 
 	// Map pitch values to pitch control range
 	int16_t pitchAxis = (int16_t)Map(pitchAxisCountConstrained,
-			FFBGetMinControlRange(&pitchFFB),
-			FFBGetMaxControlRange(&pitchFFB),
+			FFB_GetMinControlRange(&pitchFFB),
+			FFB_GetMaxControlRange(&pitchFFB),
 			-32767, 32767);
 
 	// Prepare roll axis
 	int rollAxisCountConstrained = Constrain(FFB_GetRawAxisCount(
 			&rollFFB),
-			FFBGetMinControlRange(&rollFFB),
-			FFBGetMaxControlRange(&rollFFB));
+			FFB_GetMinControlRange(&rollFFB),
+			FFB_GetMaxControlRange(&rollFFB));
 
 	// Map roll values to roll control range
 	int16_t rollAxis = (int16_t)Map(rollAxisCountConstrained,
-			FFBGetMinControlRange(&rollFFB),
-			FFBGetMaxControlRange(&rollFFB),
+			FFB_GetMinControlRange(&rollFFB),
+			FFB_GetMaxControlRange(&rollFFB),
 			-32767, 32767);
 
 	int16_t scaledPitchForce = Constrain((int32_t)(32767.0f *
@@ -343,11 +343,11 @@ void ProcessUsbControlData(UsbReport_t *usbReport) {
 	// FFB ON/OFF
 	if(ffbOn) {
 		//FFBStart(&ffbRoll);
-		FFBStart(&pitchFFB);
+		FFB_Start(&pitchFFB);
 	}
 	else {
 		//FFBStop(&ffbRoll);
-		FFBStop(&pitchFFB);
+		FFB_Stop(&pitchFFB);
 	}
 
 	/** FFB Control Ranges **/
@@ -359,7 +359,7 @@ void ProcessUsbControlData(UsbReport_t *usbReport) {
 
 	// Elevator encoder range
 	int elevatorEncoderRange = elevatorRangeInMM * PITCH_STEP_PER_MM;
-	FFBSetControlRange(&pitchFFB, -elevatorEncoderRange/2,
+	FFB_SetControlRange(&pitchFFB, -elevatorEncoderRange/2,
 			elevatorEncoderRange/2);
 
 }
@@ -377,27 +377,27 @@ void ProcessUsbControlData(UsbReport_t *usbReport) {
 // Private functions
 
 static void ProcessFFBHidForce(FFBHid_t *hid) {
-	FFBSetForces(&pitchFFB, FFBHid_GetForceData(hid, HID_PITCH));
-	FFBSetForces(&rollFFB, FFBHid_GetForceData(&ffbHid, HID_ROLL));
+	FFB_SetForces(&pitchFFB, FFBHid_GetForceData(hid, HID_PITCH));
+	FFB_SetForces(&rollFFB, FFBHid_GetForceData(&ffbHid, HID_ROLL));
 }
 
 static void ProcessFFBHidControl(FFBHid_t *hid) {
 
 	if(FFBHid_GetFFBEnable(hid)) {
-		FFBStart(&pitchFFB);
-		FFBStart(&rollFFB);
+		FFB_Start(&pitchFFB);
+		FFB_Start(&rollFFB);
 	}
 	else {
-		FFBStop(&pitchFFB);
-		FFBStop(&rollFFB);
+		FFB_Stop(&pitchFFB);
+		FFB_Stop(&rollFFB);
 	}
 
 	TravelMinMax_t pitchTravel = FFBHid_GetAxisTravel(hid, HID_PITCH);
-	FFBSetControlRange(&pitchFFB, pitchTravel.min * PITCH_STEP_PER_MM,
+	FFB_SetControlRange(&pitchFFB, pitchTravel.min * PITCH_STEP_PER_MM,
 			pitchTravel.max * PITCH_STEP_PER_MM);
 
 	TravelMinMax_t rollTravel = FFBHid_GetAxisTravel(hid, HID_ROLL);
-	FFBSetControlRange(&rollFFB, rollTravel.min * ROLL_STEP_PER_DEGREE,
+	FFB_SetControlRange(&rollFFB, rollTravel.min * ROLL_STEP_PER_DEGREE,
 			rollTravel.max * ROLL_STEP_PER_DEGREE);
 }
 
@@ -405,13 +405,13 @@ static void ProcessFFBHidDataUpdate(FFBHid_t *hid) {
 	// Prepare elevator axis
 	int pitchEncoderCountConstrained = Constrain(Encoder_GetCount(
 			&pitchEncoder),
-			FFBGetMinControlRange(&pitchFFB),
-			FFBGetMaxControlRange(&pitchFFB));
+			FFB_GetMinControlRange(&pitchFFB),
+			FFB_GetMaxControlRange(&pitchFFB));
 
 	// Map pitch values to pitch control range
 	int16_t pitchAxis = (int16_t)Map(pitchEncoderCountConstrained,
-			FFBGetMinControlRange(&pitchFFB),
-			FFBGetMaxControlRange(&pitchFFB),
+			FFB_GetMinControlRange(&pitchFFB),
+			FFB_GetMaxControlRange(&pitchFFB),
 			-32767, 32767);
 
 	// Prepare aileron axis
@@ -430,12 +430,12 @@ static void ProcessFFBHidDataUpdate(FFBHid_t *hid) {
 //			-32767, 32767);
 
 	int rollAxisCountConstrained = Constrain(FFB_GetRawAxisCount(&rollFFB),
-			FFBGetMinControlRange(&rollFFB),
-			FFBGetMaxControlRange(&rollFFB));
+			FFB_GetMinControlRange(&rollFFB),
+			FFB_GetMaxControlRange(&rollFFB));
 
 	int16_t rollAxis = (int16_t)Map(rollAxisCountConstrained,
-			FFBGetMinControlRange(&rollFFB),
-			FFBGetMaxControlRange(&rollFFB),
+			FFB_GetMinControlRange(&rollFFB),
+			FFB_GetMaxControlRange(&rollFFB),
 			-32767, 32767);
 
 	FFBHid_SetAxis(hid, HID_PITCH, pitchAxis);
@@ -477,8 +477,8 @@ static void FFBControlCallback(float deltaTimeMs) {
 		return;
 	}
 
-	FFBUpdate(&pitchFFB, deltaTimeMs);
-	FFBUpdate(&rollFFB, deltaTimeMs);
+	FFB_Update(&pitchFFB, deltaTimeMs);
+	FFB_Update(&rollFFB, deltaTimeMs);
 }
 
 static void LoadCellUpdateCallback(void) {

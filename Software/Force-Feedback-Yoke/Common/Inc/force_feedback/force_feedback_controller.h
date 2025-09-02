@@ -103,13 +103,6 @@ typedef struct FFBController {
 	float unitPerRev;
 	float unitPerNm;
 
-	struct {
-		float constantStrength;
-		FFBPeriodicForce_t periodic;
-//		FFBSpringForce_t spring;
-		float damperStrength;
-	} param;
-
 	FFBForces_t forces;
 	FFBForces_t homeCenterForce;
 
@@ -120,7 +113,7 @@ typedef struct FFBController {
  * parameter ffb: pointer to force feedback controller structure to be
  * initialized.
  */
-void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder);
+void FFB_Init(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder);
 
 void FFB_SetAxisReverse(FFBController_t *ffb, bool reverse);
 
@@ -128,9 +121,9 @@ void FFB_SetAxisCount(FFBController_t *ffb, int count);
 
 int FFB_GetRawAxisCount(FFBController_t *ffb);
 
-void FFBSetAssistEnable(FFBController_t *ffb, bool enabled);
+void FFB_SetAssistEnable(FFBController_t *ffb, bool enabled);
 
-void FFBSetLoadCell(FFBController_t *ffb, LoadCell_t *loadCell);
+void FFB_SetLoadCell(FFBController_t *ffb, LoadCell_t *loadCell);
 
 void FFB_SetLockGains(FFBController_t *ffb, float lockKp, float lockKd);
 
@@ -141,35 +134,35 @@ FFBAssist_t *FFB_GetFFBAssist(FFBController_t *ffb);
  * parameter ffb: pointer to force feedback controller structure.
  * parameter force: strength of constant force
  */
-void FFBSetConstant(FFBController_t *ffb, float force);
+void FFB_SetConstant(FFBController_t *ffb, float force);
 
 /*
  * Assigns periodic force parameters.
  * parameter ffb: pointer to force feedback controller structure.
  * parameter periodic: structure containing periodic force parameters.
  */
-void FFBSetPeriodicParams(FFBController_t *ffb, FFBPeriodicForce_t periodic);
+void FFB_SetPeriodicParams(FFBController_t *ffb, FFBPeriodicForce_t periodic);
 
 /*
  * Assigns spring force parameters.
  * parameter ffb: pointer to force feedback controller structure.
  * parameter strength: strength of spring force.
  */
-void FFBSetSpring(FFBController_t *ffb, float strength);
+void FFB_SetSpring(FFBController_t *ffb, float strength);
 
 /*
  * Assigns damper force strength.
  * parameter ffb: pointer to force feedback controller structure.
  * parameter damperStrength: strength of damper force.
  */
-void FFBSetDamper(FFBController_t *ffb, float damperStrength);
+void FFB_SetDamper(FFBController_t *ffb, float damperStrength);
 
 /*
  * Assigns currently used forces for FFBForces structure.
  * parameter ffb: pointer to force feedback controller structure.
  * parameter forces: forces to be assigned.
  */
-void FFBSetForces(FFBController_t *ffb, FFBForces_t forces);
+void FFB_SetForces(FFBController_t *ffb, FFBForces_t forces);
 
 /*
  * Assigns center forces used for homing.
@@ -187,7 +180,7 @@ void FFB_SetHomeCenterForces(FFBController_t *ffb,
  * parameter deltaTimeMs: change in time in milliseconds between calls
  * returns: calculated force.
  */
-float FFBCalcForces(FFBController_t *ffb, float measuredPosition,
+float FFB_CalcForces(FFBController_t *ffb, float measuredPosition,
 		float deltaTimeMs);
 
 /*
@@ -195,26 +188,26 @@ float FFBCalcForces(FFBController_t *ffb, float measuredPosition,
  * parameter ffb: pointer to force feedback controller structure.
  * parameter deltaTimeMs: change in time between calls in milliseconds.
  */
-void FFBUpdate(FFBController_t *ffb, float deltaTimeMs);
+void FFB_Update(FFBController_t *ffb, float deltaTimeMs);
 
 /*
  * Stops (disables) force feedback controller. Turns off motor.
  * parameter ffb: pointer to force feedback controller structure.
  */
-void FFBStop(FFBController_t *ffb);
+void FFB_Stop(FFBController_t *ffb);
 
 /*
  * Starts (enables) force feedback controller.
  * parameter ffb: pointer to force feedback controller structure.
  */
-void FFBStart(FFBController_t *ffb);
+void FFB_Start(FFBController_t *ffb);
 
 /*
  * Obtains current force feedback controller state.
  * parameter ffb: pointer to force feedback controller structure.
  * returns state.
  */
-FFBControllerState_e FFBGetState(FFBController_t *ffb);
+FFBControllerState_e FFB_GetState(FFBController_t *ffb);
 
 /*
  * Sets the lock range of the force feedback controller (in encoder counts).
@@ -222,14 +215,21 @@ FFBControllerState_e FFBGetState(FFBController_t *ffb);
  * parameter min: min range of control movement (in encoder counts).
  * parameter max: max range of control movement (in encoder counts).
  */
-void FFBSetControlRange(FFBController_t *ffb, int min, int max);
+void FFB_SetControlRange(FFBController_t *ffb, int min, int max);
 
 /*
  * Obtains minimum FFB encoder value.
  * parameter ffb: pointer to force feedback controller structure.
  * returns minimum FFB encoder value.
  */
-int FFBGetMinControlRange(FFBController_t *ffb);
+int FFB_GetMinControlRange(FFBController_t *ffb);
+
+/*
+ * Obtains maximum FFB encoder value.
+ * parameter ffb: pointer to force feedback controller structure.
+ * returns maximum FFB encoder value.
+ */
+int FFB_GetMaxControlRange(FFBController_t *ffb);
 
 /*
  * Obtains travel range, which is initialized after
@@ -237,7 +237,7 @@ int FFBGetMinControlRange(FFBController_t *ffb);
  * parameter ffb: pointer to force feedback controller structure.
  * returns travel range in encoder counts
  */
-int FFBGetTravelRange(FFBController_t *ffb);
+int FFB_GetTravelRange(FFBController_t *ffb);
 
 /*
  * Obtains travel range, which is initialized after homing,
@@ -245,16 +245,10 @@ int FFBGetTravelRange(FFBController_t *ffb);
  * parameeter ffb: pointer to force feedback controller structure.
  * returns travel range in unit
  */
-float FFBGetTravelRangeInUnit(FFBController_t *ffb);
+float FFB_GetTravelRangeInUnit(FFBController_t *ffb);
 
-/*
- * Obtains maximum FFB encoder value.
- * parameter ffb: pointer to force feedback controller structure.
- * returns maximum FFB encoder value.
- */
-int FFBGetMaxControlRange(FFBController_t *ffb);
 
-void FFBHome(FFBController_t *ffb);
+void FFB_Home(FFBController_t *ffb);
 
 /**
  * Calculates constant force from amount.
@@ -262,7 +256,7 @@ void FFBHome(FFBController_t *ffb);
  * parameter amount: amount of force.
  * returns: force.
  */
-float FFBCalcConstantForce(float gain, float amount);
+float FFB_CalcConstantForce(float gain, float amount);
 
 /**
  * Calculates periodic force.
@@ -271,7 +265,7 @@ float FFBCalcConstantForce(float gain, float amount);
  * periodic force parameters.
  * parameter deltaTime: change in time from last call to current call.
  */
-float FFBCalcPeriodicForce(float gain, FFBPeriodicForce_t *periodic,
+float FFB_CalcPeriodicForce(float gain, FFBPeriodicForce_t *periodic,
 		float deltaTime);
 
 /*
@@ -280,7 +274,7 @@ float FFBCalcPeriodicForce(float gain, FFBPeriodicForce_t *periodic,
  * parameter springParam: pointer to springParam structure.
  * returns: spring force.
  */
-float FFBCalcSpringForce(float gain, float measuredPosition,
+float FFB_CalcSpringForce(float gain, float measuredPosition,
 		float springStrength);
 
 /*
@@ -289,15 +283,7 @@ float FFBCalcSpringForce(float gain, float measuredPosition,
  * parameter magnitude: magnitude (usually speed or torque).
  * returns: damper force
  */
-float FFBCalcDamperForce(float gain, float magnitude, float velocity);
-
-/*
- * Calculates assist force from speed
- * parameter gain: multiplication factor of force.
- * parameter min: minimum force when speed is not zero.
- * parameter speed: rate of change of position.
- */
-float FFBCalcAssist(float gain, float min, float speed);
+float FFB_CalcDamperForce(float gain, float magnitude, float velocity);
 
 float FFB_GetOutputForce(FFBController_t *ffb);
 
