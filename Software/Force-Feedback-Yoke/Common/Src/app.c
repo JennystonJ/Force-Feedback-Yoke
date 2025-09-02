@@ -121,6 +121,7 @@ void Application_Init(void) {
 			.damperForce = FFB_PITCH_HOME_DAMPER
 	};
 	FFB_SetHomeCenterForces(&pitchFFB, pitchHomeCenterForces);
+	FFB_SetUnitPerNmConstant(&pitchFFB, PITCH_YOKE_FORCE_PER_MOTOR_TORQUE);
 
 	// Pitch FFB Assist setup
 	FFBAssist_t *pitchFFBAssist = FFB_GetFFBAssist(&pitchFFB);
@@ -141,6 +142,7 @@ void Application_Init(void) {
 			.damperForce = FFB_ROLL_HOME_DAMPER
 	};
 	FFB_SetHomeCenterForces(&rollFFB, rollHomeCenterForces);
+	FFB_SetUnitPerNmConstant(&rollFFB, ROLL_YOKE_TORQUE_PER_MOTOR_TORQUE);
 
 	// Electrical angle offset
 	BLDCMotor_SetElectricalAngleOffsetCount(&pitchBLDCMotor,
@@ -161,9 +163,14 @@ void Application_Init(void) {
 	FFBHid_RegisterUpdateCallback(&ffbHid,
 			&ProcessFFBHidDataUpdate);
 
-	// Set control data known values
-	FFBHid_SetAxisMaxForce(&ffbHid, HID_PITCH, PITCH_MOTOR_CURRENT_LIMIT);
-	FFBHid_SetMaxSupportedForces(&ffbHid, FFB_CONTROL_NUM_FORCES);
+	// Set capability data
+	FFBHid_SetAxisMaxForce(&ffbHid, HID_PITCH,
+			FFB_ConvertMotorTorqueToFFBUnits(&pitchFFB,
+					PITCH_MOTOR_TORQUE_LIMIT));
+
+	FFBHid_SetAxisMaxForce(&ffbHid, HID_ROLL,
+			FFB_ConvertMotorTorqueToFFBUnits(&rollFFB,
+					ROLL_MOTOR_TORQUE_LIMIT));
 
 	appInitialized = true;
 }
@@ -190,10 +197,10 @@ void Application_Run(void) {
 
 	delayMs(1000);
 
-	Motor_SetCurrentLimit(&pitchMotor, PITCH_MOTOR_CURRENT_LIMIT);
+	Motor_SetTorqueLimit(&pitchMotor, PITCH_MOTOR_TORQUE_LIMIT);
 	Motor_SetEnable(&pitchMotor, true);
 
-	Motor_SetCurrentLimit(&rollMotor, ROLL_MOTOR_CURRENT_LIMIT);
+	Motor_SetTorqueLimit(&rollMotor, ROLL_MOTOR_TORQUE_LIMIT);
 	Motor_SetEnable(&rollMotor, true);
 
 	FFBHome(&pitchFFB);
@@ -255,13 +262,24 @@ void ProcessFFBHid(FFBHid_t *hid) {
 
 
 	// Prepare pitch force output
-	int16_t scaledPitchForce = Constrain((int32_t)( 32767.0f *
-			(Motor_GetCurrent(&pitchMotor)/PITCH_MOTOR_CURRENT_LIMIT)),
-			-32767, 32767);
+//	int16_t scaledPitchForce = Constrain((int32_t)(32767.0f *
+//			(Motor_GetCurrent(&pitchMotor)/PITCH_MOTOR_CURRENT_LIMIT)),
+//			-32767, 32767);
+
+	int16_t scaledPitchForce = Constrain((int32_t)(32767.0f *
+			(FFB_GetFeedback(&pitchFFB)/FFB_ConvertMotorTorqueToFFBUnits
+					(&pitchFFB, PITCH_MOTOR_TORQUE_LIMIT))),
+					-32767, 32767);
+
+//	int16_t scaledRollForce = Constrain((int32_t)(32767.0f *
+//			(Motor_GetCurrent(&rollMotor)/ROLL_MOTOR_CURRENT_LIMIT)),
+//			-32767, 32767);
 
 	int16_t scaledRollForce = Constrain((int32_t)(32767.0f *
-			(Motor_GetCurrent(&rollMotor)/ROLL_MOTOR_CURRENT_LIMIT)),
-			-32767, 32767);
+			(FFB_GetFeedback(&rollFFB)/FFB_ConvertMotorTorqueToFFBUnits
+					(&rollFFB, ROLL_MOTOR_TORQUE_LIMIT))),
+							-32767, 32767);
+
 
 	FFBHid_SetAxis(hid, HID_PITCH, pitchAxis);
 	FFBHid_SetAxis(hid, HID_ROLL, rollAxis);

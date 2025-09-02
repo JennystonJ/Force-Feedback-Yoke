@@ -101,6 +101,7 @@ typedef struct FFBController {
 	int lockHysterisis;
 
 	float unitPerRev;
+	float unitPerNm;
 
 	struct {
 		float constantStrength;
@@ -309,6 +310,13 @@ float FFB_GetOutputForce(FFBController_t *ffb);
 void FFB_SetUnitPerRevConstant(FFBController_t *ffb, float unitPerRev);
 
 /*
+ * Sets the units per Nm constant used for torque/force calculations.
+ * parameter ffb: pointer to force feedback controller structure.
+ * parameter unitPerNm: Unit per newton-meter.
+ */
+void FFB_SetUnitPerNmConstant(FFBController_t *ffb, float unitPerNm);
+
+/*
  * Resets all forces to cleared state.
  * parameter ffb: pointer to force feedback controller structure.
  */
@@ -316,6 +324,17 @@ void FFB_ResetForces(FFBController_t *ffb);
 
 //float FFBCalcAllForces(FFBController_t *ffb, float measuredTorque,
 //		float measuredPosition);
+
+/*
+ * Returns measure motor torque in force feed back units
+ * parameter ffb: pointer to force feedback controller structure.
+ */
+float FFB_GetFeedback(FFBController_t *ffb);
+
+float FFB_ConvertMotorTorqueToFFBUnits(FFBController_t *ffb,
+		float motorTorque);
+float FFB_ConvertFFBToMotorTorque(FFBController_t *ffb,
+		float ffbUnit);
 
 #ifdef __cplusplus
 }

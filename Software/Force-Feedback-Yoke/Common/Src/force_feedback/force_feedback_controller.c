@@ -22,6 +22,7 @@ static float ConvertEncoderCountsToFFBUnits(FFBController_t *ffb,
 		int counts);
 
 static void FFB_SetMotorCurrent(FFBController_t *ffb, float current);
+static void FFB_SetMotorTorque(FFBController_t *ffb, float torque);
 static void FFB_SetMotorVelocity(FFBController_t *ffb, float velocity);
 static float FFB_GetMotorVelocity(FFBController_t *ffb);
 static float FFB_GetMotorTorque(FFBController_t *ffb);
@@ -83,6 +84,9 @@ void FFBInit(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 	ffb->lockKp = 0.000002f;
 	ffb->lockKd = 0.002f;
 	ffb->lockHysterisis = 8000;
+
+	ffb->unitPerNm = 1;
+	ffb->unitPerRev = 1;
 
 	ffb->prevEncoderCountAvg = FFB_GetRawAxisCount(ffb);
 	ffb->speed = 0;
@@ -305,13 +309,12 @@ void FFBUpdate(FFBController_t *ffb, float deltaTimeMs) {
 	case FFB_STOPPED:
 		break;
 	case FFB_RUNNING:
-		// TODO: constrain to bus voltage
-		float motorPower =
+		float force =
 				ConstrainFloat(FFBCalcForces(ffb,
 						FFB_GetRawAxisCount(ffb),
-						deltaTimeMs), -10.0f,
-						10.0f);
-		FFB_SetMotorCurrent(ffb, motorPower);
+						deltaTimeMs), -60.0f,
+						60.0f);
+		FFB_SetMotorTorque(ffb, FFB_ConvertFFBToMotorTorque(ffb, force));
 		break;
 	case FFB_IDLE:
 		break;
@@ -475,9 +478,18 @@ void FFB_SetUnitPerRevConstant(FFBController_t *ffb, float unitPerRev) {
 	ffb->unitPerRev = unitPerRev;
 }
 
+void FFB_SetUnitPerNmConstant(FFBController_t *ffb, float unitPerNm) {
+	ffb->unitPerNm = unitPerNm;
+}
+
 void FFB_ResetForces(FFBController_t *ffb) {
 	// Clear all forces
 	memset(&ffb->forces, 0, sizeof(ffb->forces));
+}
+
+float FFB_GetFeedback(FFBController_t *ffb) {
+	return FFB_ConvertMotorTorqueToFFBUnits(ffb,
+			Motor_GetTorque(ffb->motor));
 }
 
 float FFBCalcConstantForce(float gain, float amount) {
@@ -538,9 +550,24 @@ static float ConvertEncoderCountsToFFBUnits(FFBController_t *ffb,
 			ffb->unitPerRev;
 }
 
+float FFB_ConvertMotorTorqueToFFBUnits(FFBController_t *ffb,
+		float motorTorque) {
+	return motorTorque * ffb->unitPerNm;
+}
+
+float FFB_ConvertFFBToMotorTorque(FFBController_t *ffb,
+		float ffbUnit) {
+	return ffbUnit / ffb->unitPerNm;
+}
+
 static void FFB_SetMotorCurrent(FFBController_t *ffb, float current) {
 	ffb->axisReverse ? Motor_SetCurrent(ffb->motor, -current) :
 			Motor_SetCurrent(ffb->motor, current);
+}
+
+static void FFB_SetMotorTorque(FFBController_t *ffb, float torque) {
+	ffb->axisReverse ? Motor_SetTorque(ffb->motor, -torque) :
+			Motor_SetTorque(ffb->motor, torque);
 }
 
 static void FFB_SetMotorVelocity(FFBController_t *ffb, float velocity) {
