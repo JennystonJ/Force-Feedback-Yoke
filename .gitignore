@@ -53,12 +53,20 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+# Visual Studio caches
+*.vsidx
+CodeChunks.db
+*.dtbcache*
+*.db-wal
+*.db-shm
+*.dtbcache*
+
 # Misc
 *.cyclo
 *.prefs
 *.settings/*
 *.settings/language.settings.xml
-Software/Force Feedback Yoke Desktop App/.vs/Force Feedback Yoke Desktop App/CopilotIndices/17.14.995.13737/CodeChunks.db
+
 Software/Force Feedback Yoke Desktop App/.vs/Force Feedback Yoke Desktop App/CopilotIndices/17.14.995.13737/CodeChunks.db-shm
 Software/Force Feedback Yoke Desktop App/.vs/Force Feedback Yoke Desktop App/CopilotIndices/17.14.995.13737/CodeChunks.db-wal
 Software/Force Feedback Yoke Desktop App/.vs/Force Feedback Yoke Desktop App/CopilotIndices/17.14.995.13737/SemanticSymbols.db
