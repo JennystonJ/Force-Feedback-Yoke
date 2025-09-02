@@ -246,34 +246,16 @@ void ProcessFFBHid(FFBHid_t *hid) {
 			FFBGetMinControlRange(&rollFFB),
 			FFBGetMaxControlRange(&rollFFB));
 
-	// Map pitch values to pitch control range
+	// Map roll values to roll control range
 	int16_t rollAxis = (int16_t)Map(rollAxisCountConstrained,
 			FFBGetMinControlRange(&rollFFB),
 			FFBGetMaxControlRange(&rollFFB),
 			-32767, 32767);
 
-//	float rollAngle = ROLL_DEGREE_PER_REV *
-//			Encoder_GetCount(&rollEncoder)/65536.0f;
-//	float rollAngleConstrained = ConstrainFloat(rollAngle, -90.0f, 90.0f);
-////		int rollEncoderCountConstrained = Constrain(EncoderGetCount(
-////				&rollEncoder),
-////				FFBGetMinControlRange(&ffbRoll),
-////				FFBGetMaxControlRange(&ffbRoll));
-
-
-	// Prepare pitch force output
-//	int16_t scaledPitchForce = Constrain((int32_t)(32767.0f *
-//			(Motor_GetCurrent(&pitchMotor)/PITCH_MOTOR_CURRENT_LIMIT)),
-//			-32767, 32767);
-
 	int16_t scaledPitchForce = Constrain((int32_t)(32767.0f *
 			(FFB_GetFeedback(&pitchFFB)/FFB_ConvertMotorTorqueToFFBUnits
 					(&pitchFFB, PITCH_MOTOR_TORQUE_LIMIT))),
 					-32767, 32767);
-
-//	int16_t scaledRollForce = Constrain((int32_t)(32767.0f *
-//			(Motor_GetCurrent(&rollMotor)/ROLL_MOTOR_CURRENT_LIMIT)),
-//			-32767, 32767);
 
 	int16_t scaledRollForce = Constrain((int32_t)(32767.0f *
 			(FFB_GetFeedback(&rollFFB)/FFB_ConvertMotorTorqueToFFBUnits
