@@ -5,7 +5,7 @@
  *      Author: Jennyston
  *
  *	Clarke and Park transforms source: SimpleFOC (MIT License)
- *	See LICENSE/LICENSE-SIMPLEFOC.txt for details
+ *	See LICENSES/LICENSE-SIMPLEFOC.txt for details
  */
 
 #include "bldc_foc_math.h"
