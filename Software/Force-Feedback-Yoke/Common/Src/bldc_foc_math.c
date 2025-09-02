@@ -3,6 +3,9 @@
  *
  *  Created on: Jul 8, 2025
  *      Author: Jennyston
+ *
+ *	Clarke and Park transforms source: SimpleFOC (MIT License)
+ *	See LICENSE/LICENSE-SIMPLEFOC.txt for details
  */
 
 #include "bldc_foc_math.h"
@@ -15,7 +18,6 @@ ABCurrent_t FOCMath_CalcABCurrent(PhaseCurrents_t currents) {
 
 	ABCurrent_t abCurrent;
 
-	// Clarke transform (source: SimpleFOC)
 	float mid = (currents.a + currents.b + currents.c)/3.0f;
 
     float a = currents.a - mid;
