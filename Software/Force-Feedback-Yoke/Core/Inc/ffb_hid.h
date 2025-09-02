@@ -28,7 +28,6 @@ typedef struct __attribute__((packed)) FFBHidCapabilities {
 	bool initialized;
 	float travelLimit[FFB_HID_NUM_AXIS];
 	float axisMaxForce[FFB_HID_NUM_AXIS];
-	uint8_t maxSupportedForces;
 } FFBHidCapabilities_t;
 
 typedef struct __attribute__((packed)) FFBHidTransmitPacket {

@@ -34,10 +34,6 @@ void FFBHid_SetAxisMaxForce(FFBHid_t *ffbHid, uint8_t axis, float maxForce) {
 	ffbHid->capabilities.axisMaxForce[axis] = maxForce;
 }
 
-void FFBHid_SetMaxSupportedForces(FFBHid_t *ffbHid, uint8_t numMaxForces) {
-	ffbHid->capabilities.maxSupportedForces = numMaxForces;
-}
-
 void FFBHid_EnableCapabilities(FFBHid_t *ffbHid) {
 	ffbHid->capabilities.initialized = true;
 }
