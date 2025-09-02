@@ -319,6 +319,16 @@ namespace Force_Feedback_Yoke_Desktop_App
             double rollPositionDeg = (rollTravelRangeDeg / 2.0) * rollPosition / 32767.0;
             // Set label indicator
             SetLabelText(string.Format("{0:0.0} deg", rollPositionDeg), lblRollPosValue);
+
+            //Roll force
+            double rollTorque = ffbDevice.HidData.rollForce;
+            double maxRollTorque = ffbDevice.Capabilities.RollMaxForce;
+            SetTravelIndicatorValue((int)Utilities.Scale(rollTorque,
+                -32767, 32767, -100, 100), tiRollTorque);
+            // Calculate pitch force in N
+            double rollTorqueNm = (rollTorque / 32767.0) * maxRollTorque;
+            // Set label indicator
+            SetLabelText(string.Format("{0:0.0} N", rollTorqueNm), lblRollTorqueValue);
         }
 
         private void ResetIndicators()
