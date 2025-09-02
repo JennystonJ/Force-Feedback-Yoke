@@ -37,7 +37,7 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
 
         public double AirSpeedStiffnessDamperFunction()
         {
-            return DamperGain/10000.0 * Math.Sqrt(AirSpeed);
+            return DamperGain/1000.0 * AirSpeed;
         }
 
         protected override void OnEnabledChanged(bool enabled)

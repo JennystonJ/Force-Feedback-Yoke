@@ -224,7 +224,7 @@ namespace Force_Feedback_Yoke_Desktop_App
                 try
                 {
                     // Add simualator variables to collect
-                    simConnect.AddToDataDefinition(DEFINITION.AircraftData, "AIRSPEED TRUE", "knots",
+                    simConnect.AddToDataDefinition(DEFINITION.AircraftData, "AIRSPEED INDICATED", "knots",
                       SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
                     simConnect.AddToDataDefinition(DEFINITION.AircraftData, "GENERAL ENG RPM:1", "rpm",
