@@ -24,7 +24,7 @@ namespace Force_Feedback_Yoke_Desktop_App
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
-    public struct ControlAxisData
+    public struct SimControlAxisData
     {
         public double elevator;
         public double aileron;
@@ -72,9 +72,17 @@ namespace Force_Feedback_Yoke_Desktop_App
         public event EventHandler? SimPauseChangedEvent;
         public event EventHandler? SimConnectionClosedEvent;
 
-        public WeatherData Weather { get; private set; }
-        public AircraftData Aircraft { get; private set; }
+        private WeatherData Weather { get; set; }
+        private AircraftData Aircraft { get; set; }
 
+        public SimData SimData {
+            
+            get => new SimData(Aircraft, Weather); 
+            private set
+            {
+                SimData = value;
+            } 
+        }
 
         const int WM_USER_SIMCONNECT = 0x0402;
         SimConnect ?simConnect = null;
@@ -204,7 +212,7 @@ namespace Force_Feedback_Yoke_Desktop_App
                     //    SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
                     //specify data format to simulator
-                    simConnect.RegisterDataDefineStruct<ControlAxisData>(DEFINITION.ControlAxisData);
+                    simConnect.RegisterDataDefineStruct<SimControlAxisData>(DEFINITION.ControlAxisData);
 
                     RegisterAircraftSimVar();
                     RegisterWeatherSimVar();
@@ -288,7 +296,7 @@ namespace Force_Feedback_Yoke_Desktop_App
             }
         }
 
-        public void SetValue(ControlAxisData structSimVarOut)
+        public void SetValue(SimControlAxisData structSimVarOut)
         {
             if (simConnect != null)
             {
