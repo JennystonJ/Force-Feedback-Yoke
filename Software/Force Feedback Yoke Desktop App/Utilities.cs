@@ -12,5 +12,10 @@ namespace Force_Feedback_Yoke_Desktop_App
         {
             return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
         }
+
+        public static decimal Scale(decimal value, decimal inMin, decimal inMax, decimal outMin, decimal outMax)
+        {
+            return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        }
     }
 }
