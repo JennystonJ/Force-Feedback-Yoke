@@ -444,6 +444,7 @@ namespace Force_Feedback_Yoke_Desktop_App
                 Maximum = 100
             };
             travelSelector.DataBindings.Add("Value", pitchFFB, "Travel", true, DataSourceUpdateMode.OnPropertyChanged);
+            travelSelector.ValueChanged += (s, e) => ffbDevice.ControlParams.PitchRangeMM = travelSelector.Value;
 
             var gainSlider = GenerateGainNumericSlider();
             gainSlider.DataBindings.Add("Value", pitchFFB, "Gain", true, DataSourceUpdateMode.OnPropertyChanged);
@@ -489,6 +490,7 @@ namespace Force_Feedback_Yoke_Desktop_App
                 Maximum = 180
             };
             travelSelector.DataBindings.Add("Value", rollFFB, "Travel", true, DataSourceUpdateMode.OnPropertyChanged);
+            travelSelector.ValueChanged += (s, e) => ffbDevice.ControlParams.RollRangeDeg = travelSelector.Value;
 
             var gainSlider = GenerateGainNumericSlider();
             gainSlider.DataBindings.Add("Value", rollFFB, "Gain", true, DataSourceUpdateMode.OnPropertyChanged);

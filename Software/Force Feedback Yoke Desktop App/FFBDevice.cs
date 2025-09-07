@@ -215,6 +215,7 @@ namespace Force_Feedback_Yoke_Desktop_App
         {
             if(Connect())
             {
+                WriteControlData();
                 DeviceConnectedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -238,6 +239,7 @@ namespace Force_Feedback_Yoke_Desktop_App
                 return false;
             }
 
+            WriteControlData();
             Connected = true;
             return true;
         }
