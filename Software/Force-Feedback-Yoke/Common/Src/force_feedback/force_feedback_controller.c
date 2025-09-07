@@ -57,11 +57,7 @@ void FFB_Init(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 	ffb->springGain = 1.0f;
 	ffb->damperGain = 1.0f;
 
-	// Temporarily disable assist until better implementation
-	ffb->assistMin = 200;
-	ffb->assistGain = 0;//40000;
-
-	ffb->gain = 10.0f;
+	ffb->gain = 1.0f;
 	ffb->motorKtConstant = 0.0265;
 	ffb->minLock = -200000;
 	ffb->maxLock = 200000;

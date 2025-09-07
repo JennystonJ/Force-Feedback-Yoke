@@ -86,9 +86,6 @@ typedef struct FFBController {
 	float acceleration;
 	LowPass_t lpfAccel;
 
-	float assistMin;
-	float assistGain;
-
 	int minLock;
 	int maxLock;
 	int travelRange;
