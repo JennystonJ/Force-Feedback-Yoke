@@ -30,5 +30,10 @@ namespace Force_Feedback_Yoke_Desktop_App
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
+
+        private void txtName_TextChanged(object sender, EventArgs e)
+        {
+            btnSave.Enabled = txtName.TextLength > 0;
+        }
     }
 }
