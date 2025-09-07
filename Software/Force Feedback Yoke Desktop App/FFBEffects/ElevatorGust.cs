@@ -16,8 +16,8 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
         private const double MPS_TO_FTPS = 3.28084;
         private const double KT_TO_FTPS = 1.68781;
 
-        public WeatherData Wind { get; set; }
-        public AircraftData Aircraft { get; set; }
+        public WeatherData WeatherData { get; set; }
+        public AircraftData AircraftData { get; set; }
         public double HeaveGain { get; set; } = 0.2;
         public double AoaGain { get; set; } = 0.5;
 
@@ -47,20 +47,20 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
         public double ElevatorGustFunction()
         {
             // Vertical speed in feet per second
-            double v_true_ftps = Math.Max(50 * KT_TO_FTPS, Wind.windVel_kt * KT_TO_FTPS);
+            double v_true_ftps = Math.Max(50 * KT_TO_FTPS, WeatherData.windVel_kt * KT_TO_FTPS);
 
             // Dynamic pressure
-            double q = 0.5f * Wind.ambientDensity_spcf * v_true_ftps * v_true_ftps;
+            double q = 0.5f * WeatherData.ambientDensity_spcf * v_true_ftps * v_true_ftps;
 
             // Heave force
             double heaveIn = highPassHeave.Update(
-                lowPassHeave.Update(Wind.accelBodyZ_ftps2));
+                lowPassHeave.Update(WeatherData.accelBodyZ_ftps2));
             double gHeave = HeaveGain * q;
             double fHeave = gHeave * heaveIn;
 
             // AoA force
             double deltaAlpha = highPassAoa.Update(
-                lowPassAoa.Update(Aircraft.incidenceAlpha));
+                lowPassAoa.Update(AircraftData.incidenceAlpha));
             double gAoa = AoaGain * q;
             double fAoa = gAoa * deltaAlpha;
 
@@ -103,6 +103,22 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
                 { "heave_gain", HeaveGain},
                 { "aoa_gain", AoaGain},
             };
+        }
+
+        public override void ApplyConfig(FFBEffectConfig config)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override FFBEffectConfig ExportConfig()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void UpdateData(SimData simData)
+        {
+            AircraftData = simData.AircraftData;
+            WeatherData = simData.WeatherData;
         }
     }
 }
