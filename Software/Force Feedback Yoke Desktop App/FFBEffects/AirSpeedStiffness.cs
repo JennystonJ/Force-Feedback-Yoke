@@ -12,6 +12,7 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
     {
         public double SpringGain { get; set; }
         public double DamperGain { get; set; }
+        public double CalibrationAirspeed { get; set; }
     }
     internal class AirspeedStiffness : FFBEffect
     {
@@ -40,6 +41,20 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
                 {
                     _damperGain = value;
                     OnPropertyChanged(this, new PropertyChangedEventArgs(nameof(DamperGain)));
+                }
+            }
+        }
+
+        private double _calibrationAirspeed;
+        public double CalibrationAirspeed
+        {
+            get => _calibrationAirspeed;
+            set
+            {
+                if (_calibrationAirspeed != value)
+                {
+                    _calibrationAirspeed = value;
+                    OnPropertyChanged(this, new PropertyChangedEventArgs(nameof(CalibrationAirspeed)));
                 }
             }
         }
@@ -78,12 +93,12 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
 
         public double AirSpeedStiffnessSpringFunction()
         {
-            return SpringGain * Math.Min(Math.Pow(Airspeed / 100, 2), 1);
+            return SpringGain * Math.Min(Math.Pow(Airspeed / CalibrationAirspeed, 2), 1);
         }
 
         public double AirSpeedStiffnessDamperFunction()
         {
-            return DamperGain / 1000.0 * Math.Min(Math.Pow(Airspeed / 100, 2), 1);
+            return DamperGain / 1000.0 * Math.Min(Math.Pow(Airspeed / CalibrationAirspeed, 2), 1);
         }
 
         protected override void OnEnabledChanged(bool enabled)
@@ -96,6 +111,7 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
         {
             SpringGain = parameters["spring_gain"];
             DamperGain = parameters["damper_gain"];
+            CalibrationAirspeed = parameters["calibration_airspeed"];
         }
 
         public override Dictionary<string, double> SaveParameters()
@@ -104,6 +120,7 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
             {
                 { "spring_gain", SpringGain },
                 { "damper_gain", DamperGain },
+                { "calibration_airspeed", CalibrationAirspeed },
             };
         }
 
@@ -113,6 +130,7 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
             {
                 SpringGain = airspeedStiffnessConfig.SpringGain;
                 DamperGain = airspeedStiffnessConfig.DamperGain;
+                CalibrationAirspeed = airspeedStiffnessConfig.CalibrationAirspeed;
             }
        
         }
@@ -123,6 +141,7 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
             {
                 SpringGain = this.SpringGain,
                 DamperGain = this.DamperGain,
+                CalibrationAirspeed = this.CalibrationAirspeed,
             };
         }
 

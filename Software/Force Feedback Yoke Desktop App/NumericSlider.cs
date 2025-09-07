@@ -25,8 +25,12 @@ namespace Force_Feedback_Yoke_Desktop_App
                 if (_value != value)
                 {
                     _value = value;
-                    tbSlider.Value = decimal.ToInt32(_value);
-                    nudValue.Value = _value;
+                    tbSlider.Value = Math.Clamp(decimal.ToInt32(_value * Divisor), 
+                        tbSlider.Minimum,
+                        tbSlider.Maximum);
+                    nudValue.Value = Math.Clamp(_value, 
+                        nudValue.Minimum, 
+                        nudValue.Maximum);
                     ValueChanged?.Invoke(this, EventArgs.Empty);
                 }
             }

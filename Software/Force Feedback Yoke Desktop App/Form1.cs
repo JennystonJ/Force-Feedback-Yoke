@@ -391,7 +391,14 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private void btnSaveProfile_Click(object sender, EventArgs e)
         {
-
+            // Ensure a profile is selected
+            if(cboProfile.Text != "")
+            {
+                // Write to current profile
+                AircraftConfig aircraftConfig =
+                    ProfileSaver.ToAircraftConfig(cboProfile.Text, pitchFFB, rollFFB);
+                ProfileSaver.WriteFile(aircraftConfig);
+            }
         }
 
         private void btnConnectSim_Click(object sender, EventArgs e)
@@ -426,7 +433,7 @@ namespace Force_Feedback_Yoke_Desktop_App
         public void SetupPitchSettingsTable()
         {
             string[] strings = ["General", "Travel Range", "Gain",
-                                "Main Effects", "Airspeed Stiffness",
+                                "Main Effects", "Airspeed Stiffness", "Calibration Airspeed",
                                 "Prop Wash Effects", "Elevator Weight", "Engine RPM Center Strength"];
 
             var travelSelector = new RangeSelector
@@ -441,8 +448,11 @@ namespace Force_Feedback_Yoke_Desktop_App
             var gainSlider = GenerateGainNumericSlider();
             gainSlider.DataBindings.Add("Value", pitchFFB, "Gain", true, DataSourceUpdateMode.OnPropertyChanged);
 
-            var airSpeedSlider = GenerateGainNumericSlider();
-            airSpeedSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(AirspeedStiffness)], "SpringGain", true, DataSourceUpdateMode.OnPropertyChanged);
+            var airspeedSlider = GenerateGainNumericSlider();
+            airspeedSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(AirspeedStiffness)], "SpringGain", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            var calibrationAirspeedSlider = GenerateAirspeedSlider();
+            calibrationAirspeedSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(AirspeedStiffness)], "CalibrationAirspeed", true, DataSourceUpdateMode.OnPropertyChanged);
 
             var elevatorWeightSlider = GenerateForceNumericSlider();
             elevatorWeightSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(ElevatorWeight)], "Weight", true, DataSourceUpdateMode.OnPropertyChanged);
@@ -451,12 +461,12 @@ namespace Force_Feedback_Yoke_Desktop_App
             engineRpmStrengthSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(ElevatorWeight)], "EngineRPMStrength", true, DataSourceUpdateMode.OnPropertyChanged);
 
             bool[] isCategories = [true, false, false,
-                                true, false,
+                                true, false, false,
                                 true, false, false];
             Control?[] controls = [null,
                 travelSelector, 
                 gainSlider,
-                null, airSpeedSlider,
+                null, airspeedSlider, calibrationAirspeedSlider,
                 null, elevatorWeightSlider, engineRpmStrengthSlider,
                 ];
 
@@ -466,9 +476,9 @@ namespace Force_Feedback_Yoke_Desktop_App
         public void SetupRollSettingsTable()
         {
             string[] strings = ["General", "Travel Range", "Gain",
-                                "Main Effects", "Airspeed Stiffness"];
+                                "Main Effects", "Airspeed Stiffness", "Calibration Airspeed"];
             bool[] isCategories = [true, false, false,
-                                true, false];
+                                true, false, false];
 
 
             var travelSelector = new RangeSelector
@@ -486,29 +496,16 @@ namespace Force_Feedback_Yoke_Desktop_App
             var airSpeedSlider = GenerateGainNumericSlider();
             airSpeedSlider.DataBindings.Add("Value", rollFFB.Effects[typeof(AirspeedStiffness)], "SpringGain", true, DataSourceUpdateMode.OnPropertyChanged);
 
+            var calibrationAirspeedSlider = GenerateAirspeedSlider();
+            calibrationAirspeedSlider.DataBindings.Add("Value", rollFFB.Effects[typeof(AirspeedStiffness)], "CalibrationAirspeed", true, DataSourceUpdateMode.OnPropertyChanged);
+
             Control?[] controls = [null,
                 travelSelector, 
                 gainSlider,
-                null, airSpeedSlider,
+                null, airSpeedSlider, calibrationAirspeedSlider,
                 ];
 
             SetupSettingsTable(rollSettingsTable, strings, isCategories, controls);
-
-            //Action<object>?[] actions = {
-            //    null,
-            //    v =>
-            //    {
-            //        ffbDevice.ControlParams.RollLimitInDegMin = decimal.ToSingle(((Range)v).Minimum);
-            //        ffbDevice.ControlParams.RollLimitInDegMax = decimal.ToSingle(((Range)v).Maximum);
-            //        rollFFB.TravelMin = ffbDevice.ControlParams.RollLimitInDegMin;
-            //        rollFFB.TravelMax = ffbDevice.ControlParams.RollLimitInDegMax;
-            //    }, // Travel Range
-            //    v => rollFFB.Gain = decimal.ToDouble((decimal) v / 100),                                   // Gain
-            //    null,
-            //    v => ((AirspeedStiffness)adjRollFFBEffects["airspeed stiffness"]).SpringGain = decimal.ToDouble((decimal)v/100), // Airspeed Stiffness
-            //};
-
-            //SetupSettingsTableActions(rollSettingsTable, actions);
         }
 
         public void SetupSettingsTable(SettingsTable table, string[] strings, bool[] isCategories, Control?[] controls)
@@ -549,7 +546,7 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         public NumericSlider GenerateGainNumericSlider()
         {
-            NumericSlider gain = new NumericSlider
+            NumericSlider gainSlider = new NumericSlider
             {
 
                 ShowUnit = true,
@@ -557,32 +554,50 @@ namespace Force_Feedback_Yoke_Desktop_App
                 Value = 0,
             };
             // TODO: Refactor code so Numeric Slider handles range (makes both track bar and numeric up down equal)
-            gain.TrackBar.SetRange(0, 100);
-            gain.NumericUpDown.Maximum = 100;
-            gain.NumericUpDown.Minimum = 0;
-            gain.Value = 0;
+            gainSlider.TrackBar.SetRange(0, 100);
+            gainSlider.NumericUpDown.Maximum = 100;
+            gainSlider.NumericUpDown.Minimum = 0;
+            gainSlider.Value = 0;
 
-            return gain;
+            return gainSlider;
         }
 
         public NumericSlider GenerateForceNumericSlider()
         {
-            NumericSlider force = new NumericSlider
+            NumericSlider forceSlider = new NumericSlider
             {
 
                 ShowUnit = true,
                 UnitText = "N",
                 Value = 0,
+                Divisor = 10,
             };
             // TODO: Refactor code so Numeric Slider handles range (makes both track bar and numeric up down equal)
             // TODO: Add divider to track bar to increase resolution
-            force.TrackBar.SetRange(0, 10);
-            force.NumericUpDown.Maximum = 10;
-            force.NumericUpDown.Minimum = 0;
-            force.NumericUpDown.DecimalPlaces = 2;
-            force.Value = 0;
+            forceSlider.TrackBar.SetRange(0, 100);
+            forceSlider.NumericUpDown.Maximum = 10;
+            forceSlider.NumericUpDown.Minimum = 0;
+            forceSlider.NumericUpDown.DecimalPlaces = 2;
+            forceSlider.Value = 0;
 
-            return force;
+            return forceSlider;
+        }
+
+        public NumericSlider GenerateAirspeedSlider()
+        {
+            NumericSlider airspeedSlider = new NumericSlider
+            {
+                ShowUnit = true,
+                UnitText = "kt",
+                Value = 1,
+                Divisor = 1,
+            };
+            airspeedSlider.TrackBar.SetRange(1, 1000);
+            airspeedSlider.NumericUpDown.Maximum = 1000;
+            airspeedSlider.NumericUpDown.Minimum = 1;
+            airspeedSlider.Value = 1;
+
+            return airspeedSlider;
         }
 
         private void btnFfbOn_Click(object sender, EventArgs e)
@@ -605,7 +620,12 @@ namespace Force_Feedback_Yoke_Desktop_App
         {
             if (cboProfile.Text != "")
             {
+                btnSaveProfile.Enabled = true;
                 ProfileLoader.LoadConfig(cboProfile.Text, ffbDevice, pitchFFB, rollFFB);
+            }
+            else
+            {
+                btnSaveProfile.Enabled= false;
             }
         }
 
