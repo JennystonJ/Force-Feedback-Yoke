@@ -21,19 +21,23 @@ namespace Force_Feedback_Yoke_Desktop_App
                 Value = (Range)value;
             }
         }
+
+        [Description("Current range value."), Category("Behavior"), Bindable(true)]
         public Range Value
         {
-            get => new Range { Minimum = nudMinRange.Value, Maximum = nudMaxRange.Value};
+            get => new(nudMinRange.Value, nudMaxRange.Value);
             set
             {
+
                 nudMinRange.Value = value.Minimum;
                 nudMaxRange.Value = value.Maximum;
                 UpdateNudValues(false);
+
             }
         }
 
         private decimal _valueGap;
-        [Description("Minimum gap between minimum and maximum."), Category("Behavior")]
+        [Description("Minimum gap between minimum and maximum."), Category("Behavior"), Bindable(true)]
         public decimal ValueGap
         {
             get => _valueGap;
@@ -155,11 +159,5 @@ namespace Force_Feedback_Yoke_Desktop_App
                 nudMaxRange.Value = maxRange;
             }
         }
-    }
-
-    public class Range
-    {
-        public decimal Minimum { get; set; }
-        public decimal Maximum { get; set; }
     }
 }
