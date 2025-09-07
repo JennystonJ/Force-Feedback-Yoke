@@ -14,6 +14,7 @@ using System.IO;
 using Microsoft.Win32.SafeHandles;
 using System.Formats.Asn1;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 
 
 namespace Force_Feedback_Yoke_Desktop_App
@@ -101,73 +102,67 @@ namespace Force_Feedback_Yoke_Desktop_App
             public float RollMaxForce { get; internal set; }
         }
 
-        public class ControlData
+        public class ControlData : INotifyPropertyChanged
         {
-            internal bool modified { get; set; } = true;
-            private bool ffbEnabled;
-            private float pitchLimitInMMMin;
-            private float pitchLimitInMMMax;
-            private float rollLimitInDegMin;
-            private float rollLimitInDegMax;
+            private bool _ffbEnabled;
+            private Range _pitchRangeMM;
+            private Range _rollRangeDeg;
 
+            public event PropertyChangedEventHandler? PropertyChanged;
 
             public ControlData()
             {
-                ffbEnabled = false;
-                pitchLimitInMMMin = -50;
-                pitchLimitInMMMax = 50;
-                rollLimitInDegMin = -90;
-                rollLimitInDegMax = 90;
+                _ffbEnabled = false;
+                _pitchRangeMM = new Range(-100, 100);
+                _pitchRangeMM.PropertyChanged += 
+                    (s, e) => OnPropertyChanged(nameof(_pitchRangeMM) + "." + e.PropertyName);
+
+                _rollRangeDeg = new Range(-180, 180);
+                _rollRangeDeg.PropertyChanged +=
+                    (s, e) => OnPropertyChanged(nameof(_rollRangeDeg) + "." + e.PropertyName);
             }
             public bool FFBEnabled
             {
                 get
                 {
-                    return ffbEnabled;
+                    return _ffbEnabled;
                 }
                 set
                 {
-                    modified = true;
-                    ffbEnabled = value;
+                    _ffbEnabled = value;
+                    OnPropertyChanged(nameof(FFBEnabled));
                 }
             }
 
-            public float PitchLimitInMMMin
+            public Range PitchRangeMM
             {
-                get { return pitchLimitInMMMin; }
+                get => _pitchRangeMM;
                 set
                 {
-                    modified = true;
-                    pitchLimitInMMMin = value;
-                }
-            }
-            public float PitchLimitInMMMax
-            {
-                get { return pitchLimitInMMMax; }
-                set
-                {
-                    modified = true;
-                    pitchLimitInMMMax = value;
+                    if (_pitchRangeMM != value)
+                    {
+                        _pitchRangeMM = value;
+                        OnPropertyChanged(nameof(PitchRangeMM));
+                    }
                 }
             }
 
-            public float RollLimitInDegMin
+            public Range RollRangeDeg
             {
-                get { return rollLimitInDegMin; }
+                get => _rollRangeDeg;
                 set
                 {
-                    modified = true;
-                    rollLimitInDegMin = value;
+                    if(_rollRangeDeg != value)
+                    {
+                         _rollRangeDeg = value;
+                         OnPropertyChanged(nameof(RollRangeDeg));
+                    }
                 }
             }
-            public float RollLimitInDegMax
+
+            protected void OnPropertyChanged(string? propertyName)
             {
-                get { return rollLimitInDegMax; }
-                set
-                {
-                    modified = true;
-                    rollLimitInDegMax = value;
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
@@ -212,6 +207,8 @@ namespace Force_Feedback_Yoke_Desktop_App
             monitor = new UsbDeviceMonitor(USB_VID, USB_PID);
             monitor.RegisterDeviceArrived(new EventArrivedEventHandler(UsbDeviceConnected));
             monitor.RegisterDeviceRemoved(new EventArrivedEventHandler(UsbDeviceDisconnected));
+
+            controlData.PropertyChanged += (s, e) => WriteControlData();
         }
 
         private void UsbDeviceConnected(object sender, EventArrivedEventArgs e)
@@ -275,7 +272,7 @@ namespace Force_Feedback_Yoke_Desktop_App
             controlData.FFBEnabled = false;
         }
 
-        public void WriteControlData()
+        private void WriteControlData()
         {
             hidCommandQueue.Enqueue(ConvertControlToReport());
         }
@@ -588,16 +585,16 @@ namespace Force_Feedback_Yoke_Desktop_App
             buffer[0] = HID_CONTROL_REPORT_ID; // reportId byte (control)
             buffer[1] = controlData.FFBEnabled ? (byte)0x01 : (byte)0x00; // ffb disable
 
-            byte[] pitchLimitInMMMin = BitConverter.GetBytes(controlData.PitchLimitInMMMin);
+            byte[] pitchLimitInMMMin = BitConverter.GetBytes(decimal.ToSingle(controlData.PitchRangeMM.Minimum));
             Array.Copy(pitchLimitInMMMin, 0, buffer, 2, pitchLimitInMMMin.Length);
 
-            byte[] pitchLimitInMMMax = BitConverter.GetBytes(controlData.PitchLimitInMMMax);
+            byte[] pitchLimitInMMMax = BitConverter.GetBytes(decimal.ToSingle(controlData.PitchRangeMM.Maximum));
             Array.Copy(pitchLimitInMMMax, 0, buffer, 6, pitchLimitInMMMax.Length);
 
-            byte[] rollLimitInDegMin = BitConverter.GetBytes(controlData.RollLimitInDegMin);
+            byte[] rollLimitInDegMin = BitConverter.GetBytes(decimal.ToSingle(controlData.RollRangeDeg.Minimum));
             Array.Copy(rollLimitInDegMin, 0, buffer, 10, rollLimitInDegMin.Length);
 
-            byte[] rollLimitInDegMax = BitConverter.GetBytes(controlData.RollLimitInDegMax);
+            byte[] rollLimitInDegMax = BitConverter.GetBytes(decimal.ToSingle(controlData.RollRangeDeg.Maximum));
             Array.Copy(rollLimitInDegMax, 0, buffer, 14, rollLimitInDegMax.Length);
 
             return buffer;

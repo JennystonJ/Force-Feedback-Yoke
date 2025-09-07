@@ -9,5 +9,6 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBForces
     internal abstract class FFBForce
     {
         public abstract ForceSet CalcForce();
+
     }
 }

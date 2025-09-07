@@ -28,10 +28,6 @@ namespace Force_Feedback_Yoke_Desktop_App
         private FFBController pitchFFB;
         private FFBController rollFFB;
 
-        private Dictionary<IValueChanged, Action<object>?> controlToSettter = new();
-        private Dictionary<string, FFBEffect> adjPitchFFBEffects = new();
-        private Dictionary<string, FFBEffect> adjRollFFBEffects = new();
-
         public Form1()
         {
             InitializeComponent();
@@ -80,23 +76,21 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private void simConnectHelper_DataReadyEvent(object? sender, EventArgs e)
         {
-            ((AirSpeedStiffness)adjPitchFFBEffects["airspeed stiffness"]).AirSpeed = simConnectHelper.Aircraft.airSpeed;
-            ((ElevatorWeight)adjPitchFFBEffects["elevator weight"]).EngineRPM = simConnectHelper.Aircraft.engineRPM;
+            pitchFFB.UpdateData(simConnectHelper.SimData);
+            rollFFB.UpdateData(simConnectHelper.SimData);
 
-            ((AirSpeedStiffness)adjRollFFBEffects["airspeed stiffness"]).AirSpeed = simConnectHelper.Aircraft.airSpeed;
-
-            simConnectHelper.SetValue(new ControlAxisData
+            simConnectHelper.SetValue(new SimControlAxisData
             {
-                elevator = ffbDevice.HidData.pitchAxis/2,
-                aileron = ffbDevice.HidData.rollAxis/2
+                elevator = ffbDevice.HidData.pitchAxis / 2,
+                aileron = ffbDevice.HidData.rollAxis / 2
             });
         }
 
         private void simConnectHelper_SimPauseChangedEvent(object? sender, EventArgs e)
         {
-            if(e is SimPauseEventArgs pauseArgs)
+            if (e is SimPauseEventArgs pauseArgs)
             {
-                if(pauseArgs.Paused)
+                if (pauseArgs.Paused)
                 {
                     pitchFFB.Enable = false;
                     rollFFB.Enable = false;
@@ -127,27 +121,16 @@ namespace Force_Feedback_Yoke_Desktop_App
             btnFfbOn.Enabled = true;
 
             ffbDevice.ControlParams.FFBEnabled = false;
-            ffbDevice.ControlParams.PitchLimitInMMMin = -150.0f / 2.0f;
-            ffbDevice.ControlParams.PitchLimitInMMMax = 150.0f / 2.0f;
-            ffbDevice.ControlParams.RollLimitInDegMin = -90.0f;
-            ffbDevice.ControlParams.RollLimitInDegMax = 90.0f;
-            ffbDevice.WriteControlData();
         }
 
         private void AddPitchFFBEffects()
         {
-            adjPitchFFBEffects.Clear();
+            pitchFFB.Effects.Clear();
+            pitchFFB.Effects.Add(typeof(AirspeedStiffness), new AirspeedStiffness());
+            pitchFFB.Effects.Add(typeof(ElevatorWeight), new ElevatorWeight());
 
-            AirSpeedStiffness airspeedStiffness = new AirSpeedStiffness(0.0);
-            ElevatorWeight elevatorWeight = new ElevatorWeight(0.0, 0.0);
 
-            adjPitchFFBEffects.Add("airspeed stiffness", airspeedStiffness);
-            adjPitchFFBEffects.Add("elevator weight", elevatorWeight);
-
-            pitchFFB.Effects.Add(airspeedStiffness);
-            pitchFFB.Effects.Add(elevatorWeight);
-
-            foreach(FFBEffect effect in pitchFFB.Effects)
+            foreach (FFBEffect effect in pitchFFB.Effects.Values)
             {
                 effect.Enabled = true;
             }
@@ -155,15 +138,10 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private void AddRollFFBEffects()
         {
-            adjRollFFBEffects.Clear();
+            rollFFB.Effects.Clear();
+            rollFFB.Effects.Add(typeof(AirspeedStiffness), new AirspeedStiffness());
 
-            AirSpeedStiffness airSpeedStiffness = new AirSpeedStiffness(0.0);
-
-            adjRollFFBEffects.Add("airspeed stiffness", airSpeedStiffness);
-
-            rollFFB.Effects.Add(airSpeedStiffness);
-
-            foreach (FFBEffect effect in rollFFB.Effects)
+            foreach (FFBEffect effect in rollFFB.Effects.Values)
             {
                 effect.Enabled = true;
             }
@@ -285,14 +263,13 @@ namespace Force_Feedback_Yoke_Desktop_App
         {
             // *** Handle pitch axis ***
             // Pitch position
-            double pitchPosition = ffbDevice.HidData.pitchAxis;
+            decimal pitchPosition = Convert.ToDecimal(ffbDevice.HidData.pitchAxis);
             SetTravelIndicatorValue((int)Utilities.Scale(pitchPosition,
                 -32767, 32767, -100, 100),
                 tiPitchPosition);
             // Calculate pitch position in mm
-            double pitchTravelRangeMM = ffbDevice.ControlParams.PitchLimitInMMMax -
-                ffbDevice.ControlParams.PitchLimitInMMMin;
-            double pitchPositionMM = (pitchTravelRangeMM / 2.0) * pitchPosition / 32767.0;
+            decimal pitchTravelRangeMM = ffbDevice.ControlParams.PitchRangeMM.CalcRange();
+            decimal pitchPositionMM = (pitchTravelRangeMM / 2.0M) * Convert.ToDecimal(pitchPosition) / 32767.0M;
             // Set label indicator
             SetLabelText(string.Format("{0:0.0} mm", pitchPositionMM), lblPitchPosValue);
 
@@ -309,14 +286,13 @@ namespace Force_Feedback_Yoke_Desktop_App
 
             // *** Handle roll axis ***
             // Roll position
-            double rollPosition = ffbDevice.HidData.rollAxis;
+            decimal rollPosition = Convert.ToDecimal(ffbDevice.HidData.rollAxis);
             SetTravelIndicatorValue((int)Utilities.Scale(rollPosition,
                 -32767, 32767, -100, 100),
                 tiRollPosition);
             // Calculate roll position in deg
-            double rollTravelRangeDeg = ffbDevice.ControlParams.RollLimitInDegMax -
-                ffbDevice.ControlParams.RollLimitInDegMin;
-            double rollPositionDeg = (rollTravelRangeDeg / 2.0) * rollPosition / 32767.0;
+            decimal rollTravelRangeDeg = ffbDevice.ControlParams.RollRangeDeg.CalcRange();
+            decimal rollPositionDeg = (rollTravelRangeDeg / 2) * rollPosition / 32767;
             // Set label indicator
             SetLabelText(string.Format("{0:0.0} deg", rollPositionDeg), lblRollPosValue);
 
@@ -402,7 +378,10 @@ namespace Force_Feedback_Yoke_Desktop_App
             DialogResult result = saveAsDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-
+                AircraftConfig aircraftConfig =
+                    ProfileSaver.ToAircraftConfig(saveAsDialog.UserInput, pitchFFB, rollFFB);
+                ProfileSaver.WriteFile(aircraftConfig);
+                LoadCboProfiles();
             }
             else
             {
@@ -449,53 +428,39 @@ namespace Force_Feedback_Yoke_Desktop_App
             string[] strings = ["General", "Travel Range", "Gain",
                                 "Main Effects", "Airspeed Stiffness",
                                 "Prop Wash Effects", "Elevator Weight", "Engine RPM Center Strength"];
+
+            var travelSelector = new RangeSelector
+            {
+                ValueGap = 50,
+                Unit = "mm",
+                Minimum = -100,
+                Maximum = 100
+            };
+            travelSelector.DataBindings.Add("Value", pitchFFB, "Travel", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            var gainSlider = GenerateGainNumericSlider();
+            gainSlider.DataBindings.Add("Value", pitchFFB, "Gain", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            var airSpeedSlider = GenerateGainNumericSlider();
+            airSpeedSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(AirspeedStiffness)], "SpringGain", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            var elevatorWeightSlider = GenerateForceNumericSlider();
+            elevatorWeightSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(ElevatorWeight)], "Weight", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            var engineRpmStrengthSlider = GenerateGainNumericSlider();
+            engineRpmStrengthSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(ElevatorWeight)], "EngineRPMStrength", true, DataSourceUpdateMode.OnPropertyChanged);
+
             bool[] isCategories = [true, false, false,
                                 true, false,
                                 true, false, false];
             Control?[] controls = [null,
-                new RangeSelector {
-                    ValueGap = 50,
-                    Unit = "mm",
-                    Minimum = -90,
-                    Maximum = 90
-                }, GenerateGainNumericSlider(),
-                null, GenerateGainNumericSlider(),
-                null, GenerateForceNumericSlider(), GenerateGainNumericSlider(),
+                travelSelector, 
+                gainSlider,
+                null, airSpeedSlider,
+                null, elevatorWeightSlider, engineRpmStrengthSlider,
                 ];
 
             SetupSettingsTable(pitchSettingsTable, strings, isCategories, controls);
-
-            Action<object>?[] actions = {
-                null,
-                v => 
-                {
-                    ffbDevice.ControlParams.PitchLimitInMMMin = decimal.ToSingle(((Range)v).Minimum);
-                    ffbDevice.ControlParams.PitchLimitInMMMax = decimal.ToSingle(((Range)v).Maximum);
-                    ffbDevice.WriteControlData();
-                }, // Travel Range
-                v => pitchFFB.Gain = decimal.ToDouble((decimal) v / 100),                                   // Gain
-                null,
-                v => ((AirSpeedStiffness)adjPitchFFBEffects["airspeed stiffness"]).SpringGain = decimal.ToDouble((decimal)v/100), // Airspeed Stiffness
-                null,
-                v => ((ElevatorWeight)adjPitchFFBEffects["elevator weight"]).Weight = decimal.ToDouble((decimal)v), // Elevator weight
-                v => ((ElevatorWeight)adjPitchFFBEffects["elevator weight"]).EngineRPMStrength = decimal.ToDouble((decimal)v/100), // Engine RPM Center Strength
-            };
-
-            SetupSettingsTableActions(pitchSettingsTable, actions);
-        }
-
-        public void SetupSettingsTableActions(SettingsTable table, Action<object>?[] actions)
-        {
-            int actionIndex = 0;
-            foreach (SettingsItem item in table.Items)
-            {
-                if (item.Control is IValueChanged vc)
-                {
-                    controlToSettter[vc] = actions[actionIndex];
-                }
-
-                actionIndex++;
-            }
         }
 
         public void SetupRollSettingsTable()
@@ -504,32 +469,46 @@ namespace Force_Feedback_Yoke_Desktop_App
                                 "Main Effects", "Airspeed Stiffness"];
             bool[] isCategories = [true, false, false,
                                 true, false];
+
+
+            var travelSelector = new RangeSelector
+            {
+                ValueGap = 50,
+                Unit = "deg",
+                Minimum = -180,
+                Maximum = 180
+            };
+            travelSelector.DataBindings.Add("Value", rollFFB, "Travel", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            var gainSlider = GenerateGainNumericSlider();
+            gainSlider.DataBindings.Add("Value", rollFFB, "Gain", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            var airSpeedSlider = GenerateGainNumericSlider();
+            airSpeedSlider.DataBindings.Add("Value", rollFFB.Effects[typeof(AirspeedStiffness)], "SpringGain", true, DataSourceUpdateMode.OnPropertyChanged);
+
             Control?[] controls = [null,
-                new RangeSelector {
-                    ValueGap = 50,
-                    Unit = "deg",
-                    Minimum = -120,
-                    Maximum = 120
-                }, GenerateGainNumericSlider(),
-                null, GenerateGainNumericSlider()
+                travelSelector, 
+                gainSlider,
+                null, airSpeedSlider,
                 ];
 
             SetupSettingsTable(rollSettingsTable, strings, isCategories, controls);
 
-            Action<object>?[] actions = {
-                null,
-                v =>                 
-                {
-                    ffbDevice.ControlParams.RollLimitInDegMin = decimal.ToSingle(((Range)v).Minimum);
-                    ffbDevice.ControlParams.RollLimitInDegMax = decimal.ToSingle(((Range)v).Maximum);
-                    ffbDevice.WriteControlData();
-                }, // Travel Range
-                v => rollFFB.Gain = decimal.ToDouble((decimal) v / 100),                                   // Gain
-                null,
-                v => ((AirSpeedStiffness)adjRollFFBEffects["airspeed stiffness"]).SpringGain = decimal.ToDouble((decimal)v/100), // Airspeed Stiffness
-            };
+            //Action<object>?[] actions = {
+            //    null,
+            //    v =>
+            //    {
+            //        ffbDevice.ControlParams.RollLimitInDegMin = decimal.ToSingle(((Range)v).Minimum);
+            //        ffbDevice.ControlParams.RollLimitInDegMax = decimal.ToSingle(((Range)v).Maximum);
+            //        rollFFB.TravelMin = ffbDevice.ControlParams.RollLimitInDegMin;
+            //        rollFFB.TravelMax = ffbDevice.ControlParams.RollLimitInDegMax;
+            //    }, // Travel Range
+            //    v => rollFFB.Gain = decimal.ToDouble((decimal) v / 100),                                   // Gain
+            //    null,
+            //    v => ((AirspeedStiffness)adjRollFFBEffects["airspeed stiffness"]).SpringGain = decimal.ToDouble((decimal)v/100), // Airspeed Stiffness
+            //};
 
-            SetupSettingsTableActions(rollSettingsTable, actions);
+            //SetupSettingsTableActions(rollSettingsTable, actions);
         }
 
         public void SetupSettingsTable(SettingsTable table, string[] strings, bool[] isCategories, Control?[] controls)
@@ -606,38 +585,52 @@ namespace Force_Feedback_Yoke_Desktop_App
             return force;
         }
 
-        private void pitchSettingsTable_ValueChanged(object sender, EventArgs e)
-        {
-            if (sender is IValueChanged vc && controlToSettter.TryGetValue(vc, out var setter))
-            {
-                setter?.Invoke(vc.Value);
-            }
-        }
-
-        private void rollSettingsTable_ValueChanged(object sender, EventArgs e)
-        {
-            if (sender is IValueChanged vc && controlToSettter.TryGetValue(vc, out var setter))
-            {
-                setter?.Invoke(vc.Value);
-            }
-        }
-
         private void btnFfbOn_Click(object sender, EventArgs e)
         {
-            if(ffbDevice.ControlParams.FFBEnabled)
+            if (ffbDevice.ControlParams.FFBEnabled)
             {
                 ffbDevice.ControlParams.FFBEnabled = false;
-                ffbDevice.WriteControlData();
                 lblStatus.Text = "Status: Connected, OFF";
                 btnFfbOn.Text = "FFB ON";
             }
             else
             {
                 ffbDevice.ControlParams.FFBEnabled = true;
-                ffbDevice.WriteControlData();
                 lblStatus.Text = "Status: Connected, ON";
                 btnFfbOn.Text = "FFB OFF";
             }
+        }
+
+        private void cboProfile_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboProfile.Text != "")
+            {
+                ProfileLoader.LoadConfig(cboProfile.Text, ffbDevice, pitchFFB, rollFFB);
+            }
+        }
+
+        public static Binding BindDoubleToDecimal(Control control, string controlProperty,
+            object dataSource, string dataMember)
+        {
+            Binding binding = control.DataBindings.Add(controlProperty, dataSource, dataMember);
+
+            binding.Format += (s, e) =>
+            {
+                if (e.DesiredType == typeof(decimal) && e.Value is double d)
+                {
+                    e.Value = Convert.ToDecimal(d);
+                }
+            };
+
+            binding.Parse += (s, e) =>
+            {
+                if(e.DesiredType == typeof(double) && e.Value is decimal d)
+                {
+                    e.Value = Convert.ToDouble(d);
+                }
+            };
+
+            return binding;
         }
     }
 }
