@@ -65,6 +65,8 @@ namespace Force_Feedback_Yoke_Desktop_App
             SetupPitchSettingsTable();
             SetupRollSettingsTable();
 
+            SetupPitchSettingsToolTip();
+
             LoadCboProfiles();
         }
 
@@ -617,6 +619,10 @@ namespace Force_Feedback_Yoke_Desktop_App
             airspeedSlider.Value = 1;
 
             return airspeedSlider;
+        }
+
+        private void SetupPitchSettingsToolTip()
+        {
         }
 
         private void btnFfbOn_Click(object sender, EventArgs e)

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             mainTableLayoutPanel = new TableLayoutPanel();
             menuTableLayoutPanel = new TableLayoutPanel();
@@ -90,6 +91,7 @@
             TopToolStripPanel = new ToolStripPanel();
             RightToolStripPanel = new ToolStripPanel();
             LeftToolStripPanel = new ToolStripPanel();
+            toolTip1 = new ToolTip(components);
             mainTableLayoutPanel.SuspendLayout();
             menuTableLayoutPanel.SuspendLayout();
             pitchMonitorPanel.SuspendLayout();
@@ -1238,6 +1240,7 @@
         private SettingsTable pitchSettingsTable;
         private TabPage rollProfileTabPage;
         private SettingsTable rollSettingsTable;
+        private ToolTip toolTip1;
     }
 }
 
