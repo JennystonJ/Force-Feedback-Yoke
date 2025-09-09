@@ -79,10 +79,17 @@ void FFB_Init(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 	ffb->speedDt = 0;
 
 	// Initialize all forces to 0
-	FFB_SetConstant(ffb, 0);
-//	FFBPeriodicInit(&ffb->param.periodic, 0, 0, 0);
-	FFB_SetSpring(ffb, 0);
-	FFB_SetDamper(ffb, 0);
+	FFBForces_t forces = {
+			.constantForce = 0,
+			.springForce = 0,
+			.damperForce = 0,
+	};
+	FFB_SetForces(ffb, forces);
+
+//	FFB_SetConstant(ffb, 0);
+////	FFBPeriodicInit(&ffb->param.periodic, 0, 0, 0);
+//	FFB_SetSpring(ffb, 0);
+//	FFB_SetDamper(ffb, 0);
 
 	ffb->assistEnable = false;
 	FFBAssist_Init(&ffb->ffbAssist);
