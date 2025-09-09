@@ -105,8 +105,9 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private void FFBDeviceDisconnected(object? sender, EventArgs e)
         {
-            btnFfbOn.Text = "FFB ON";
-            btnFfbOn.Enabled = false;
+            SetButtonText("FFB ON", btnFfbOn);
+            SetButtonEnabled(false, btnFfbOn);
+
             SetLabelText("Status: Disconnected", lblStatus);
             SetButtonText("Connect", btnConnect);
             ResetIndicators();
@@ -114,11 +115,12 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private void FFBDeviceConnected(object? sender, EventArgs e)
         {
+            SetButtonText("FFB ON", btnFfbOn);
+            SetButtonEnabled(true, btnFfbOn);
+
             SetLabelText("Status: Connected, OFF", lblStatus);
             SetButtonText("Disconnect", btnConnect);
 
-            btnFfbOn.Text = "FFB ON";
-            btnFfbOn.Enabled = true;
 
             ffbDevice.ControlParams.FFBEnabled = false;
         }
@@ -174,6 +176,21 @@ namespace Force_Feedback_Yoke_Desktop_App
             else
             {
                 button.Text = text;
+            }
+        }
+
+        delegate void SetButtonEnabledCallback(bool enable, Button button);
+        private void SetButtonEnabled(bool enabled, Button button)
+        {
+            // Check if on different threads
+            if(button.InvokeRequired)
+            {
+                SetButtonEnabledCallback d = new SetButtonEnabledCallback(SetButtonEnabled);
+                button.Invoke(d, new object[] { enabled, button });
+            }
+            else
+            {
+                button.Enabled = enabled;
             }
         }
 
