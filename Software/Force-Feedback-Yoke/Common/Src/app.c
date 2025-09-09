@@ -489,15 +489,15 @@ static void LoadCellUpdateCallback(void) {
 // *** PID Tuner Callbacks ***
 static void SetMotorSetPoint(float setPoint) {
 //	Motor_SetCurrent(&pitchMotor, setPoint);
-	BLDCMotor_SetQCurrent(&pitchBLDCMotor, setPoint);
+	BLDCMotor_SetQCurrent(&rollBLDCMotor, setPoint);
 }
 
 static float GetMotorActual(void) {
 //	return Motor_GetMeasuredCurrent(&pitchMotor, 0);
-	return BLDCMotor_GetQCurrentReading(&pitchBLDCMotor);
+	return BLDCMotor_GetQCurrentReading(&rollBLDCMotor);
 }
 
 static float GetMotorPower(void) {
-	return Motor_GetCurrent(&pitchMotor);
+	return Motor_GetCurrent(&rollMotor);
 	return 0;
 }
