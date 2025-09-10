@@ -14,6 +14,7 @@ namespace Force_Feedback_Yoke_Desktop_App
     public partial class NumericSlider : UserControl, IValueChanged
     {
         public event EventHandler? ValueChanged;
+        private bool isUpdating = false;
 
         private decimal _value;
         [Description("Numeric slider value."), Category("Behavior")]
@@ -25,7 +26,7 @@ namespace Force_Feedback_Yoke_Desktop_App
                 if (_value != value)
                 {
                     _value = value;
-                    tbSlider.Value = Math.Clamp(decimal.ToInt32(_value * Divisor), 
+                    tbSlider.Value = Math.Clamp(decimal.ToInt32((_value + _nudOffset) * Divisor), 
                         tbSlider.Minimum,
                         tbSlider.Maximum);
                     nudValue.Value = Math.Clamp(_value, 
@@ -38,7 +39,7 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private decimal _nudDivisor = 1;
         [Description("Numeric up down to slider divisor"), Category("Behavior")]
-        public decimal Divisor
+        private decimal Divisor
         {
             get => _nudDivisor;
             set
@@ -47,6 +48,7 @@ namespace Force_Feedback_Yoke_Desktop_App
             }
         }
 
+        private decimal _nudOffset = 0;
 
         object IValueChanged.Value 
         {
@@ -93,6 +95,34 @@ namespace Force_Feedback_Yoke_Desktop_App
             }
         }
 
+        private Range _range = new Range(0, 100);
+        [Description("Display unit."), Category("Behavior")]
+        public Range Range
+        {
+            get => _range;
+            set
+            {
+                _range = value;
+                nudValue.Maximum = _range.Maximum;
+                nudValue.Minimum = _range.Minimum;
+                CalcOffsetDivisor();
+            }
+        }
+
+        private decimal _sliderResolution = 100;
+        [Description("Resolution of slider."), Category("Behavior")]
+        public decimal SliderResolution
+        {
+            get => _sliderResolution;
+            set
+            {
+                _sliderResolution = value;
+                tbSlider.Maximum = decimal.ToInt32(_sliderResolution);
+                CalcOffsetDivisor();
+            }
+        }
+
+
         private string _unitText = "%";
 
         [Description("Unit text."), Category("Appearance")]
@@ -119,20 +149,50 @@ namespace Force_Feedback_Yoke_Desktop_App
         public NumericSlider()
         {
             InitializeComponent();
+            CalcOffsetDivisor();
+        }
+
+        private void CalcOffsetDivisor()
+        {
+            Range trackBarRange = new Range(TrackBar.Minimum, TrackBar.Maximum);
+            _nudOffset = Range.Minimum;
+            Divisor = trackBarRange.CalcRange() / Range.CalcRange();
         }
 
         private void tbSlider_Scroll(object sender, EventArgs e)
         {
-            nudValue.Value = tbSlider.Value / _nudDivisor;
-            _value = tbSlider.Value;
-            ValueChanged?.Invoke(this, EventArgs.Empty);
+            if(isUpdating)
+            {
+                return;
+            }
+
+            try
+            {
+                isUpdating = true;
+                Value = tbSlider.Value / Divisor + _nudOffset;
+            }
+            finally
+            {
+                isUpdating = false;
+            }
         }
 
         private void nudValue_ValueChanged(object sender, EventArgs e)
         {
-            tbSlider.Value = decimal.ToInt32(nudValue.Value * _nudDivisor);
-            _value = nudValue.Value;
-            ValueChanged?.Invoke(this, EventArgs.Empty);
+            if (isUpdating)
+            {
+                return;
+            }
+
+            try
+            {
+                isUpdating = true;
+                Value = nudValue.Value;
+            }
+            finally
+            {
+                isUpdating = false;
+            }
         }
     }
 }
