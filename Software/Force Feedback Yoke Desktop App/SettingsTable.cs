@@ -49,7 +49,7 @@ namespace Force_Feedback_Yoke_Desktop_App
                     new TableLayoutPanelCellPosition(0, currentRow));
                 item.Label.TextAlign = ContentAlignment.MiddleLeft;
 
-                if (item.Category)
+                if (item.IsCategory)
                 {
                     tableLayoutPanel.SetColumnSpan(item.Label, 2);
                     item.Label.Margin = new System.Windows.Forms.Padding(3, 9, 3, 9);
@@ -83,11 +83,40 @@ namespace Force_Feedback_Yoke_Desktop_App
 
     public class SettingsItem
     {
-        [Description("Specifies if item is a category (No control)."), Category("Behavior")]
-        public bool Category { get; set; } = false;
         [Description("Label displaying name of settings item."), Category("Appearance")]
         public Label Label { get; set; } = new Label();
+        [Description("Specifies if item is a category (No control)."), Category("Behavior")]
+        public bool IsCategory { get; set; } = false;
         [Description("Control associated with settings item."), Category("Behavior")]
         public Control? Control { get; set; } = null;
+
+        public SettingsItem(string text)
+        {
+            Label.Text = text;
+            IsCategory = true;
+            Control = null;
+        }
+
+        public SettingsItem(string text, Font font)
+        {
+            Label.Text = text;
+            Label.Font = font;
+            IsCategory = true;
+            Control = null;
+        }
+
+        public SettingsItem(string text, Control? control)
+        {
+            Label.Text = text;
+            Control = control;
+            IsCategory = false;
+        }
+        public SettingsItem(string text, Font font, Control? control)
+        {
+            Label.Text = text;
+            Label.Font = font;
+            Control = control;
+            IsCategory = false;
+        }
     }
 }
