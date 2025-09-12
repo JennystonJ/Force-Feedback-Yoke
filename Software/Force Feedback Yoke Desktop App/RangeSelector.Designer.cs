@@ -48,8 +48,9 @@
             rangeFlowLayoutPanel.Controls.Add(lblMaxRangeUnit);
             rangeFlowLayoutPanel.Dock = DockStyle.Fill;
             rangeFlowLayoutPanel.Location = new Point(0, 0);
+            rangeFlowLayoutPanel.Margin = new Padding(6);
             rangeFlowLayoutPanel.Name = "rangeFlowLayoutPanel";
-            rangeFlowLayoutPanel.Size = new Size(283, 27);
+            rangeFlowLayoutPanel.Size = new Size(532, 55);
             rangeFlowLayoutPanel.TabIndex = 11;
             // 
             // nudMinRange
@@ -57,10 +58,11 @@
             nudMinRange.BackColor = Color.DimGray;
             nudMinRange.Dock = DockStyle.Fill;
             nudMinRange.ForeColor = Color.WhiteSmoke;
-            nudMinRange.Location = new Point(3, 3);
+            nudMinRange.Location = new Point(6, 6);
+            nudMinRange.Margin = new Padding(6);
             nudMinRange.Minimum = new decimal(new int[] { 100, 0, 0, int.MinValue });
             nudMinRange.Name = "nudMinRange";
-            nudMinRange.Size = new Size(86, 23);
+            nudMinRange.Size = new Size(160, 39);
             nudMinRange.TabIndex = 9;
             nudMinRange.ValueChanged += nudMinRange_ValueChanged;
             // 
@@ -71,11 +73,11 @@
             lblMinRangeUnit.Dock = DockStyle.Fill;
             lblMinRangeUnit.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblMinRangeUnit.ForeColor = Color.WhiteSmoke;
-            lblMinRangeUnit.Location = new Point(94, 0);
-            lblMinRangeUnit.Margin = new Padding(2, 0, 2, 0);
+            lblMinRangeUnit.Location = new Point(176, 0);
+            lblMinRangeUnit.Margin = new Padding(4, 0, 4, 0);
             lblMinRangeUnit.Name = "lblMinRangeUnit";
-            lblMinRangeUnit.Padding = new Padding(6);
-            lblMinRangeUnit.Size = new Size(52, 27);
+            lblMinRangeUnit.Padding = new Padding(11, 13, 11, 13);
+            lblMinRangeUnit.Size = new Size(99, 55);
             lblMinRangeUnit.TabIndex = 10;
             lblMinRangeUnit.Text = "unit to";
             lblMinRangeUnit.TextAlign = ContentAlignment.MiddleRight;
@@ -85,10 +87,11 @@
             nudMaxRange.BackColor = Color.DimGray;
             nudMaxRange.Dock = DockStyle.Fill;
             nudMaxRange.ForeColor = Color.WhiteSmoke;
-            nudMaxRange.Location = new Point(151, 3);
+            nudMaxRange.Location = new Point(285, 6);
+            nudMaxRange.Margin = new Padding(6);
             nudMaxRange.Minimum = new decimal(new int[] { 100, 0, 0, int.MinValue });
             nudMaxRange.Name = "nudMaxRange";
-            nudMaxRange.Size = new Size(86, 23);
+            nudMaxRange.Size = new Size(160, 39);
             nudMaxRange.TabIndex = 11;
             nudMaxRange.ValueChanged += nudMaxRange_ValueChanged;
             // 
@@ -99,24 +102,25 @@
             lblMaxRangeUnit.Dock = DockStyle.Fill;
             lblMaxRangeUnit.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblMaxRangeUnit.ForeColor = Color.WhiteSmoke;
-            lblMaxRangeUnit.Location = new Point(242, 0);
-            lblMaxRangeUnit.Margin = new Padding(2, 0, 2, 0);
+            lblMaxRangeUnit.Location = new Point(455, 0);
+            lblMaxRangeUnit.Margin = new Padding(4, 0, 4, 0);
             lblMaxRangeUnit.Name = "lblMaxRangeUnit";
-            lblMaxRangeUnit.Padding = new Padding(6);
-            lblMaxRangeUnit.Size = new Size(39, 27);
+            lblMaxRangeUnit.Padding = new Padding(11, 13, 11, 13);
+            lblMaxRangeUnit.Size = new Size(73, 55);
             lblMaxRangeUnit.TabIndex = 12;
             lblMaxRangeUnit.Text = "unit";
             lblMaxRangeUnit.TextAlign = ContentAlignment.MiddleRight;
             // 
             // RangeSelector
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             Controls.Add(rangeFlowLayoutPanel);
+            Margin = new Padding(6);
             Name = "RangeSelector";
-            Size = new Size(283, 27);
+            Size = new Size(532, 55);
             rangeFlowLayoutPanel.ResumeLayout(false);
             rangeFlowLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudMinRange).EndInit();

@@ -880,6 +880,7 @@
             // 
             pitchSettingsTable.AutoScroll = true;
             pitchSettingsTable.Dock = DockStyle.Fill;
+            pitchSettingsTable.ForeColor = Color.WhiteSmoke;
             pitchSettingsTable.Location = new Point(4, 4);
             pitchSettingsTable.Margin = new Padding(11, 13, 11, 13);
             pitchSettingsTable.Name = "pitchSettingsTable";
@@ -903,6 +904,7 @@
             // 
             rollSettingsTable.AutoScroll = true;
             rollSettingsTable.Dock = DockStyle.Fill;
+            rollSettingsTable.ForeColor = Color.WhiteSmoke;
             rollSettingsTable.Location = new Point(4, 4);
             rollSettingsTable.Margin = new Padding(11, 13, 11, 13);
             rollSettingsTable.Name = "rollSettingsTable";

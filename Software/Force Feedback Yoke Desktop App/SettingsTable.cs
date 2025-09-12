@@ -48,6 +48,8 @@ namespace Force_Feedback_Yoke_Desktop_App
                 tableLayoutPanel.SetCellPosition(item.Label,
                     new TableLayoutPanelCellPosition(0, currentRow));
                 item.Label.TextAlign = ContentAlignment.MiddleLeft;
+                item.Label.ForeColor = ForeColor;
+                item.Label.BackColor = BackColor;
 
                 if (item.IsCategory)
                 {
