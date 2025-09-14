@@ -17,8 +17,9 @@ namespace Force_Feedback_Yoke_Desktop_App
 {
     public partial class Form1 : Form
     {
-        private Color colorMenuBackground = Color.DodgerBlue;
-        private Color colorMenuSelectedBackground = Color.DeepSkyBlue;
+        private static Color menuBackColor = Color.DodgerBlue;
+        private static Color menuSelectedBackColor = Color.DeepSkyBlue;
+        private static Color menuDisabledBackColor = Color.SlateGray;
 
 
         private FFBDevice ffbDevice = new FFBDevice();
@@ -27,6 +28,20 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private FFBController pitchFFB;
         private FFBController rollFFB;
+
+        private event EventHandler? enabledChangedSetColor = (s, e) => { 
+            if(s is Button button)
+            {
+                if (button.Enabled)
+                {
+                    button.BackColor = menuBackColor;
+                }
+                else
+                {
+                    button.BackColor = menuDisabledBackColor;
+                }
+            } 
+        };
 
         public Form1()
         {
@@ -55,11 +70,11 @@ namespace Force_Feedback_Yoke_Desktop_App
             // Select home page on startup
             ResetMenuButtons();
             tablessControlContent.SelectedTab = homePage;
-            btnHome.BackColor = colorMenuSelectedBackground;
+            btnHome.BackColor = menuSelectedBackColor;
 
             // Select pitch profile in profile editor on startup
             ResetProfileButtons();
-            btnPitchProfile.BackColor = colorMenuSelectedBackground;
+            btnPitchProfile.BackColor = menuSelectedBackColor;
             profileEditorTablessControl.SelectedTab = pitchProfileTabPage;
 
             var pitchSettingsBuilder = new AxisSettingsBuilder(Axis.Pitch, pitchFFB, ffbDevice);
@@ -74,6 +89,13 @@ namespace Force_Feedback_Yoke_Desktop_App
             SetupPitchSettingsToolTip();
 
             LoadCboProfiles();
+
+            btnFfbOn.EnabledChanged += enabledChangedSetColor;
+            btnSaveProfile.EnabledChanged += enabledChangedSetColor;
+
+            // Attempt to connect to device on startup
+            bool deviceConnected = ffbDevice.Connect();
+            SetDeviceConnected(deviceConnected);
         }
 
         private void simConnectHelper_SimConnectionClosedEvent(object? sender, EventArgs e)
@@ -113,24 +135,12 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private void FFBDeviceDisconnected(object? sender, EventArgs e)
         {
-            SetButtonText("FFB ON", btnFfbOn);
-            SetButtonEnabled(false, btnFfbOn);
-
-            SetLabelText("Status: Disconnected", lblStatus);
-            SetButtonText("Connect", btnConnect);
-            ResetIndicators();
+            SetDeviceConnected(false);
         }
 
         private void FFBDeviceConnected(object? sender, EventArgs e)
         {
-            SetButtonText("FFB ON", btnFfbOn);
-            SetButtonEnabled(true, btnFfbOn);
-
-            SetLabelText("Status: Connected, OFF", lblStatus);
-            SetButtonText("Disconnect", btnConnect);
-
-
-            ffbDevice.ControlParams.FFBEnabled = false;
+            SetDeviceConnected(true);
         }
 
         private void AddPitchFFBEffects()
@@ -221,28 +231,28 @@ namespace Force_Feedback_Yoke_Desktop_App
         {
             ResetMenuButtons();
             tablessControlContent.SelectedTab = homePage;
-            btnHome.BackColor = colorMenuSelectedBackground;
+            btnHome.BackColor = menuSelectedBackColor;
         }
 
         private void btnProfiles_Click(object sender, EventArgs e)
         {
             ResetMenuButtons();
             tablessControlContent.SelectedTab = profilesPage;
-            btnProfiles.BackColor = colorMenuSelectedBackground;
+            btnProfiles.BackColor = menuSelectedBackColor;
         }
 
         private void btnYokeData_Click(object sender, EventArgs e)
         {
             ResetMenuButtons();
             tablessControlContent.SelectedTab = yokeDataPage;
-            btnYokeData.BackColor = colorMenuSelectedBackground;
+            btnYokeData.BackColor = menuSelectedBackColor;
         }
 
         private void ResetMenuButtons()
         {
-            btnHome.BackColor = colorMenuBackground;
-            btnProfiles.BackColor = colorMenuBackground;
-            btnYokeData.BackColor = colorMenuBackground;
+            btnHome.BackColor = menuBackColor;
+            btnProfiles.BackColor = menuBackColor;
+            btnYokeData.BackColor = menuBackColor;
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
@@ -257,21 +267,13 @@ namespace Force_Feedback_Yoke_Desktop_App
                 }
                 else
                 {
-                    btnFfbOn.Enabled = true;
-                    btnFfbOn.Text = "FFB ON";
-                    ffbDevice.ControlParams.FFBEnabled = false;
-                    btnConnect.Text = "Disconnect";
-                    lblStatus.Text = "Status: Connected, OFF";
+                    SetDeviceConnected(true);
                 }
             }
             else
             {
                 ffbDevice.Disconnect();
-                btnFfbOn.Enabled = false;
-                btnFfbOn.Text = "FFB ON";
-                ffbDevice.ControlParams.FFBEnabled = false;
-                btnConnect.Text = "Connect";
-                lblStatus.Text = "Status: Disconnected";
+                SetDeviceConnected(false);
                 ResetIndicators();
             }
             //this.Controls.Add(simConnectHelper);
@@ -364,20 +366,20 @@ namespace Force_Feedback_Yoke_Desktop_App
         private void btnPitchProfile_Click(object sender, EventArgs e)
         {
             ResetProfileButtons();
-            btnPitchProfile.BackColor = colorMenuSelectedBackground;
+            btnPitchProfile.BackColor = menuSelectedBackColor;
             profileEditorTablessControl.SelectedTab = pitchProfileTabPage;
         }
 
         private void btnRollProfile_Click(object sender, EventArgs e)
         {
             ResetProfileButtons();
-            btnRollProfile.BackColor = colorMenuSelectedBackground;
+            btnRollProfile.BackColor = menuSelectedBackColor;
             profileEditorTablessControl.SelectedTab = rollProfileTabPage;
         }
         private void ResetProfileButtons()
         {
-            btnPitchProfile.BackColor = colorMenuBackground;
-            btnRollProfile.BackColor = colorMenuBackground;
+            btnPitchProfile.BackColor = menuBackColor;
+            btnRollProfile.BackColor = menuBackColor;
         }
 
         private void LoadCboProfiles()
@@ -632,7 +634,25 @@ namespace Force_Feedback_Yoke_Desktop_App
         private void SetupPitchSettingsToolTip()
         {
         }
-
+        private void SetDeviceConnected(bool connected)
+        {
+            if (connected)
+            {
+                btnFfbOn.Enabled = true;
+                btnFfbOn.Text = "FFB ON";
+                ffbDevice.ControlParams.FFBEnabled = false;
+                btnConnect.Text = "Disconnect";
+                lblStatus.Text = "Status: Connected, OFF";
+            }
+            else
+            {
+                btnFfbOn.Enabled = false;
+                btnFfbOn.Text = "FFB OFF";
+                ffbDevice.ControlParams.FFBEnabled = false;
+                btnConnect.Text = "Connect";
+                lblStatus.Text = "Status: Disconnected";
+            }
+        }
         private void btnFfbOn_Click(object sender, EventArgs e)
         {
             if (ffbDevice.ControlParams.FFBEnabled)

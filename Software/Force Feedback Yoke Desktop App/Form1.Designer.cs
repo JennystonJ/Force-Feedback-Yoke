@@ -718,7 +718,7 @@
             // 
             btnFfbOn.AutoSize = true;
             btnFfbOn.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            btnFfbOn.BackColor = Color.DodgerBlue;
+            btnFfbOn.BackColor = Color.SlateGray;
             btnFfbOn.Dock = DockStyle.Fill;
             btnFfbOn.Enabled = false;
             btnFfbOn.FlatAppearance.BorderSize = 0;
@@ -1015,7 +1015,7 @@
             // 
             btnSaveProfile.AutoSize = true;
             btnSaveProfile.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            btnSaveProfile.BackColor = Color.DodgerBlue;
+            btnSaveProfile.BackColor = Color.SlateGray;
             btnSaveProfile.Dock = DockStyle.Fill;
             btnSaveProfile.Enabled = false;
             btnSaveProfile.FlatAppearance.BorderSize = 0;
