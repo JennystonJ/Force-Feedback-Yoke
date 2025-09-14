@@ -50,6 +50,7 @@ namespace Force_Feedback_Yoke_Desktop_App
                 item.Label.TextAlign = ContentAlignment.MiddleLeft;
                 item.Label.ForeColor = ForeColor;
                 item.Label.BackColor = BackColor;
+                item.Label.AutoSize = true;
 
                 if (item.IsCategory)
                 {

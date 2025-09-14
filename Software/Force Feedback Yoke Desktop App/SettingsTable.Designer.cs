@@ -39,19 +39,21 @@
             tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel.Dock = DockStyle.Fill;
             tableLayoutPanel.Location = new Point(0, 0);
+            tableLayoutPanel.Margin = new Padding(6, 6, 6, 6);
             tableLayoutPanel.Name = "tableLayoutPanel";
             tableLayoutPanel.RowCount = 1;
             tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel.Size = new Size(600, 204);
+            tableLayoutPanel.Size = new Size(1114, 435);
             tableLayoutPanel.TabIndex = 0;
             // 
             // SettingsTable
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(tableLayoutPanel);
+            Margin = new Padding(6, 6, 6, 6);
             Name = "SettingsTable";
-            Size = new Size(600, 204);
+            Size = new Size(1114, 435);
             ResumeLayout(false);
             PerformLayout();
         }
