@@ -39,6 +39,7 @@ namespace Force_Feedback_Yoke_Desktop_App
             tableLayoutPanel.RowCount = _items.Count;
 
             tableLayoutPanel.ColumnStyles[0].SizeType = SizeType.AutoSize;
+            tableLayoutPanel.ColumnStyles[1].SizeType = SizeType.AutoSize;
             tableLayoutPanel.RowStyles[0].SizeType = SizeType.AutoSize;
 
             int currentRow = 0;

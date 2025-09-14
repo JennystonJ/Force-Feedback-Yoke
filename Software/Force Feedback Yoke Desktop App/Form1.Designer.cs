@@ -1238,7 +1238,6 @@
         private Label lblStatus;
         private TableLayoutPanel pitchProfileTableLayoutPanel;
         private Label lblPitchRange;
-        private NumericSlider numericSlider1;
         private SettingsTable pitchSettingsTable;
         private TabPage rollProfileTabPage;
         private SettingsTable rollSettingsTable;

@@ -44,27 +44,26 @@
             mainTableLayoutPanel.AutoSize = true;
             mainTableLayoutPanel.ColumnCount = 2;
             mainTableLayoutPanel.ColumnStyles.Add(new ColumnStyle());
-            mainTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 131F));
-            mainTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            mainTableLayoutPanel.ColumnStyles.Add(new ColumnStyle());
             mainTableLayoutPanel.Controls.Add(tbSlider, 0, 0);
             mainTableLayoutPanel.Controls.Add(nudFlowLayoutPanel, 1, 0);
             mainTableLayoutPanel.Dock = DockStyle.Fill;
             mainTableLayoutPanel.Location = new Point(0, 0);
-            mainTableLayoutPanel.Margin = new Padding(2, 1, 2, 1);
+            mainTableLayoutPanel.Margin = new Padding(4, 2, 4, 2);
             mainTableLayoutPanel.Name = "mainTableLayoutPanel";
             mainTableLayoutPanel.RowCount = 1;
             mainTableLayoutPanel.RowStyles.Add(new RowStyle());
-            mainTableLayoutPanel.Size = new Size(412, 47);
+            mainTableLayoutPanel.Size = new Size(716, 94);
             mainTableLayoutPanel.TabIndex = 8;
             // 
             // tbSlider
             // 
             tbSlider.Dock = DockStyle.Fill;
-            tbSlider.Location = new Point(2, 1);
-            tbSlider.Margin = new Padding(2, 1, 2, 1);
+            tbSlider.Location = new Point(4, 2);
+            tbSlider.Margin = new Padding(4, 2, 4, 2);
             tbSlider.Maximum = 100;
             tbSlider.Name = "tbSlider";
-            tbSlider.Size = new Size(277, 45);
+            tbSlider.Size = new Size(514, 90);
             tbSlider.TabIndex = 8;
             tbSlider.Scroll += tbSlider_Scroll;
             // 
@@ -74,10 +73,10 @@
             nudFlowLayoutPanel.Controls.Add(nudValue);
             nudFlowLayoutPanel.Controls.Add(lblUnit);
             nudFlowLayoutPanel.Dock = DockStyle.Fill;
-            nudFlowLayoutPanel.Location = new Point(283, 1);
-            nudFlowLayoutPanel.Margin = new Padding(2, 1, 2, 1);
+            nudFlowLayoutPanel.Location = new Point(526, 2);
+            nudFlowLayoutPanel.Margin = new Padding(4, 2, 4, 2);
             nudFlowLayoutPanel.Name = "nudFlowLayoutPanel";
-            nudFlowLayoutPanel.Size = new Size(127, 45);
+            nudFlowLayoutPanel.Size = new Size(186, 90);
             nudFlowLayoutPanel.TabIndex = 9;
             // 
             // nudValue
@@ -85,36 +84,38 @@
             nudValue.BackColor = Color.DimGray;
             nudValue.BorderStyle = BorderStyle.None;
             nudValue.DecimalPlaces = 2;
+            nudValue.Dock = DockStyle.Left;
             nudValue.ForeColor = Color.WhiteSmoke;
-            nudValue.Location = new Point(2, 1);
-            nudValue.Margin = new Padding(2, 1, 2, 1);
+            nudValue.Location = new Point(4, 2);
+            nudValue.Margin = new Padding(4, 2, 4, 2);
             nudValue.Name = "nudValue";
-            nudValue.Size = new Size(73, 19);
+            nudValue.Size = new Size(136, 35);
             nudValue.TabIndex = 0;
             nudValue.ValueChanged += nudValue_ValueChanged;
             // 
             // lblUnit
             // 
             lblUnit.AutoSize = true;
+            lblUnit.Dock = DockStyle.Left;
             lblUnit.ForeColor = Color.WhiteSmoke;
-            lblUnit.Location = new Point(79, 0);
-            lblUnit.Margin = new Padding(2, 0, 2, 0);
+            lblUnit.Location = new Point(148, 0);
+            lblUnit.Margin = new Padding(4, 0, 4, 0);
             lblUnit.Name = "lblUnit";
-            lblUnit.Size = new Size(17, 15);
+            lblUnit.Size = new Size(34, 32);
             lblUnit.TabIndex = 1;
             lblUnit.Text = "%";
             // 
             // NumericSlider
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             BackColor = Color.Gray;
             Controls.Add(mainTableLayoutPanel);
-            Margin = new Padding(2, 1, 2, 1);
+            Margin = new Padding(4, 2, 4, 2);
             Name = "NumericSlider";
-            Size = new Size(412, 47);
+            Size = new Size(716, 94);
             mainTableLayoutPanel.ResumeLayout(false);
             mainTableLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)tbSlider).EndInit();
