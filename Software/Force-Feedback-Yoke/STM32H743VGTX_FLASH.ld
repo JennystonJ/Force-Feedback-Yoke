@@ -126,6 +126,15 @@ SECTIONS
   /* used by the startup to initialize data */
   _sidata = LOADADDR(.data);
 
+  /* DTCM RAM */
+	.dtcmram :
+	{
+	    . = ALIGN(4);
+	    *(.dtcmram)
+	    *(.dtcmram*)
+	    . = ALIGN(4);
+	} >DTCMRAM
+
   /* Initialized data sections goes into RAM, load LMA copy after code */
   .data :
   {
