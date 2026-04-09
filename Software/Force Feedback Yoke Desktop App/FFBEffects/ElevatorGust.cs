@@ -33,7 +33,7 @@ namespace Force_Feedback_Yoke_Desktop_App.FFBEffects
             lowPassHeave = new LowPassFilter(200, 0.02);
 
             highPassAoa = new HighPassFilter(5, 0.02);
-            lowPassAoa= new LowPassFilter(200, 0.02);
+            lowPassAoa = new LowPassFilter(200, 0.02);
 
             constantForce = new FFBConstant();
 
