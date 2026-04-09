@@ -40,5 +40,27 @@ namespace Force_Feedback_Yoke_Desktop_App
                 Value = 1,
             };
         }
+
+        public static NumericSlider GenerateAirspeedNumericSlider(Range range)
+        {
+            return new NumericSlider
+            {
+                Range = range,
+                UnitText = "kt",
+                ShowUnit = true,
+                Value = range.Minimum,
+            };
+        }
+
+        public static NumericSlider GenerateRPMNumericSlider()
+        {
+            return new NumericSlider
+            {
+                Range = new Range(0, 25000),
+                UnitText = "RPM",
+                ShowUnit = true,
+                Value = 0,
+            };
+        }
     }
 }
