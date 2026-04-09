@@ -7,6 +7,7 @@
 
 #include "bsp.h"
 #include "config.h"
+#include "tcm_def.h"
 
 #include "delay.h"
 #include "delay_us.h"
@@ -33,28 +34,27 @@
 #include <stm32h7xx_hal.h>
 #include <string.h>
 
-
-
 // Private variables
-static MT6835_t pitchMt6835;
-static MT6835_t rollMt6835;
+DTCM static MT6835_t pitchMt6835;
+DTCM static MT6835_t rollMt6835;
 
-static InternalInjectedADC_t pitchCurrentSensorADC;
-static InternalInjectedADC_t rollCurrentSensorADC;
+
+DTCM static InternalInjectedADC_t pitchCurrentSensorADC;
+DTCM static InternalInjectedADC_t rollCurrentSensorADC;
 static ADS1256_t adsADC;
 
-static AnalogSensor_t pitchCurrentChA;
-static AnalogSensor_t pitchCurrentChB;
-static AnalogSensor_t pitchCurrentChC;
+DTCM static AnalogSensor_t pitchCurrentChA;
+DTCM static AnalogSensor_t pitchCurrentChB;
+DTCM static AnalogSensor_t pitchCurrentChC;
 
-static AnalogSensor_t rollCurrentChA;
-static AnalogSensor_t rollCurrentChB;
-static AnalogSensor_t rollCurrentChC;
+DTCM static AnalogSensor_t rollCurrentChA;
+DTCM static AnalogSensor_t rollCurrentChB;
+DTCM static AnalogSensor_t rollCurrentChC;
 
-static AnalogSensor_t pitchLoadCellCh;
+DTCM static AnalogSensor_t pitchLoadCellCh;
 
-static DRV8301_t pitchDrv8301;
-static DRV8301_t rollDrv8301;
+DTCM static DRV8301_t pitchDrv8301;
+DTCM static DRV8301_t rollDrv8301;
 
 static struct {
 	void (*MotorControlLoopIT)(Motor_t *motor, Encoder_t *encoder,
@@ -72,24 +72,24 @@ bool bspInitialized = false;
 uint8_t serialTxBuffer[SERIAL_TX_BUFFER_SIZE];
 uint8_t serialRxBuffer[SERIAL_RX_BUFFER_SIZE];
 
-CurrentSensor_t pitchCurrentA;
-CurrentSensor_t pitchCurrentB;
-CurrentSensor_t pitchCurrentC;
+DTCM CurrentSensor_t pitchCurrentA;
+DTCM CurrentSensor_t pitchCurrentB;
+DTCM CurrentSensor_t pitchCurrentC;
 
-CurrentSensor_t rollCurrentA;
-CurrentSensor_t rollCurrentB;
-CurrentSensor_t rollCurrentC;
+DTCM CurrentSensor_t rollCurrentA;
+DTCM CurrentSensor_t rollCurrentB;
+DTCM CurrentSensor_t rollCurrentC;
 
-BLDCDriver_t pitchDriver;
-BLDCMotor_t pitchBLDCMotor;
-Motor_t pitchMotor;
-Encoder_t pitchEncoder;
-LoadCell_t pitchLoadCell;
+DTCM BLDCDriver_t pitchDriver;
+DTCM BLDCMotor_t pitchBLDCMotor;
+DTCM Motor_t pitchMotor;
+DTCM Encoder_t pitchEncoder;
+DTCM LoadCell_t pitchLoadCell;
 
-BLDCDriver_t rollDriver;
-BLDCMotor_t rollBLDCMotor;
-Motor_t rollMotor;
-Encoder_t rollEncoder;
+DTCM BLDCDriver_t rollDriver;
+DTCM BLDCMotor_t rollBLDCMotor;
+DTCM Motor_t rollMotor;
+DTCM Encoder_t rollEncoder;
 
 GPIO_t statusLedGpio;
 GPIO_t probeGpio;
@@ -143,15 +143,15 @@ void Bsp_Init(void) {
 }
 
 void Bsp_EStopIT(void) {
-	if(GPIOGetState(&eStopGpio) == GPIO_LOW) {
+	if(GPIO_GetState(&eStopGpio) == GPIO_LOW) {
 		// E-Stop is enabled, disarm motors, and turn off status LED
 		BLDCMotor_SetEStop(&pitchBLDCMotor, true);
-		GPIOSetState(&statusLedGpio, GPIO_HIGH);
+		GPIO_SetState(&statusLedGpio, GPIO_HIGH);
 	}
 	else {
 		//E-Stop is disabled, arm motors, and turn on status LED
 		BLDCMotor_SetEStop(&pitchBLDCMotor, false);
-		GPIOSetState(&statusLedGpio, GPIO_LOW);
+		GPIO_SetState(&statusLedGpio, GPIO_LOW);
 	}
 }
 
@@ -189,7 +189,7 @@ void Bsp_ADCWatchDogIT(ADC_HandleTypeDef *hadc) {
 	// Disable motors
 	Motor_SetEnable(&pitchMotor, false);
 	// Turn status LED on to indicate error
-	GPIOSetState(&statusLedGpio, GPIO_LOW);
+	GPIO_SetState(&statusLedGpio, GPIO_LOW);
 
 }
 
@@ -237,7 +237,7 @@ void Bsp_RegisterLoadCellReadCpltCallback(void (*LoadCellReadCpltIT)) {
 // Private functions
 
 static void Bsp_EStopInit(void) {
-	GPIOInit(&eStopGpio, E_STOP_GPIO_Port, E_STOP_Pin);
+	GPIO_Init(&eStopGpio, E_STOP_GPIO_Port, E_STOP_Pin);
 }
 
 static void Bsp_DelayInit(void) {
@@ -247,19 +247,19 @@ static void Bsp_DelayInit(void) {
 }
 
 static void Bsp_ProbeInit(void) {
-	GPIOInit(&probeGpio, PROBE_OUT_GPIO_Port, PROBE_OUT_Pin);
-	GPIOSetState(&probeGpio, GPIO_LOW);
+	GPIO_Init(&probeGpio, PROBE_OUT_GPIO_Port, PROBE_OUT_Pin);
+	GPIO_SetState(&probeGpio, GPIO_LOW);
 }
 
 static void Bsp_LedInit(void) {
-	GPIOInit(&statusLedGpio, STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+	GPIO_Init(&statusLedGpio, STATUS_LED_GPIO_Port, STATUS_LED_Pin);
 }
 
 static void Bsp_EncodersInit(void) {
 
 	// Set up nCS pin for pitch encoder
 	GPIO_t gpioPitchNcs;
-	GPIOInit(&gpioPitchNcs, E1_NCS_GPIO_Port, E1_NCS_Pin);
+	GPIO_Init(&gpioPitchNcs, E1_NCS_GPIO_Port, E1_NCS_Pin);
 
 	// Initialize pitch encoder
 	MT6835_Init(&pitchMt6835, &ENCODER_PITCH_SPI, gpioPitchNcs);
@@ -274,7 +274,7 @@ static void Bsp_EncodersInit(void) {
 
 	// Initialize roll encoder
 	GPIO_t gpioRollNcs;
-	GPIOInit(&gpioRollNcs, E2_NCS_GPIO_Port, E2_NCS_Pin);
+	GPIO_Init(&gpioRollNcs, E2_NCS_GPIO_Port, E2_NCS_Pin);
 
 	// Initialize roll encoder
 	MT6835_Init(&rollMt6835, &ENCODER_ROLL_SPI, gpioRollNcs);
@@ -366,7 +366,7 @@ static void Bsp_MotorsInit(void) {
 	// *** Initialize pitch driver ***
 	// Set up driver enable pin for pitch driver
 	GPIO_t gpioPitchDriverEn;
-	GPIOInit(&gpioPitchDriverEn, M1_DRIVER_EN_GPIO_Port, M1_DRIVER_EN_Pin);
+	GPIO_Init(&gpioPitchDriverEn, M1_DRIVER_EN_GPIO_Port, M1_DRIVER_EN_Pin);
 
 	DRV8301_Init(&pitchDrv8301, gpioPitchDriverEn, &DRIVER_PITCH_TIM,
 			DRIVER_PITCH_PHASE_U_CHANNEL,
@@ -403,7 +403,7 @@ static void Bsp_MotorsInit(void) {
 	// *** Initialize roll driver ***
 	// Set up driver enable pin for roll driver
 	GPIO_t gpioRollDriverEn;
-	GPIOInit(&gpioRollDriverEn, M2_DRIVER_EN_GPIO_Port, M2_DRIVER_EN_Pin);
+	GPIO_Init(&gpioRollDriverEn, M2_DRIVER_EN_GPIO_Port, M2_DRIVER_EN_Pin);
 
 	DRV8301_Init(&rollDrv8301, gpioRollDriverEn, &DRIVER_ROLL_TIM,
 			DRIVER_ROLL_PHASE_U_CHANNEL,
@@ -443,8 +443,8 @@ static void Bsp_MotorsInit(void) {
 static void Bsp_LoadCellInit(void) {
 	// ADC1 pin setup
 	GPIO_t nCS, nDRdy;
-	GPIOInit(&nCS, ADC1_NCS_GPIO_Port, ADC1_NCS_Pin);
-	GPIOInit(&nDRdy, ADC1_DRDY_GPIO_Port, ADC1_DRDY_Pin);
+	GPIO_Init(&nCS, ADC1_NCS_GPIO_Port, ADC1_NCS_Pin);
+	GPIO_Init(&nDRdy, ADC1_DRDY_GPIO_Port, ADC1_DRDY_Pin);
 
 	ADS1256_Init(&adsADC, &ADS1256_SPI, nCS, nDRdy);
 	ADS1256_StartReading(&adsADC);
