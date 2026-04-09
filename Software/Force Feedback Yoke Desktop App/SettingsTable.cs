@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.Pkcs;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,7 +13,7 @@ namespace Force_Feedback_Yoke_Desktop_App
 {
     public partial class SettingsTable : UserControl
     {
-        private List<SettingsItem> _items = new List<SettingsItem>();
+        private List<SettingsItem> _items = [];
 
         public event EventHandler? ValueChanged;
 
@@ -24,6 +25,19 @@ namespace Force_Feedback_Yoke_Desktop_App
                 _items = value;
                 Invalidate();
             }
+        }
+
+        public int[] ColumnWidths
+        {
+            get
+            {
+                return tableLayoutPanel.GetColumnWidths();
+            }
+        }
+
+        public TableLayoutColumnStyleCollection ColumnStyles
+        {
+            get => tableLayoutPanel.ColumnStyles;
         }
 
         public SettingsTable()
