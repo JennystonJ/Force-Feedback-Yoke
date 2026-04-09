@@ -217,7 +217,7 @@ void Application_Run(void) {
 
 	FFB_Start(&rollFFB);
 
-	GPIOSetState(&statusLedGpio, GPIO_HIGH);
+	GPIO_SetState(&statusLedGpio, GPIO_HIGH);
 
 	while(true) {
 		ProcessFFBHid(&ffbHid);
