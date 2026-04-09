@@ -76,6 +76,8 @@ void FFB_Init(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder) {
 	ffb->acceleration = 0;
 	LowPassFilter_Init(&ffb->lpfAccel, 0.875f);
 
+	LowPassFilter_Init(&ffb->lpfForceOutput, 0.8f);
+
 	ffb->speedDt = 0;
 
 	// Initialize all forces to 0
@@ -242,7 +244,9 @@ void FFB_Update(FFBController_t *ffb, float deltaTimeMs) {
 						FFB_GetRawAxisCount(ffb),
 						deltaTimeMs), -60.0f,
 						60.0f);
-		FFB_SetMotorTorque(ffb, FFB_ConvertFFBToMotorTorque(ffb, force));
+
+		FFB_SetMotorTorque(ffb, FFB_ConvertFFBToMotorTorque(ffb,
+				LowPassFilter_Update(&ffb->lpfForceOutput, force)));
 		break;
 	case FFB_IDLE:
 		break;

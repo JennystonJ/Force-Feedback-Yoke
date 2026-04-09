@@ -30,7 +30,7 @@ extern "C" {
 
 // TODO: Change to variables
 #define FFB_CONTROL_HOME_VELOCITY 50.0f
-#define FFB_CONTROL_HOME_CURRENT_LIMIT 1.1f
+#define FFB_CONTROL_HOME_CURRENT_LIMIT 1.5f
 
 #define FFB_AVG_SPEED_DT 5000
 
@@ -102,6 +102,8 @@ typedef struct FFBController {
 
 	FFBForces_t forces;
 	FFBForces_t homeCenterForce;
+
+	LowPass_t lpfForceOutput;
 
 } FFBController_t;
 
