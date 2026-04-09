@@ -92,6 +92,7 @@
             RightToolStripPanel = new ToolStripPanel();
             LeftToolStripPanel = new ToolStripPanel();
             toolTip1 = new ToolTip(components);
+            btnProfileTest = new Button();
             mainTableLayoutPanel.SuspendLayout();
             menuTableLayoutPanel.SuspendLayout();
             pitchMonitorPanel.SuspendLayout();
@@ -974,12 +975,14 @@
             // saveTableLayoutPanel
             // 
             saveTableLayoutPanel.AutoSize = true;
-            saveTableLayoutPanel.ColumnCount = 3;
+            saveTableLayoutPanel.ColumnCount = 4;
+            saveTableLayoutPanel.ColumnStyles.Add(new ColumnStyle());
             saveTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             saveTableLayoutPanel.ColumnStyles.Add(new ColumnStyle());
             saveTableLayoutPanel.ColumnStyles.Add(new ColumnStyle());
-            saveTableLayoutPanel.Controls.Add(btnSaveAs, 2, 0);
-            saveTableLayoutPanel.Controls.Add(btnSaveProfile, 1, 0);
+            saveTableLayoutPanel.Controls.Add(btnProfileTest, 0, 0);
+            saveTableLayoutPanel.Controls.Add(btnSaveAs, 3, 0);
+            saveTableLayoutPanel.Controls.Add(btnSaveProfile, 2, 0);
             saveTableLayoutPanel.Dock = DockStyle.Bottom;
             saveTableLayoutPanel.Location = new Point(6, 1088);
             saveTableLayoutPanel.Margin = new Padding(6);
@@ -1133,6 +1136,28 @@
             LeftToolStripPanel.RowMargin = new Padding(3, 0, 0, 0);
             LeftToolStripPanel.Size = new Size(0, 0);
             // 
+            // btnProfileTest
+            // 
+            btnProfileTest.AutoSize = true;
+            btnProfileTest.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnProfileTest.BackColor = Color.DodgerBlue;
+            btnProfileTest.Dock = DockStyle.Fill;
+            btnProfileTest.FlatAppearance.BorderSize = 0;
+            btnProfileTest.FlatAppearance.MouseDownBackColor = Color.DeepSkyBlue;
+            btnProfileTest.FlatStyle = FlatStyle.Flat;
+            btnProfileTest.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnProfileTest.ForeColor = Color.WhiteSmoke;
+            btnProfileTest.Location = new Point(17, 19);
+            btnProfileTest.Margin = new Padding(17, 19, 17, 19);
+            btnProfileTest.MaximumSize = new Size(0, 90);
+            btnProfileTest.Name = "btnProfileTest";
+            btnProfileTest.Padding = new Padding(11, 13, 11, 13);
+            btnProfileTest.Size = new Size(138, 73);
+            btnProfileTest.TabIndex = 7;
+            btnProfileTest.Text = "Test...";
+            btnProfileTest.UseVisualStyleBackColor = false;
+            btnProfileTest.Click += btnProfileTest_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -1242,6 +1267,7 @@
         private TabPage rollProfileTabPage;
         private SettingsTable rollSettingsTable;
         private ToolTip toolTip1;
+        private Button btnProfileTest;
     }
 }
 

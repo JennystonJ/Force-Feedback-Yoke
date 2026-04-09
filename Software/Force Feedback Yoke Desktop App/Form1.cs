@@ -29,8 +29,9 @@ namespace Force_Feedback_Yoke_Desktop_App
         private FFBController pitchFFB;
         private FFBController rollFFB;
 
-        private event EventHandler? enabledChangedSetColor = (s, e) => { 
-            if(s is Button button)
+        private event EventHandler? enabledChangedSetColor = (s, e) =>
+        {
+            if (s is Button button)
             {
                 if (button.Enabled)
                 {
@@ -40,62 +41,13 @@ namespace Force_Feedback_Yoke_Desktop_App
                 {
                     button.BackColor = menuDisabledBackColor;
                 }
-            } 
+            }
         };
 
+        TestDialog testDialog = new TestDialog();
         public Form1()
         {
             InitializeComponent();
-
-            // Add event callbacks to sim connect helper
-            simConnectHelper.SimPauseChangedEvent += simConnectHelper_SimPauseChangedEvent;
-            simConnectHelper.DataReadyEvent += simConnectHelper_DataReadyEvent;
-            simConnectHelper.SimConnectionClosedEvent += simConnectHelper_SimConnectionClosedEvent;
-
-            // Add event callbacks to ffbDevice
-            ffbDevice.DataReadyEvent += ProcessFFB;
-            ffbDevice.DeviceConnectedEvent += FFBDeviceConnected;
-            ffbDevice.DeviceDisconnectedEvent += FFBDeviceDisconnected;
-
-            pitchFFB = new FFBController();
-            rollFFB = new FFBController();
-
-            AddPitchFFBEffects();
-            AddRollFFBEffects();
-
-            pitchFFB.Enable = true;
-            rollFFB.Enable = true;
-
-            // *** UI Setup ***
-            // Select home page on startup
-            ResetMenuButtons();
-            tablessControlContent.SelectedTab = homePage;
-            btnHome.BackColor = menuSelectedBackColor;
-
-            // Select pitch profile in profile editor on startup
-            ResetProfileButtons();
-            btnPitchProfile.BackColor = menuSelectedBackColor;
-            profileEditorTablessControl.SelectedTab = pitchProfileTabPage;
-
-            var pitchSettingsBuilder = new AxisSettingsBuilder(Axis.Pitch, pitchFFB, ffbDevice);
-            SetupSettingsTable(pitchSettingsTable, pitchSettingsBuilder.Build());
-
-            var rollSettingsBuilder = new AxisSettingsBuilder(Axis.Roll, rollFFB, ffbDevice);
-            SetupSettingsTable(rollSettingsTable, rollSettingsBuilder.Build());
-
-            //SetupPitchSettingsTable();
-            //SetupRollSettingsTable();
-
-            SetupPitchSettingsToolTip();
-
-            LoadCboProfiles();
-
-            btnFfbOn.EnabledChanged += enabledChangedSetColor;
-            btnSaveProfile.EnabledChanged += enabledChangedSetColor;
-
-            // Attempt to connect to device on startup
-            bool deviceConnected = ffbDevice.Connect();
-            SetDeviceConnected(deviceConnected);
         }
 
         private void simConnectHelper_SimConnectionClosedEvent(object? sender, EventArgs e)
@@ -201,7 +153,7 @@ namespace Force_Feedback_Yoke_Desktop_App
         private void SetButtonEnabled(bool enabled, Button button)
         {
             // Check if on different threads
-            if(button.InvokeRequired)
+            if (button.InvokeRequired)
             {
                 SetButtonEnabledCallback d = new SetButtonEnabledCallback(SetButtonEnabled);
                 button.Invoke(d, new object[] { enabled, button });
@@ -419,7 +371,7 @@ namespace Force_Feedback_Yoke_Desktop_App
         private void btnSaveProfile_Click(object sender, EventArgs e)
         {
             // Ensure a profile is selected
-            if(cboProfile.Text != "")
+            if (cboProfile.Text != "")
             {
                 // Write to current profile
                 AircraftConfig aircraftConfig =
@@ -454,182 +406,66 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Add event callbacks to sim connect helper
+            simConnectHelper.SimPauseChangedEvent += simConnectHelper_SimPauseChangedEvent;
+            simConnectHelper.DataReadyEvent += simConnectHelper_DataReadyEvent;
+            simConnectHelper.SimConnectionClosedEvent += simConnectHelper_SimConnectionClosedEvent;
+
+            // Add event callbacks to ffbDevice
+            ffbDevice.DataReadyEvent += ProcessFFB;
+            ffbDevice.DeviceConnectedEvent += FFBDeviceConnected;
+            ffbDevice.DeviceDisconnectedEvent += FFBDeviceDisconnected;
+
+            pitchFFB = new FFBController();
+            rollFFB = new FFBController();
+
+            AddPitchFFBEffects();
+            AddRollFFBEffects();
+
+            pitchFFB.Enable = true;
+            rollFFB.Enable = true;
+
+            // *** UI Setup ***
+            // Select home page on startup
+            ResetMenuButtons();
+            tablessControlContent.SelectedTab = homePage;
+            btnHome.BackColor = menuSelectedBackColor;
+
+            // Select pitch profile in profile editor on startup
+            ResetProfileButtons();
+            btnPitchProfile.BackColor = menuSelectedBackColor;
+            profileEditorTablessControl.SelectedTab = pitchProfileTabPage;
+
+            var pitchSettingsBuilder = new AxisSettingsBuilder(Axis.Pitch, pitchFFB, ffbDevice);
+            SetupSettingsTable(pitchSettingsTable, pitchSettingsBuilder.Build());
+
+            var rollSettingsBuilder = new AxisSettingsBuilder(Axis.Roll, rollFFB, ffbDevice);
+            SetupSettingsTable(rollSettingsTable, rollSettingsBuilder.Build());
+
+            // Determine maximum size of Label column between row and pitch settings tables
+            float maxColumnWidth = Math.Max(pitchSettingsTable.ColumnWidths[0],
+                rollSettingsTable.ColumnWidths[0]);
+            // Assign max width to both tables so they line up
+            pitchSettingsTable.ColumnStyles[0] = new ColumnStyle(SizeType.Absolute, maxColumnWidth);
+            rollSettingsTable.ColumnStyles[0] = new ColumnStyle(SizeType.Absolute, maxColumnWidth);
+
+            SetupPitchSettingsToolTip();
+
+            LoadCboProfiles();
+
+            btnFfbOn.EnabledChanged += enabledChangedSetColor;
+            btnSaveProfile.EnabledChanged += enabledChangedSetColor;
+
+            // Attempt to connect to device on startup
+            bool deviceConnected = ffbDevice.Connect();
+            SetDeviceConnected(deviceConnected);
             this.Controls.Add(simConnectHelper);
         }
 
-        //public void SetupPitchSettingsTable()
-        //{
-        //    string[] strings = ["General", "Travel Range", "Gain",
-        //                        "Main Effects", "Airspeed Stiffness", "Calibration Airspeed",
-        //                        "Prop Wash Effects", "Elevator Weight", "Engine RPM Center Strength"];
-
-        //    var travelSelector = new RangeSelector
-        //    {
-        //        ValueGap = 50,
-        //        Unit = "mm",
-        //        Minimum = -100,
-        //        Maximum = 100
-        //    };
-        //    travelSelector.DataBindings.Add("Value", pitchFFB, "Travel", true, DataSourceUpdateMode.OnPropertyChanged);
-        //    travelSelector.ValueChanged += (s, e) => ffbDevice.ControlParams.PitchRangeMM = travelSelector.Value;
-
-        //    var gainSlider = GenerateGainNumericSlider();
-        //    gainSlider.DataBindings.Add("Value", pitchFFB, "Gain", true, DataSourceUpdateMode.OnPropertyChanged);
-
-        //    var airspeedSlider = GenerateGainNumericSlider();
-        //    airspeedSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(AirspeedStiffness)], "SpringGain", true, DataSourceUpdateMode.OnPropertyChanged);
-
-        //    var calibrationAirspeedSlider = GenerateAirspeedSlider();
-        //    calibrationAirspeedSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(AirspeedStiffness)], "CalibrationAirspeed", true, DataSourceUpdateMode.OnPropertyChanged);
-
-        //    var elevatorWeightSlider = GenerateForceNumericSlider();
-        //    elevatorWeightSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(ElevatorWeight)], "Weight", true, DataSourceUpdateMode.OnPropertyChanged);
-
-        //    var engineRpmStrengthSlider = GenerateGainNumericSlider();
-        //    engineRpmStrengthSlider.DataBindings.Add("Value", pitchFFB.Effects[typeof(ElevatorWeight)], "EngineRPMStrength", true, DataSourceUpdateMode.OnPropertyChanged);
-
-        //    bool[] isCategories = [true, false, false,
-        //                        true, false, false,
-        //                        true, false, false];
-        //    Control?[] controls = [null,
-        //        travelSelector, 
-        //        gainSlider,
-        //        null, airspeedSlider, calibrationAirspeedSlider,
-        //        null, elevatorWeightSlider, engineRpmStrengthSlider,
-        //        ];
-
-        //    SetupSettingsTable(pitchSettingsTable, strings, isCategories, controls);
-        //}
-
-        //public void SetupRollSettingsTable()
-        //{
-        //    string[] strings = ["General", "Travel Range", "Gain",
-        //                        "Main Effects", "Airspeed Stiffness", "Calibration Airspeed"];
-        //    bool[] isCategories = [true, false, false,
-        //                        true, false, false];
-
-
-        //    var travelSelector = new RangeSelector
-        //    {
-        //        ValueGap = 50,
-        //        Unit = "deg",
-        //        Minimum = -180,
-        //        Maximum = 180
-        //    };
-        //    travelSelector.DataBindings.Add("Value", rollFFB, "Travel", true, DataSourceUpdateMode.OnPropertyChanged);
-        //    travelSelector.ValueChanged += (s, e) => ffbDevice.ControlParams.RollRangeDeg = travelSelector.Value;
-
-        //    var gainSlider = GenerateGainNumericSlider();
-        //    gainSlider.DataBindings.Add("Value", rollFFB, "Gain", true, DataSourceUpdateMode.OnPropertyChanged);
-
-        //    var airSpeedSlider = GenerateGainNumericSlider();
-        //    airSpeedSlider.DataBindings.Add("Value", rollFFB.Effects[typeof(AirspeedStiffness)], "SpringGain", true, DataSourceUpdateMode.OnPropertyChanged);
-
-        //    var calibrationAirspeedSlider = GenerateAirspeedSlider();
-        //    calibrationAirspeedSlider.DataBindings.Add("Value", rollFFB.Effects[typeof(AirspeedStiffness)], "CalibrationAirspeed", true, DataSourceUpdateMode.OnPropertyChanged);
-
-        //    Control?[] controls = [null,
-        //        travelSelector, 
-        //        gainSlider,
-        //        null, airSpeedSlider, calibrationAirspeedSlider,
-        //        ];
-
-        //    SetupSettingsTable(rollSettingsTable, strings, isCategories, controls);
-        //}
-
         public void SetupSettingsTable(SettingsTable table, IEnumerable<SettingsItem> items)
         {
-
             table.Items = items.ToList();
-            //Font categoryFont = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
-            //Font settingsFont = new Font("Microsoft Sans Serif", 12, FontStyle.Regular);
-
-            //Color foreColor = Color.WhiteSmoke;
-
-            //List<SettingsItem> items = new List<SettingsItem>();
-            //for (int i = 0; i < controls.Length; i++)
-            //{
-            //    items.Add(new SettingsItem
-            //    {
-            //        IsCategory = isCategories[i],
-            //        Control = controls[i],
-            //    });
-
-            //    SettingsItem item = items[i];
-
-            //    item.Label.Text = strings[i];
-            //    if (item.IsCategory)
-            //    {
-            //        // Use category font since it's a category
-            //        item.Label.Font = categoryFont;
-            //    }
-            //    else
-            //    {
-            //        // Otherwise use settings font
-            //        item.Label.Font = settingsFont;
-            //    }
-            //    item.Label.ForeColor = foreColor;
-            //    item.Label.AutoSize = true;
-            //}
-
-            //table.Items = items;
         }
-
-        //public NumericSlider GenerateGainNumericSlider()
-        //{
-        //    NumericSlider gainSlider = new NumericSlider
-        //    {
-
-        //        ShowUnit = true,
-        //        UnitText = "%",
-        //        Value = 0,
-        //    };
-        //    // TODO: Refactor code so Numeric Slider handles range (makes both track bar and numeric up down equal)
-        //    gainSlider.TrackBar.SetRange(0, 100);
-        //    gainSlider.NumericUpDown.Maximum = 100;
-        //    gainSlider.NumericUpDown.Minimum = 0;
-        //    gainSlider.Value = 0;
-
-        //    return gainSlider;
-        //}
-
-        //public NumericSlider GenerateForceNumericSlider()
-        //{
-        //    NumericSlider forceSlider = new NumericSlider
-        //    {
-
-        //        ShowUnit = true,
-        //        UnitText = "N",
-        //        Value = 0,
-        //        Divisor = 10,
-        //    };
-        //    // TODO: Refactor code so Numeric Slider handles range (makes both track bar and numeric up down equal)
-        //    // TODO: Add divider to track bar to increase resolution
-        //    forceSlider.TrackBar.SetRange(0, 100);
-        //    forceSlider.NumericUpDown.Maximum = 10;
-        //    forceSlider.NumericUpDown.Minimum = 0;
-        //    forceSlider.NumericUpDown.DecimalPlaces = 2;
-        //    forceSlider.Value = 0;
-
-        //    return forceSlider;
-        //}
-
-        //public NumericSlider GenerateAirspeedSlider()
-        //{
-        //    NumericSlider airspeedSlider = new NumericSlider
-        //    {
-        //        ShowUnit = true,
-        //        UnitText = "kt",
-        //        Value = 1,
-        //        Divisor = 1,
-        //    };
-        //    airspeedSlider.TrackBar.SetRange(1, 1000);
-        //    airspeedSlider.NumericUpDown.Maximum = 1000;
-        //    airspeedSlider.NumericUpDown.Minimum = 1;
-        //    airspeedSlider.Value = 1;
-
-        //    return airspeedSlider;
-        //}
 
         private void SetupPitchSettingsToolTip()
         {
@@ -678,7 +514,7 @@ namespace Force_Feedback_Yoke_Desktop_App
             }
             else
             {
-                btnSaveProfile.Enabled= false;
+                btnSaveProfile.Enabled = false;
             }
         }
 
@@ -697,13 +533,35 @@ namespace Force_Feedback_Yoke_Desktop_App
 
             binding.Parse += (s, e) =>
             {
-                if(e.DesiredType == typeof(double) && e.Value is decimal d)
+                if (e.DesiredType == typeof(double) && e.Value is decimal d)
                 {
                     e.Value = Convert.ToDouble(d);
                 }
             };
 
             return binding;
+        }
+
+        private void btnProfileTest_Click(object sender, EventArgs e)
+        {
+            if(testDialog.IsDisposed)
+            {
+                testDialog = new TestDialog();
+            }
+
+            testDialog.Show();
+            testDialog.Focus();
+        }
+
+        // For enabling double buffering
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;    // Turn on WS_EX_COMPOSITED
+                return cp;
+            }
         }
     }
 }
