@@ -13,6 +13,7 @@
 
 #define INTERNAL_INJECTED_ADC_NUM_RANKS 4
 
+
 typedef struct InternalInjectedADC {
 	ADC_HandleTypeDef *hadc;
 	uint32_t adcBuffer[INTERNAL_INJECTED_ADC_NUM_RANKS];
