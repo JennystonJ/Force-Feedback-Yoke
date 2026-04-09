@@ -132,11 +132,11 @@ void MT6835_RegisterErrorCallback(MT6835_t *device,
 }
 
 static void AssertCS(MT6835_t *device) {
-	GPIOSetState(&device->nCS, GPIO_LOW);
+	GPIO_SetState(&device->nCS, GPIO_LOW);
 }
 
 static void UnassertCS(MT6835_t *device) {
-	GPIOSetState(&device->nCS, GPIO_HIGH);
+	GPIO_SetState(&device->nCS, GPIO_HIGH);
 }
 
 static void WriteRegister(MT6835_t *device, MT6835Reg_e reg, uint8_t data) {

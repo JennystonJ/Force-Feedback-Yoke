@@ -22,9 +22,9 @@ typedef struct GPIO {
 //	COMP_HandleTypeDef *hcomp;
 } GPIO_t;
 
-void GPIOInit(GPIO_t *gpio, GPIO_TypeDef *port, uint16_t pin);
+void GPIO_Init(GPIO_t *gpio, GPIO_TypeDef *port, uint16_t pin);
 //void GPIOInitComp(GPIO_t *gpio, COMP_HandleTypeDef *hcomp);
-GPIOState GPIOGetState(GPIO_t *gpio);
-void GPIOSetState(GPIO_t *gpio, GPIOState state);
+GPIOState GPIO_GetState(GPIO_t *gpio);
+void GPIO_SetState(GPIO_t *gpio, GPIOState state);
 
 #endif /* INC_PERIPHERALS_GPIO_H_ */

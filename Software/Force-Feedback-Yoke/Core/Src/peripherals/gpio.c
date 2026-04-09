@@ -7,7 +7,7 @@
 
 #include "peripherals/gpio.h"
 
-void GPIOInit(GPIO_t *gpio, GPIO_TypeDef *port, uint16_t pin) {
+void GPIO_Init(GPIO_t *gpio, GPIO_TypeDef *port, uint16_t pin) {
 	gpio->port = port;
 	gpio->pin = pin;
 //	gpio->hcomp = NULL;
@@ -19,7 +19,7 @@ void GPIOInit(GPIO_t *gpio, GPIO_TypeDef *port, uint16_t pin) {
 //	gpio->hcomp = hcomp;
 //}
 
-GPIOState GPIOGetState(GPIO_t *gpio) {
+GPIOState GPIO_GetState(GPIO_t *gpio) {
 	if(gpio->port != NULL) {
 		return HAL_GPIO_ReadPin(gpio->port, gpio->pin) == GPIO_PIN_SET ?
 				GPIO_HIGH : GPIO_LOW;
@@ -33,7 +33,7 @@ GPIOState GPIOGetState(GPIO_t *gpio) {
 	}
 }
 
-void GPIOSetState(GPIO_t *gpio, GPIOState state) {
+void GPIO_SetState(GPIO_t *gpio, GPIOState state) {
 	if(gpio->port != NULL) {
 		HAL_GPIO_WritePin(gpio->port, gpio->pin, state == GPIO_HIGH ?
 				GPIO_PIN_SET : GPIO_PIN_RESET);

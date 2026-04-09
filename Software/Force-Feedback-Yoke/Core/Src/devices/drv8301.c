@@ -32,7 +32,7 @@ void DRV8301_Init(DRV8301_t *driver, GPIO_t driverEn, TIM_HandleTypeDef *pwmTim,
 }
 
 void DRV8301_SetDriverEnable(DRV8301_t *driver, bool enable) {
-	GPIOSetState(&driver->driverEn, enable ? GPIO_HIGH : GPIO_LOW);
+	GPIO_SetState(&driver->driverEn, enable ? GPIO_HIGH : GPIO_LOW);
 }
 
 void DRV8301_SetPhaseVoltages(DRV8301_t *driver, float u, float v, float w) {

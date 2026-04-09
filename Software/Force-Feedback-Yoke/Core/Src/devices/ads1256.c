@@ -169,7 +169,7 @@ static void Wakeup(ADS1256_t *adc) {
 	uint8_t command = (uint8_t)ADS1256_WAKEUP;
 
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 	HAL_StatusTypeDef status = HAL_SPI_Transmit(adc->hspi, &command, 1,
 			HAL_TIMEOUT);
@@ -178,14 +178,14 @@ static void Wakeup(ADS1256_t *adc) {
 	}
 
 	// Un-assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_HIGH);
+	GPIO_SetState(&adc->nCS, GPIO_HIGH);
 }
 
 static int32_t ReadData(ADS1256_t *adc) {
 	//uint8_t command = (uint8_t)ADS1256_RDATA;
 
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 //	// Transmit command
 //	HAL_StatusTypeDef status = HAL_SPI_Transmit(adc->hspi, &command, 1,
@@ -244,7 +244,7 @@ static int32_t ReadData(ADS1256_t *adc) {
 //	}
 
 	// Un-assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_HIGH);
+	GPIO_SetState(&adc->nCS, GPIO_HIGH);
 
 //	//Convert 24-bit signed integer to 32-bit signed integer (ignore index 0)
 //	int32_t value = (((int32_t)data[1]) << 16) |
@@ -268,7 +268,7 @@ static void ReadDataDMA(ADS1256_t *adc) {
 	adc->lockUpdate = true;
 
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 	memset(adc->bufferTx, 0x00, ADS1256_TRANSFER_BUFFER_SIZE);
 	adc->bufferTx[0] = (uint8_t)ADS1256_RDATA;
@@ -285,12 +285,12 @@ static void ReadDataDMA(ADS1256_t *adc) {
 
 static void ReadDataContinuous(ADS1256_t *adc) {
 	// Wait for data ready
-	while(GPIOGetState(&adc->nDRdy) == GPIO_HIGH) {
+	while(GPIO_GetState(&adc->nDRdy) == GPIO_HIGH) {
 		// Do nothing
 	}
 
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 	// Transmit command
 	uint8_t command = (uint8_t)ADS1256_RDATAC;
@@ -314,12 +314,12 @@ static void ReadDataContinuous(ADS1256_t *adc) {
 
 static void StopReadDataContinuous(ADS1256_t *adc) {
 	// Wait for data ready
-	while(GPIOGetState(&adc->nDRdy) == GPIO_HIGH) {
+	while(GPIO_GetState(&adc->nDRdy) == GPIO_HIGH) {
 		// Do nothing
 	}
 
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 	// Transmit command
 	uint8_t command = (uint8_t)ADS1256_SDATAC;
@@ -329,12 +329,12 @@ static void StopReadDataContinuous(ADS1256_t *adc) {
 		HandleSPIError(adc);
 	}
 
-	GPIOSetState(&adc->nCS, GPIO_HIGH);
+	GPIO_SetState(&adc->nCS, GPIO_HIGH);
 }
 
 static void SelfCalibration(ADS1256_t *adc) {
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 	// Transmit command
 	uint8_t command = (uint8_t)ADS1256_SELFCAL;
@@ -344,17 +344,17 @@ static void SelfCalibration(ADS1256_t *adc) {
 		HandleSPIError(adc);
 	}
 
-	GPIOSetState(&adc->nCS, GPIO_HIGH);
+	GPIO_SetState(&adc->nCS, GPIO_HIGH);
 
 	// Wait until calibration is complete
-	while(GPIOGetState(&adc->nDRdy) == GPIO_HIGH) {
+	while(GPIO_GetState(&adc->nDRdy) == GPIO_HIGH) {
 		// Do nothing
 	}
 }
 
 static void SystemCalibration(ADS1256_t *adc) {
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 	// Transmit command
 	uint8_t command = (uint8_t)ADS1256_SELFCAL;
@@ -364,10 +364,10 @@ static void SystemCalibration(ADS1256_t *adc) {
 		HandleSPIError(adc);
 	}
 
-	GPIOSetState(&adc->nCS, GPIO_HIGH);
+	GPIO_SetState(&adc->nCS, GPIO_HIGH);
 
 	// Wait until calibration is complete
-	while(GPIOGetState(&adc->nDRdy) == GPIO_HIGH) {
+	while(GPIO_GetState(&adc->nDRdy) == GPIO_HIGH) {
 		// Do nothing
 	}
 }
@@ -379,7 +379,7 @@ static uint8_t ReadRegister(ADS1256_t *adc, ADS1256Reg_e reg) {
 	wData[1] = 0x00;
 
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 	delayMs(1);
 
@@ -401,7 +401,7 @@ static uint8_t ReadRegister(ADS1256_t *adc, ADS1256Reg_e reg) {
 	}
 
 	// Un-assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_HIGH);
+	GPIO_SetState(&adc->nCS, GPIO_HIGH);
 
 	return rData;
 }
@@ -414,7 +414,7 @@ static void WriteRegister(ADS1256_t *adc, ADS1256Reg_e reg, uint8_t value) {
 	data[2] = value;
 
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 
 	HAL_StatusTypeDef status = HAL_SPI_Transmit(adc->hspi, data, sizeof(data),
@@ -424,18 +424,18 @@ static void WriteRegister(ADS1256_t *adc, ADS1256Reg_e reg, uint8_t value) {
 	}
 
 	// Un-assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_HIGH);
+	GPIO_SetState(&adc->nCS, GPIO_HIGH);
 }
 
 static void ResetDevice(ADS1256_t *adc) {
 
 	// Wait for data ready to go low
-	while(GPIOGetState(&adc->nDRdy) == GPIO_HIGH) {
+	while(GPIO_GetState(&adc->nDRdy) == GPIO_HIGH) {
 		// Do nothing
 	}
 
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 	// Transmit command
 	uint8_t command = (uint8_t)ADS1256_RESET;
@@ -445,12 +445,12 @@ static void ResetDevice(ADS1256_t *adc) {
 		HandleSPIError(adc);
 	}
 
-	GPIOSetState(&adc->nCS, GPIO_HIGH);
+	GPIO_SetState(&adc->nCS, GPIO_HIGH);
 }
 
 static void SendCommandIT(ADS1256_t *adc) {
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 	adc->bufferTx[0] = (uint8_t)ADS1256_RDATA;
 	adc->bufferRx[0] = 0;
@@ -472,7 +472,7 @@ static void ReceiveIT(ADS1256_t *adc) {
 
 static void SendCommandDMA(ADS1256_t *adc) {
 	// Assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_LOW);
+	GPIO_SetState(&adc->nCS, GPIO_LOW);
 
 	adc->bufferTx[0] = (uint8_t)ADS1256_RDATA;
 	adc->bufferRx[0] = 0;
@@ -495,7 +495,7 @@ static void ReceiveDMA(ADS1256_t *adc) {
 static void CloseDMA(ADS1256_t *adc) {
 
 	// Un-assert chip select signal
-	GPIOSetState(&adc->nCS, GPIO_HIGH);
+	GPIO_SetState(&adc->nCS, GPIO_HIGH);
 
 	//Convert 24-bit signed integer to 32-bit signed integer
 	int32_t value = (((int32_t)adc->bufferRx[0]) << 16) |
