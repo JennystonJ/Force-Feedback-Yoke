@@ -13,8 +13,15 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
+#include <stdint.h>
 
-#define ENCODER_DEFAULT_COUNT_PER_REV 65536
+//#define ENCODER_DEFAULT_COUNT_PER_REV 65536
+#define ENCODER_DEFAULT_COUNT_PER_REV 2097152
+
+typedef struct EncoderEdgeTime {
+	int edgeCount;
+	unsigned int edgeTime;
+} EncoderEdgeTime_t;
 
 typedef struct EncoderInterface EncoderInterface_t;
 
@@ -22,6 +29,12 @@ struct EncoderInterface {
 	void *hardwareEncoder;
 	int (*GetEncoderSensorCount)(EncoderInterface_t *);
 	int (*GetEncoderSensorAbsCount)(EncoderInterface_t *);
+	EncoderEdgeTime_t (*GetEncoderSensorEdgeTime)(EncoderInterface_t *);
+
+	struct {
+		int32_t positionCount;
+		int32_t prevAngle;
+	} data;
 };
 
 typedef struct Encoder {
@@ -32,8 +45,11 @@ typedef struct Encoder {
 
 	int prevCount;
 	int countPerRev;
-	float speed;
-	float prevSpeed;
+
+	float pulseTimerTickPeriod;
+
+	float velocity;
+	float prevVelocity;
 	float acceleration;
 
 } Encoder_t;
@@ -51,6 +67,13 @@ void Encoder_Init(Encoder_t *encoder, EncoderInterface_t interface);
  * parameter reverse: sets reverse parameter of encoder (true = reverse).
  */
 void Encoder_SetReverse(Encoder_t *encoder, bool reverse);
+
+/*
+ * Obtains encoder count in radians.
+ * parameter encoder: pointer to encoder structure.
+ * returns: encoder count in radians.
+ */
+float Encoder_GetRad(Encoder_t *encoder);
 
 /*
  * Obtains encoder count.
@@ -79,11 +102,18 @@ void Encoder_ResetCount(Encoder_t *encoder);
 int Encoder_GetHardCount(Encoder_t *encoder);
 
 /*
- * Obtains encoder speed in counts per millisecond.
+ * Obtains encoder velocity in counts per second.
  * parameter encoder: pointer to encoder structure.
- * returns: speed in counts per millisecond.
+ * returns: velocity in counts per second.
  */
-float Encoder_GetSpeed(Encoder_t *encoder);
+float Encoder_GetVelocityCountPerS(Encoder_t *encoder);
+
+/*
+ * Obtains encoder velocity in radians per second.
+ * parameter encoder: pointer to encoder structure.
+ * returns: velocity in radians per second.
+ */
+float Encoder_GetVelocityRadPerS(Encoder_t *encoder);
 
 /*
  * Obtains number of counts per each encoder revolution.
@@ -98,6 +128,27 @@ int Encoder_GetCountPerRev(Encoder_t *encoder);
  * parameter countPerRev: number of counts per each encoder revolution.
  */
 void Encoder_SetCountPerRev(Encoder_t *encoder, int countPerRev);
+
+/*
+ * Obtains the time elapsed between counts.
+ * parameter encoder: pointer to encoder structure.
+ * returns time elapsed between counts.
+ */
+EncoderEdgeTime_t Encoder_GetPulseTimeCount(Encoder_t *encoder);
+
+/*
+ * Assigns the time elapsed per pulse timer tick.
+ * parameter encoder: pointer to encoder structure.
+ * parameter tickPeriod: time elapsed per pulse timer tick.
+ */
+void Encoder_SetPulseTickPeriod(Encoder_t *encoder, float tickPeriod);
+
+/*
+ * Obtains the time elapsed per pulse timer tick.
+ * parameter encoder: pointer to encoder structure.
+ * returns time elapsed per pulse timer tick.
+ */
+float Encoder_GetPulseTickPeriod(Encoder_t *encoder);
 
 /*
  * Updates count and calculates speed and acceleration in encoder structure.

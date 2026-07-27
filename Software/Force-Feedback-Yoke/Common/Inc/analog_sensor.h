@@ -9,6 +9,7 @@
 #define INC_ANALOG_SENSOR_H_
 
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef struct ADCInterface ADCInterface_t;
 
@@ -19,6 +20,12 @@ struct ADCInterface {
 	float (*ADCGetVref)(ADCInterface_t *interface);
 };
 
+typedef enum AnalogSensorCalState {
+	ANALOG_SENSOR_CAL_READY,
+	ANALOG_SENSOR_CAL_RUNNING,
+	ANALOG_SENSOR_CAL_DONE,
+} AnalogSensorCalState_e;
+
 typedef struct AnalogSensor {
 	ADCInterface_t interface;
 	unsigned int channel;
@@ -27,12 +34,14 @@ typedef struct AnalogSensor {
 	unsigned int channelN;
 	int offset;
 
-	unsigned int lastValue;
+	int lastValueRaw;
+	int lastValue;
 	unsigned int lastValueDifferential;
-	int lastReturnedValue;
 
-	bool calibrating;
-	bool calibrateUpdateFlag;
+	AnalogSensorCalState_e calState;
+	unsigned int calSampleCount;
+	unsigned int calSampleTarget;
+	int64_t calSampleAccumulator;
 } AnalogSensor_t;
 
 void AnalogSensor_Init(AnalogSensor_t *analogSensor,
@@ -45,8 +54,9 @@ int AnalogSensor_GetValue(AnalogSensor_t *analogSensor);
 unsigned int AnalogSensor_GetMaxCount(AnalogSensor_t *analogSensor);
 float AnalogSensor_GetVoltage(AnalogSensor_t *analogSensor);
 float AnalogSensor_GetVref(AnalogSensor_t *analogSensor);
-void AnalogSensor_CalibrateZeroOffset(AnalogSensor_t *analogSensor,
+void AnalogSensor_StartCalibration(AnalogSensor_t *analogSensor,
 		unsigned int numSamples);
 void AnalogSensor_Update(AnalogSensor_t *analogSensor);
+bool AnalogSensor_IsCalibrationDone(AnalogSensor_t *analogSensor);
 
 #endif /* INC_ANALOG_SENSOR_H_ */

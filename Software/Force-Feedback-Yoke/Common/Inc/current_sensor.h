@@ -24,8 +24,9 @@ void CurrentSensor_Init(CurrentSensor_t *currentSensor, AnalogSensor_t *sensor,
 		float maxCurrent);
 void CurrentSensor_SetOffset(CurrentSensor_t *currentSensor, float offset);
 float CurrentSensor_GetValue(CurrentSensor_t *currentSensor);
-void CurrentSensor_Calibrate(CurrentSensor_t *currentSensor,
+void CurrentSensor_StartCalibration(CurrentSensor_t *currentSensor,
 		unsigned int numSamples);
+bool CurrentSensor_IsCalibrationDone(CurrentSensor_t *currentSensor);
 void CurrentSensor_SetLowPassAlpha(CurrentSensor_t *currentSensor, float alpha);
 void CurrentSensor_Update(CurrentSensor_t *currentSensor, float deltaTimeMs);
 

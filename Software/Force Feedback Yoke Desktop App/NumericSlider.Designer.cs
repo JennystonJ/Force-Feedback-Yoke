@@ -49,21 +49,21 @@
             mainTableLayoutPanel.Controls.Add(nudFlowLayoutPanel, 1, 0);
             mainTableLayoutPanel.Dock = DockStyle.Fill;
             mainTableLayoutPanel.Location = new Point(0, 0);
-            mainTableLayoutPanel.Margin = new Padding(4, 2, 4, 2);
+            mainTableLayoutPanel.Margin = new Padding(2, 1, 2, 1);
             mainTableLayoutPanel.Name = "mainTableLayoutPanel";
             mainTableLayoutPanel.RowCount = 1;
             mainTableLayoutPanel.RowStyles.Add(new RowStyle());
-            mainTableLayoutPanel.Size = new Size(716, 94);
+            mainTableLayoutPanel.Size = new Size(383, 47);
             mainTableLayoutPanel.TabIndex = 8;
             // 
             // tbSlider
             // 
             tbSlider.Dock = DockStyle.Fill;
-            tbSlider.Location = new Point(4, 2);
-            tbSlider.Margin = new Padding(4, 2, 4, 2);
+            tbSlider.Location = new Point(2, 1);
+            tbSlider.Margin = new Padding(2, 1, 2, 1);
             tbSlider.Maximum = 100;
             tbSlider.Name = "tbSlider";
-            tbSlider.Size = new Size(514, 90);
+            tbSlider.Size = new Size(277, 45);
             tbSlider.TabIndex = 8;
             tbSlider.Scroll += tbSlider_Scroll;
             // 
@@ -73,10 +73,10 @@
             nudFlowLayoutPanel.Controls.Add(nudValue);
             nudFlowLayoutPanel.Controls.Add(lblUnit);
             nudFlowLayoutPanel.Dock = DockStyle.Fill;
-            nudFlowLayoutPanel.Location = new Point(526, 2);
-            nudFlowLayoutPanel.Margin = new Padding(4, 2, 4, 2);
+            nudFlowLayoutPanel.Location = new Point(283, 1);
+            nudFlowLayoutPanel.Margin = new Padding(2, 1, 2, 1);
             nudFlowLayoutPanel.Name = "nudFlowLayoutPanel";
-            nudFlowLayoutPanel.Size = new Size(186, 90);
+            nudFlowLayoutPanel.Size = new Size(98, 45);
             nudFlowLayoutPanel.TabIndex = 9;
             // 
             // nudValue
@@ -86,10 +86,10 @@
             nudValue.DecimalPlaces = 2;
             nudValue.Dock = DockStyle.Left;
             nudValue.ForeColor = Color.WhiteSmoke;
-            nudValue.Location = new Point(4, 2);
-            nudValue.Margin = new Padding(4, 2, 4, 2);
+            nudValue.Location = new Point(2, 1);
+            nudValue.Margin = new Padding(2, 1, 2, 1);
             nudValue.Name = "nudValue";
-            nudValue.Size = new Size(136, 35);
+            nudValue.Size = new Size(73, 19);
             nudValue.TabIndex = 0;
             nudValue.ValueChanged += nudValue_ValueChanged;
             // 
@@ -98,24 +98,24 @@
             lblUnit.AutoSize = true;
             lblUnit.Dock = DockStyle.Left;
             lblUnit.ForeColor = Color.WhiteSmoke;
-            lblUnit.Location = new Point(148, 0);
-            lblUnit.Margin = new Padding(4, 0, 4, 0);
+            lblUnit.Location = new Point(79, 0);
+            lblUnit.Margin = new Padding(2, 0, 2, 0);
             lblUnit.Name = "lblUnit";
-            lblUnit.Size = new Size(34, 32);
+            lblUnit.Size = new Size(17, 15);
             lblUnit.TabIndex = 1;
             lblUnit.Text = "%";
             // 
             // NumericSlider
             // 
-            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             BackColor = Color.Gray;
             Controls.Add(mainTableLayoutPanel);
-            Margin = new Padding(4, 2, 4, 2);
+            Margin = new Padding(2, 1, 2, 1);
             Name = "NumericSlider";
-            Size = new Size(716, 94);
+            Size = new Size(383, 47);
             mainTableLayoutPanel.ResumeLayout(false);
             mainTableLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)tbSlider).EndInit();

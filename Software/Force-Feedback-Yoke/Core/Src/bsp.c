@@ -5,8 +5,8 @@
  *      Author: Jennyston
  */
 
+#include <config/config.h>
 #include "bsp.h"
-#include "config.h"
 #include "tcm_def.h"
 
 #include "delay.h"
@@ -34,10 +34,24 @@
 #include <stm32h7xx_hal.h>
 #include <string.h>
 
-// Private variables
-DTCM static MT6835_t pitchMt6835;
-DTCM static MT6835_t rollMt6835;
+#include "log.h"
+#include "diagnostics/diagnostics_config.h"
 
+#include "peripherals/dwt.h"
+
+// Private variables
+static MT6835_t pitchMt6835;
+static MT6835Buffer_t pitchMT6835Buffer;
+static uint32_t pitchMT6835EdgeBuffer[192];
+static const uint16_t PITCH_MT6835_EDGE_BUFFER_LENGTH =
+		sizeof(pitchMT6835EdgeBuffer)/sizeof(pitchMT6835EdgeBuffer[0]);
+
+static MT6835_t rollMt6835;
+static MT6835Buffer_t rollMT6835Buffer;
+
+DTCM static bool encoderSPIBusBusy;
+DTCM static int encoderCurrentAccess;
+DTCM static int encoderSPIBusQueued;
 
 DTCM static InternalInjectedADC_t pitchCurrentSensorADC;
 DTCM static InternalInjectedADC_t rollCurrentSensorADC;
@@ -58,7 +72,7 @@ DTCM static DRV8301_t rollDrv8301;
 
 static struct {
 	void (*MotorControlLoopIT)(Motor_t *motor, Encoder_t *encoder,
-			int adcId, float deltaTimeMs);
+			int id, float deltaTimeMs);
 	void (*SerialDAQTxIT)(SerialDAQ_t *serialDaq);
 	void (*SerialDAQRxIT)(SerialDAQ_t *serialDaq);
 	void (*FFBControlLoopIT)(float deltaTimeMs);
@@ -112,9 +126,6 @@ static void Bsp_StartADCs(void);
 static void Bsp_StartTimers(void);
 static void Bsp_DaqInit(void);
 
-static int pitchEncoderSPIAngle;
-static int pitchEncoderAngle;
-
 void Bsp_Init(void) {
 	memset(&callbacks, 0, sizeof(callbacks));
 
@@ -127,17 +138,29 @@ void Bsp_Init(void) {
 	Bsp_EncodersInit();
 	Bsp_CurrentSensorsInit();
 	Bsp_MotorsInit();
+
+	// Calibrate current sensors
+	BLDCMotor_RunCurrentSensorCalibration(&pitchBLDCMotor);
+	BLDCMotor_RunCurrentSensorCalibration(&rollBLDCMotor);
+
 	Bsp_LoadCellInit();
+	LoadCell_RunCalibration(&pitchLoadCell, 512);
 
 	Bsp_DaqInit();
 
 	Bsp_StartADCs();
 	Bsp_StartTimers();
 
+	DWT_Init();
+
 	//	while(true) {
 	//		pitchEncoderSPIAngle = MT6835_ReadAngle(&pitchMt6835) >> 5;
 	//		pitchEncoderAngle = Encoder_GetHardCount(&pitchEncoder);
 	//	}
+
+	encoderSPIBusBusy = false;
+	encoderCurrentAccess = -1;
+	encoderSPIBusQueued = -1;
 
 	bspInitialized = true;
 }
@@ -173,15 +196,27 @@ void Bsp_FFBControlLoopIT(float deltaTimeMs) {
 }
 
 void Bsp_SerialDAQTxIT(void) {
+	if(!bspInitialized) {
+		return;
+	}
+
 	if(callbacks.SerialDAQTxIT != NULL) {
 		callbacks.SerialDAQTxIT(&daq);
 	}
 }
 
 void Bsp_SerialDAQRxIT(void) {
+	if(!bspInitialized) {
+		return;
+	}
+
 	if(callbacks.SerialDAQRxIT != NULL) {
 		callbacks.SerialDAQRxIT(&daq);
 	}
+}
+
+void Bsp_LogTxIT(void) {
+	Log_UpdateDMA();
 }
 
 void Bsp_ADCWatchDogIT(ADC_HandleTypeDef *hadc) {
@@ -211,7 +246,7 @@ void Bsp_ADS1256Update(void) {
 }
 
 void Bsp_RegisterMotorControlLoopITCallback(void (*MotorControlLoopIT)
-		(Motor_t *motor, Encoder_t *encoder, int adcId, float deltaTimeMs)) {
+		(Motor_t *motor, Encoder_t *encoder, int id, float deltaTimeMs)) {
 	callbacks.MotorControlLoopIT = MotorControlLoopIT;
 }
 
@@ -257,13 +292,29 @@ static void Bsp_LedInit(void) {
 
 static void Bsp_EncodersInit(void) {
 
+	// Set up CRC unit
+	HAL_CRCEx_Polynomial_Set(&hcrc, 0x07, CRC_POLYLENGTH_8B);
+
 	// Set up nCS pin for pitch encoder
 	GPIO_t gpioPitchNcs;
 	GPIO_Init(&gpioPitchNcs, E1_NCS_GPIO_Port, E1_NCS_Pin);
 
 	// Initialize pitch encoder
-	MT6835_Init(&pitchMt6835, &ENCODER_PITCH_SPI, gpioPitchNcs);
-	MT6835_SetABTim(&pitchMt6835, &ENCODER_PITCH_TIM);
+
+	// Encoder AB GPIO pin setup
+	GPIO_t gpioPitchA;
+	GPIO_Init(&gpioPitchA, ENC_PITCH_A_GPIO_Port, ENC_PITCH_A_Pin);
+	GPIO_t gpioPitchB;
+	GPIO_Init(&gpioPitchB, ENC_PITCH_B_GPIO_Port, ENC_PITCH_B_Pin);
+
+	MT6835_Init(&pitchMt6835, &ENCODER_PITCH_SPI, gpioPitchNcs,
+			&pitchMT6835Buffer);
+	MT6835_SetCRC(&pitchMt6835, &hcrc);
+//	MT6835_SetABTim(&pitchMt6835, &ENCODER_PITCH_TIM);
+	MT6835_SetABEdgeTim(&pitchMt6835, &ENCODER_PITCH_TIM, TIM_CHANNEL_1,
+			TIM_CHANNEL_2, gpioPitchA, gpioPitchB);
+	MT6835_SetABEdgeDMA(&pitchMt6835, &hdma_tim2_ch1, &hdma_tim2_ch2,
+			pitchMT6835EdgeBuffer, PITCH_MT6835_EDGE_BUFFER_LENGTH);
 
 	EncoderInterface_t pitchEncoderI;
 	MT6835Interface_Init(&pitchEncoderI, &pitchMt6835);
@@ -277,14 +328,16 @@ static void Bsp_EncodersInit(void) {
 	GPIO_Init(&gpioRollNcs, E2_NCS_GPIO_Port, E2_NCS_Pin);
 
 	// Initialize roll encoder
-	MT6835_Init(&rollMt6835, &ENCODER_ROLL_SPI, gpioRollNcs);
-	MT6835_SetABTim(&rollMt6835, &ENCODER_ROLL_TIM);
+	MT6835_Init(&rollMt6835, &ENCODER_ROLL_SPI, gpioRollNcs, &rollMT6835Buffer);
+	MT6835_SetCRC(&rollMt6835, &hcrc);
+//	MT6835_SetABTim(&rollMt6835, &ENCODER_ROLL_TIM);
 
 	EncoderInterface_t rollEncoderI;
 	MT6835Interface_Init(&rollEncoderI, &rollMt6835);
 
 	Encoder_Init(&rollEncoder, rollEncoderI);
 	Encoder_SetCountPerRev(&rollEncoder, ENCODER_ROLL_COUNTS_PER_REV);
+	// TODO: Consider reversing
 	Encoder_SetReverse(&rollEncoder, false);
 }
 
@@ -381,9 +434,14 @@ static void Bsp_MotorsInit(void) {
 	// Initialize pitch motor and assign current sensors
 	BLDCMotor_Init(&pitchBLDCMotor, &pitchDriver, &pitchEncoder,
 			MOTOR_PITCH_POLE_PAIRS);
+	BLDCMotor_SetElectricalAngleOffsetCount(&pitchBLDCMotor,
+			PITCH_ELECTRICAL_ANGLE_OFFSET);
 	BLDCMotor_SetCurrentSensors(&pitchBLDCMotor, &pitchCurrentA,
 			&pitchCurrentB, &pitchCurrentC);
+	BLDCMotor_SetCurrentSensorCalibrationSampleTarget(&pitchBLDCMotor,
+			BLDCMOTOR_PITCH_CURRENT_CAL_SAMPLE_TARGET);
 	BLDCMotor_SetTorqueConstant(&pitchBLDCMotor, MOTOR_PITCH_KT);
+	BLDCMotor_SetDiagnostics(&pitchBLDCMotor, pitchMotorDiagConfig);
 
 	// Set pitch motor PID parameters
 	FOC_t *pitchFoc = BLDCMotor_GetFOC(&pitchBLDCMotor);
@@ -399,6 +457,7 @@ static void Bsp_MotorsInit(void) {
 	BLDCMotorInterface_Init(&pitchMotorI, &pitchBLDCMotor);
 
 	Motor_Init(&pitchMotor, pitchMotorI);
+	Motor_SetTorqueLimit(&pitchMotor, PITCH_MOTOR_TORQUE_LIMIT);
 
 	// *** Initialize roll driver ***
 	// Set up driver enable pin for roll driver
@@ -418,9 +477,14 @@ static void Bsp_MotorsInit(void) {
 	// Initialize roll motor and assign current sensors
 	BLDCMotor_Init(&rollBLDCMotor, &rollDriver, &rollEncoder,
 			MOTOR_ROLL_POLE_PAIRS);
+	BLDCMotor_SetElectricalAngleOffsetCount(&rollBLDCMotor,
+			ROLL_ELECTRICAL_ANGLE_OFFSET);
 	BLDCMotor_SetCurrentSensors(&rollBLDCMotor, &rollCurrentA,
 			&rollCurrentB, &rollCurrentC);
+	BLDCMotor_SetCurrentSensorCalibrationSampleTarget(&rollBLDCMotor,
+			BLDCMOTOR_ROLL_CURRENT_CAL_SAMPLE_TARGET);
 	BLDCMotor_SetTorqueConstant(&rollBLDCMotor, MOTOR_ROLL_KT);
+	BLDCMotor_SetDiagnostics(&rollBLDCMotor, rollMotorDiagConfig);
 
 	// Set roll motor PID parameters
 	FOC_t *rollFoc = BLDCMotor_GetFOC(&rollBLDCMotor);
@@ -436,7 +500,7 @@ static void Bsp_MotorsInit(void) {
 	BLDCMotorInterface_Init(&rollMotorI, &rollBLDCMotor);
 
 	Motor_Init(&rollMotor, rollMotorI);
-
+	Motor_SetTorqueLimit(&rollMotor, ROLL_MOTOR_TORQUE_LIMIT);
 
 }
 
@@ -456,10 +520,11 @@ static void Bsp_LoadCellInit(void) {
 	AnalogSensor_Init(&pitchLoadCellCh, adcI, 0, ADS1256_ADC_COUNTS);
 
 	LoadCell_Init(&pitchLoadCell, &pitchLoadCellCh);
+	LoadCell_SetReverse(&pitchLoadCell, true);
 }
 
 static void Bsp_DaqInit(void) {
-	SerialDAQ_Init(&daq, &huart2);
+	SerialDAQ_Init(&daq, &SERIAL_DAQ_UART);
 }
 
 static void Bsp_StartADCs(void) {
@@ -507,27 +572,104 @@ static void Bsp_StartTimers(void) {
 
 
 	// Encoder Timers
-	HAL_TIM_Encoder_Start(&ENCODER_PITCH_TIM, TIM_CHANNEL_1);
-	HAL_TIM_Encoder_Start(&ENCODER_PITCH_TIM, TIM_CHANNEL_2);
+//	HAL_TIM_Encoder_Start(&ENCODER_PITCH_TIM, TIM_CHANNEL_1);
+//	HAL_TIM_Encoder_Start(&ENCODER_PITCH_TIM, TIM_CHANNEL_2);
+//
+//	HAL_TIM_Encoder_Start(&ENCODER_ROLL_TIM, TIM_CHANNEL_1);
+//	HAL_TIM_Encoder_Start(&ENCODER_ROLL_TIM, TIM_CHANNEL_2);
 
-	HAL_TIM_Encoder_Start(&ENCODER_ROLL_TIM, TIM_CHANNEL_1);
-	HAL_TIM_Encoder_Start(&ENCODER_ROLL_TIM, TIM_CHANNEL_2);
+	MT6835_StartEdgeTim(&pitchMt6835);
+
+	// Encoder Pulse Timers
+//	HAL_TIM_IC_Start_DMA(&ENCODER_PITCH_PULSE_TIM, TIM_CHANNEL_1, pitchPulseTimes,
+//			sizeof(pitchPulseTimes));
+//	HAL_TIM_IC_Start(&ENCODER_UPPER_WORD_TIMER, TIM_CHANNEL_2);
+//
+//	HAL_TIM_IC_Start(&ENCODER_ROLL_PULSE_TIM, TIM_CHANNEL_1);
+//	HAL_TIM_IC_Start(&ENCODER_UPPER_WORD_TIMER, TIM_CHANNEL_2);
+//
+//	HAL_TIM_OC_Start(&ENCODER_MASTER_START_TIMER, TIM_CHANNEL_1);
 
 	// FFB Control Loop Timer
 	HAL_TIM_Base_Start_IT(&FFB_CONTROL_LOOP_TIM);
 }
 
-void Bsp_ADCUpdate(int adcId) {
-	switch(adcId) {
-		case PITCH_ADC_ID:
+void Bsp_ADCUpdate(int id) {
+	switch(id) {
+		case BSP_PITCH_ID:
 			InternalInjectedADC_UpdateIT(&pitchCurrentSensorADC);
 			break;
-		case ROLL_ADC_ID:
+		case BSP_ROLL_ID:
 			InternalInjectedADC_UpdateIT(&rollCurrentSensorADC);
 			break;
 		default:
 			// Invalid ID, do nothing
 			break;
+	}
+}
+
+void Bsp_EncoderUpdate(int id) {
+	__disable_irq();
+	if(encoderSPIBusBusy) {
+		encoderSPIBusQueued = id;
+		__enable_irq();
+	}
+	else {
+		encoderSPIBusBusy = true;
+		encoderCurrentAccess = id;
+		__enable_irq();
+
+		switch(encoderCurrentAccess) {
+			case BSP_PITCH_ID:
+				MT6835_Update(&pitchMt6835);
+				//TODO: Consider removing
+//				MT6835_UpdateEdgeTimeDMA(&pitchMt6835);
+				break;
+			case BSP_ROLL_ID:
+				MT6835_Update(&rollMt6835);
+				break;
+			default:
+				// Reset if invalid
+				encoderSPIBusBusy = false;
+				break;
+		}
+	}
+}
+
+void Bsp_EncoderUpdateComplete(void) {
+	switch(encoderCurrentAccess) {
+		case BSP_PITCH_ID:
+			MT6835_UpdateComplete(&pitchMt6835);
+			break;
+		case BSP_ROLL_ID:
+			MT6835_UpdateComplete(&rollMt6835);
+			break;
+		default:
+			// Invalid id
+			break;
+	}
+
+	int8_t nextAccess = encoderSPIBusQueued;
+	encoderSPIBusQueued = -1;
+
+	if(nextAccess >= 0) {
+		encoderCurrentAccess = nextAccess;
+
+		switch(encoderCurrentAccess) {
+			case BSP_PITCH_ID:
+				MT6835_Update(&pitchMt6835);
+				break;
+			case BSP_ROLL_ID:
+				MT6835_Update(&rollMt6835);
+				break;
+			default:
+				// Invalid id
+				break;
+		}
+	}
+	else {
+		encoderCurrentAccess = -1;
+		encoderSPIBusBusy = false;
 	}
 }
 

@@ -11,10 +11,13 @@
 #include "bldc_foc_math.h"
 #include "utilities/utilities.h"
 #include "delay.h"
+#include "diagnostics/diagnostics.h"
+#include <string.h>
 
 static int CalcElectricalAngleRawCount(BLDCMotor_t *motor);
 static int CalcElectricalAngleCount(BLDCMotor_t *motor);
 static float CalcElectricalAngle(BLDCMotor_t *motor);
+static inline void UpdateCurrentSenseReadings(BLDCMotor_t *motor, float deltaTimeMs);
 
 void BLDCMotor_Init(BLDCMotor_t *motor, BLDCDriver_t *driver,
 		Encoder_t *encoder, int polePairs) {
@@ -24,9 +27,11 @@ void BLDCMotor_Init(BLDCMotor_t *motor, BLDCDriver_t *driver,
 	motor->electricalAngleCount = 0;
 	motor->electricalAngle = 0.0f;
 
+	motor->currentSensingEnabled = false;
 	motor->currentA = NULL;
 	motor->currentB = NULL;
 	motor->currentC = NULL;
+	motor->currentSenseCalSampleTarget = 10;
 
 	motor->kt = 0.0f;
 	motor->qCurrentLimit = 0.5f;
@@ -37,6 +42,16 @@ void BLDCMotor_Init(BLDCMotor_t *motor, BLDCDriver_t *driver,
 	motor->voltage = 0.0f;
 
 	FOC_Init(&motor->foc, BLDCDriver_GetBusVoltage(driver));
+
+	motor->diagInit = false;
+
+	memset(&motor->diagConfig, 0, sizeof(motor->diagConfig));
+}
+
+void BLDCMotor_SetDiagnostics(BLDCMotor_t *motor,
+		MotorDiagnosticsConfig_t config) {
+	motor->diagConfig = config;
+	motor->diagInit = true;
 }
 
 void BLDCMotor_SetCurrentSensors(BLDCMotor_t *motor, CurrentSensor_t *currentA,
@@ -44,6 +59,9 @@ void BLDCMotor_SetCurrentSensors(BLDCMotor_t *motor, CurrentSensor_t *currentA,
 	motor->currentA = currentA;
 	motor->currentB = currentB;
 	motor->currentC = currentC;
+	motor->currentSensingEnabled = !(motor->currentA == NULL ||
+			motor->currentB == NULL ||
+			motor->currentC == NULL);
 }
 
 void BLDCMotor_SetEnable(BLDCMotor_t *motor, bool enabled) {
@@ -101,11 +119,18 @@ float BLDCMotor_GetQCurrentLimit(BLDCMotor_t *motor) {
 }
 
 void BLDCMotor_SetQCurrent(BLDCMotor_t *motor, float current) {
-	motor->mode = BLDC_MOTOR_MODE_CURRENT;
+	if(motor->currentSensingEnabled && !BLDCMotor_IsCurrentSensorCalibrating(motor)) {
+		motor->mode = BLDC_MOTOR_MODE_CURRENT;
 
-	FOC_SetIQSetPoint(&motor->foc,
-			ConstrainFloat(current, -motor->qCurrentLimit,
-					motor->qCurrentLimit));
+		FOC_SetIQSetPoint(&motor->foc,
+				ConstrainFloat(current, -motor->qCurrentLimit,
+						motor->qCurrentLimit));
+	}
+	else {
+		// Current sensors have not been assigned or are calibrating,
+		// set voltages to 0
+		BLDCMotor_SetVoltage(motor, 0);
+	}
 }
 
 float BLDCMotor_GetQCurrent(BLDCMotor_t *motor) {
@@ -162,16 +187,23 @@ FOC_t *BLDCMotor_GetFOC(BLDCMotor_t *motor) {
 	return &motor->foc;
 }
 
-void BLDCMotor_RunCurrentSensorCalibration(BLDCMotor_t *motor,
-		unsigned int numSamples) {
+void BLDCMotor_RunCurrentSensorCalibration(BLDCMotor_t *motor) {
 	BLDCMotor_SetVoltage(motor, 0.0f);
 	BLDCMotor_SetEnable(motor, true);
 
 	delayMs(500);
 
-	CurrentSensor_Calibrate(motor->currentA, numSamples);
-	CurrentSensor_Calibrate(motor->currentB, numSamples);
-	CurrentSensor_Calibrate(motor->currentC, numSamples);
+	CurrentSensor_StartCalibration(motor->currentA,
+			motor->currentSenseCalSampleTarget);
+	CurrentSensor_StartCalibration(motor->currentB,
+			motor->currentSenseCalSampleTarget);
+	CurrentSensor_StartCalibration(motor->currentC,
+			motor->currentSenseCalSampleTarget);
+}
+
+void BLDCMotor_SetCurrentSensorCalibrationSampleTarget(BLDCMotor_t *motor,
+		unsigned int targetSamples) {
+	motor->currentSenseCalSampleTarget = targetSamples;
 }
 
 void BLDCMotor_RunEncoderCalibration(BLDCMotor_t *motor,
@@ -199,53 +231,58 @@ void BLDCMotor_RunEncoderCalibration(BLDCMotor_t *motor,
 void BLDCMotor_Update(BLDCMotor_t *motor, float deltaTimeMs) {
 
 	// Check if current sensors have been assigned
-	if(motor->currentA != NULL) {
-		// Update sensors
-		CurrentSensor_Update(motor->currentA, deltaTimeMs);
-		CurrentSensor_Update(motor->currentB, deltaTimeMs);
-		CurrentSensor_Update(motor->currentC, deltaTimeMs);
-
-		// Get phase currents
-		motor->phaseCurrents.a = CurrentSensor_GetValue(motor->currentA);
-		motor->phaseCurrents.b = CurrentSensor_GetValue(motor->currentB);
-		motor->phaseCurrents.c = CurrentSensor_GetValue(motor->currentC);
+	if(motor->currentSensingEnabled) {
+		UpdateCurrentSenseReadings(motor, deltaTimeMs);
 	}
 
 	motor->electricalAngleCount = CalcElectricalAngleCount(motor);
 	motor->electricalAngle = CalcElectricalAngle(motor);
 
-	if(motor->mode == BLDC_MOTOR_MODE_CURRENT) {
+	switch(motor->mode) {
+		case BLDC_MOTOR_MODE_CURRENT:
+		{
+			PhaseVoltages_t phaseVoltages =
+					FOC_Calc(&motor->foc, motor->phaseCurrents,
+								motor->electricalAngle,
+								deltaTimeMs);
+			BLDCDriver_SetVoltages(motor->driver, phaseVoltages.a, phaseVoltages.b,
+					phaseVoltages.c);
+			break;
+		}
+		case BLDC_MOTOR_MODE_VOLTAGE:
+		{
+			// Calculate phase voltages
+			PhaseVoltages_t phaseVoltages = FOCMath_CalcPhaseVoltages(0.0f,
+					motor->voltage/2.0f,
+					motor->electricalAngle);
 
-		PhaseVoltages_t phaseVoltages =
-				FOC_Calc(&motor->foc, motor->phaseCurrents,
-						motor->electricalAngle,
-						deltaTimeMs);
-		BLDCDriver_SetVoltages(motor->driver, phaseVoltages.a, phaseVoltages.b,
-				phaseVoltages.c);
+			// Assign phase voltages
+			BLDCDriver_SetVoltages(motor->driver, phaseVoltages.a,
+						phaseVoltages.b, phaseVoltages.c);
+			break;
+		}
+		case BLDC_MOTOR_MODE_ENCODER_CAL:
+		{
+			PhaseVoltages_t phaseVoltages =
+					FOC_Calc(&motor->foc, motor->phaseCurrents,
+							0.0f,
+							deltaTimeMs);
+			BLDCDriver_SetVoltages(motor->driver, phaseVoltages.a, phaseVoltages.b,
+					phaseVoltages.c);
+			break;
+		}
+		default:
+			FOC_ResetPID(&motor->foc);
+			// Do Nothing
+			break;
 	}
-	else if(motor->mode == BLDC_MOTOR_MODE_VOLTAGE) {
+}
 
-		// Calculate phase voltages
-		PhaseVoltages_t phaseVoltages = FOCMath_CalcPhaseVoltages(0.0f,
-				motor->voltage/2.0f,
-				motor->electricalAngle);
 
-		// Assign phase voltages
-		BLDCDriver_SetVoltages(motor->driver, phaseVoltages.a,
-					phaseVoltages.b, phaseVoltages.c);
-	}
-	else if(motor->mode == BLDC_MOTOR_MODE_ENCODER_CAL) {
-		PhaseVoltages_t phaseVoltages =
-				FOC_Calc(&motor->foc, motor->phaseCurrents,
-						0.0f,
-						deltaTimeMs);
-		BLDCDriver_SetVoltages(motor->driver, phaseVoltages.a, phaseVoltages.b,
-				phaseVoltages.c);
-	}
-	else {
-		FOC_ResetPID(&motor->foc);
-		// Do Nothing
-	}
+bool BLDCMotor_IsCurrentSensorCalibrating(BLDCMotor_t *motor) {
+	return !(CurrentSensor_IsCalibrationDone(motor->currentA) &&
+			CurrentSensor_IsCalibrationDone(motor->currentB) &&
+			CurrentSensor_IsCalibrationDone(motor->currentC));
 }
 
 static int CalcElectricalAngleRawCount(BLDCMotor_t *motor) {
@@ -277,4 +314,32 @@ static float CalcElectricalAngle(BLDCMotor_t *motor) {
 	float elecAngle = (2.0f*(float)M_PI) *
 					(CalcElectricalAngleCount(motor) / (float)countsPerElecRev);
 	return elecAngle;
+}
+
+
+static inline void UpdateCurrentSenseReadings(BLDCMotor_t *motor, float deltaTimeMs) {
+	// Update sensors
+	CurrentSensor_Update(motor->currentA, deltaTimeMs);
+	CurrentSensor_Update(motor->currentB, deltaTimeMs);
+	CurrentSensor_Update(motor->currentC, deltaTimeMs);
+
+	// Get phase currents
+	motor->phaseCurrents.a = CurrentSensor_GetValue(motor->currentA);
+	motor->phaseCurrents.b = CurrentSensor_GetValue(motor->currentB);
+	motor->phaseCurrents.c = CurrentSensor_GetValue(motor->currentC);
+
+	if(motor->diagInit) {
+		PhaseCurrents_t *phaseCurrents = &motor->phaseCurrents;
+		float overcurrentReportLimit = motor->diagConfig.overcurrentReportLimit;
+		if(fabsf(phaseCurrents->a) > overcurrentReportLimit ||
+				fabsf(phaseCurrents->b) > overcurrentReportLimit ||
+				fabsf(phaseCurrents->c > overcurrentReportLimit)) {
+			Diagnostics_SetMotorFault(FAULT_MOTOR_OVERCURRENT,
+					motor->diagConfig.id);
+		}
+		else {
+			Diagnostics_ResetMotorFault(FAULT_MOTOR_OVERCURRENT,
+					motor->diagConfig.id);
+		}
+	}
 }

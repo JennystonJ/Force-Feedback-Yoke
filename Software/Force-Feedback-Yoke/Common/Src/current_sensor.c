@@ -27,9 +27,13 @@ float CurrentSensor_GetValue(CurrentSensor_t *currentSensor) {
 	return currentSensor->reading;
 }
 
-void CurrentSensor_Calibrate(CurrentSensor_t *currentSensor,
+void CurrentSensor_StartCalibration(CurrentSensor_t *currentSensor,
 		unsigned int numSamples) {
-	AnalogSensor_CalibrateZeroOffset(currentSensor->sensor, numSamples);
+	AnalogSensor_StartCalibration(currentSensor->sensor, numSamples);
+}
+
+bool CurrentSensor_IsCalibrationDone(CurrentSensor_t *currentSensor) {
+	return AnalogSensor_IsCalibrationDone(currentSensor->sensor);
 }
 
 void CurrentSensor_Update(CurrentSensor_t *currentSensor, float deltaTimeMs) {

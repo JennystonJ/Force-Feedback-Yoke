@@ -12,6 +12,7 @@ void LoadCell_Init(LoadCell_t *loadCell, AnalogSensor_t *analogSensor) {
 	loadCell->conversionConstant = 1;
 	loadCell->offset = 0;
 	loadCell->lastReading = 0;
+	loadCell->reverse = false;
 
 	CircularBuffer_Init(&loadCell->circularBuffer, loadCell->circularBufferData,
 			sizeof(loadCell->circularBufferData));
@@ -25,8 +26,9 @@ float LoadCell_GetValue(LoadCell_t *loadCell) {
 //	loadCell->lastReading = AnalogSensorReadChannel(loadCell->analogSensor,
 //			loadCell->channel) *
 //			loadCell->conversionConstant + loadCell->offset;
-	loadCell->lastReading = loadCell->lpfResult *
-				loadCell->conversionConstant + loadCell->offset;
+	int reverseSign = loadCell->reverse ? -1 : 1;
+	loadCell->lastReading = reverseSign * (loadCell->lpfResult *
+				loadCell->conversionConstant) + loadCell->offset;
 	return loadCell->lastReading;
 }
 
@@ -35,7 +37,7 @@ void LoadCell_SetLowPassAlpha(LoadCell_t *loadCell, float alpha) {
 }
 
 void LoadCell_RunCalibration(LoadCell_t *loadCell, unsigned int numSamples) {
-	AnalogSensor_CalibrateZeroOffset(loadCell->analogSensor, numSamples);
+	AnalogSensor_StartCalibration(loadCell->analogSensor, numSamples);
 }
 
 void LoadCell_Update(LoadCell_t *loadCell) {
@@ -56,4 +58,8 @@ void LoadCell_SetOffset(LoadCell_t *loadCell, float offset) {
 void LoadCell_SetConversionConstant(LoadCell_t *loadCell,
 		float converstionConstant) {
 	loadCell->conversionConstant = converstionConstant;
+}
+
+void LoadCell_SetReverse(LoadCell_t *loadCell, bool reverse) {
+	loadCell->reverse = reverse;
 }

@@ -9,7 +9,7 @@
  */
 
 #include "bldc_foc_math.h"
-#include <math.h>
+#include <arm_math.h>
 
 #define _1_SQRT3 (0.57735026919f)
 #define _SQRT3_2 (0.86602540378f)
@@ -34,8 +34,8 @@ DQCurrent_t FOCMath_CalcDQCurrent(ABCurrent_t abCurrent, float angleElec) {
 
 	// Park transform
 	DQCurrent_t dqCurrent;
-	float cosResult = cosf(angleElec);
-	float sinResult = sinf(angleElec);
+	float cosResult = arm_cos_f32(angleElec);
+	float sinResult = arm_sin_f32(angleElec);
 	dqCurrent.d = abCurrent.alpha * cosResult + abCurrent.beta * sinResult;
 	dqCurrent.q = abCurrent.beta * cosResult - abCurrent.alpha * sinResult;
 
@@ -44,8 +44,8 @@ DQCurrent_t FOCMath_CalcDQCurrent(ABCurrent_t abCurrent, float angleElec) {
 
 PhaseVoltages_t FOCMath_CalcPhaseVoltages(float ud, float uq, float angleElec){
 
-	float cosResult = cosf(angleElec);
-	float sinResult = sinf(angleElec);
+	float cosResult = arm_cos_f32(angleElec);
+	float sinResult = arm_sin_f32(angleElec);
 
 	// Inverse Park transform
 	float uAlpha = ud * cosResult - uq * sinResult;

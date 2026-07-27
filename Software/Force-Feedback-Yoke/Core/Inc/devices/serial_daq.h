@@ -8,9 +8,9 @@
 #ifndef INC_DEVICES_SERIAL_DAQ_H_
 #define INC_DEVICES_SERIAL_DAQ_H_
 
+#include <config/config.h>
 #include <stm32h7xx_hal.h>
 #include <stdint.h>
-#include "config.h"
 
 typedef enum SerialDAQState {
 	SERIAL_DAQ_IDLE,

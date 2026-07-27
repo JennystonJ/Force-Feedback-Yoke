@@ -35,8 +35,8 @@ void AntiCogInit(AntiCog_t *antiCog, Encoder_t *encoder,
 	PID_Init(pid);
 	PID_SetGains(pid, 0.06050f, 0.00002f, 0.00028f);
 	PID_SetIntegralLimit(pid, 4000000);
-	PIDSetErrorLowPass(pid, &antiCog->calibration.lpfError);
-	PIDSetDerivativeLowPass(pid, &antiCog->calibration.lpfDerivative);
+//	PIDSetErrorLowPass(pid, &antiCog->calibration.lpfError);
+//	PIDSetDerivativeLowPass(pid, &antiCog->calibration.lpfDerivative);
 
 	PID_t *pidSpeed = &antiCog->calibration.pidSpeed;
 	PID_Init(pidSpeed);

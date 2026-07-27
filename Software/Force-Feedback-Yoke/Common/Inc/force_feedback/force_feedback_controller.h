@@ -16,6 +16,8 @@ extern "C" {
 #include "force_feedback_assist.h"
 #include "force_feedback_force.h"
 
+#include "control/axis_kinematics.h"
+
 #include "motor.h"
 #include "encoder.h"
 #include "load_cell.h"
@@ -50,33 +52,21 @@ typedef enum {
 	FFB_UNHOMED,
 	FFB_HOME_FIND_START,
 	FFB_HOME_FIND_END,
-	FFB_HOME_CENTER,
-	FFB_HOME_DONE
+//	FFB_HOME_CENTER,
+//	FFB_HOME_DONE
 } FFBHomingState_e;
 
-
 typedef struct FFBController {
-	Motor_t *motor;
-	float motorKtConstant;
-
-	bool axisReverse;
-
-	Encoder_t *encoder;
-	LoadCell_t *loadCell;
-
-	FFBControllerState_e state;
-	FFBHomingState_e homingState;
 
 	FFBAssist_t ffbAssist;
 	bool assistEnable;
 
+	float forceOut;
 	float gain;
 	float constantGain;
 	float periodicGain;
 	float springGain;
 	float damperGain;
-
-	float forceOut;
 
 	int prevEncoderCountAvg;
 	int speedDt;
@@ -97,13 +87,8 @@ typedef struct FFBController {
 
 	int lockHysterisis;
 
-	float unitPerRev;
-	float unitPerNm;
-
 	FFBForces_t forces;
 	FFBForces_t homeCenterForce;
-
-	LowPass_t lpfForceOutput;
 
 } FFBController_t;
 
@@ -112,7 +97,7 @@ typedef struct FFBController {
  * parameter ffb: pointer to force feedback controller structure to be
  * initialized.
  */
-void FFB_Init(FFBController_t *ffb, Motor_t *motor, Encoder_t *encoder);
+void FFB_Init(FFBController_t *ffb);
 
 void FFB_SetAxisReverse(FFBController_t *ffb, bool reverse);
 
@@ -175,19 +160,12 @@ void FFB_SetHomeCenterForces(FFBController_t *ffb,
 /*
  * Calculates output force from given parameters.
  * parameter ffb: pointer to force feedback controller structure.
- * parameter measuredPosition: position measured from center.
+ * parameter in: pointer to input data.
  * parameter deltaTimeMs: change in time in milliseconds between calls
  * returns: calculated force.
  */
-float FFB_CalcForces(FFBController_t *ffb, float measuredPosition,
+float FFB_Update(FFBController_t *ffb, const AxisKinematics_t *in,
 		float deltaTimeMs);
-
-/*
- * Updates force feedback motor power based on force feedback parameters.
- * parameter ffb: pointer to force feedback controller structure.
- * parameter deltaTimeMs: change in time between calls in milliseconds.
- */
-void FFB_Update(FFBController_t *ffb, float deltaTimeMs);
 
 /*
  * Stops (disables) force feedback controller. Turns off motor.

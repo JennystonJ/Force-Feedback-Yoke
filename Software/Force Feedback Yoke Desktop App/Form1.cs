@@ -64,7 +64,7 @@ namespace Force_Feedback_Yoke_Desktop_App
             simConnectHelper.SetValue(new SimControlAxisData
             {
                 elevator = ffbDevice.HidData.pitchAxis / 2,
-                aileron = ffbDevice.HidData.rollAxis / 2
+                aileron = -ffbDevice.HidData.rollAxis / 2
             });
         }
 
@@ -469,7 +469,9 @@ namespace Force_Feedback_Yoke_Desktop_App
 
         private void SetupPitchSettingsToolTip()
         {
+           
         }
+
         private void SetDeviceConnected(bool connected)
         {
             if (connected)

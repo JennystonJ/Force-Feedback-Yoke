@@ -19,8 +19,8 @@
 #include <stdint.h>
 #include "devices/serial_daq.h"
 
-#define PITCH_ADC_ID 0
-#define ROLL_ADC_ID 1
+#define BSP_PITCH_ID 0
+#define BSP_ROLL_ID 1
 
 // External variables
 extern bool bspInitialized;
@@ -44,7 +44,7 @@ extern SerialDAQ_t daq;
 void Bsp_Init(void);
 
 void Bsp_EStopIT(void);
-void Bsp_MotorControlLoopIT(Motor_t *motor, Encoder_t *encoder, int adcId,
+void Bsp_MotorControlLoopIT(Motor_t *motor, Encoder_t *encoder, int id,
 		float deltaTimeMs);
 void Bsp_FFBControlLoopIT(float deltaTimeMs);
 void Bsp_SerialDAQTxIT(void);
@@ -54,17 +54,23 @@ void Bsp_ADCWatchDogIT(ADC_HandleTypeDef *hadc);
 void Bsp_ADS1256DrdyUpdate(uint16_t pin);
 void Bsp_ADS1256Update(void);
 
+void Bsp_EncoderUpdate(int id);
+void Bsp_EncoderUpdateComplete(void);
+
+
 void Bsp_RegisterSerialDAQTxCallback(void (*SerialDAQTxIT)
 		(SerialDAQ_t *serialDaq)) ;
 void Bsp_RegisterSerialDAQRxCallback(void (*SerialDAQRxIT)
 		(SerialDAQ_t *serialDaq));
 void Bsp_RegisterMotorControlLoopITCallback(void (*MotorControlLoopIT)
-		(Motor_t *motor, Encoder_t *encoder, int adcId, float deltaTimeMs));
+		(Motor_t *motor, Encoder_t *encoder, int id, float deltaTimeMs));
 void Bsp_RegisterFFBControlLoopITCallback(void (*FFBControlLoopIT)
 		(float deltaTimeMs));
 void Bsp_RegisterLoadCellReadCpltCallback(void (*LoadCellReadCpltIT));
 
-void Bsp_ADCUpdate(int adcId);
+void Bsp_LogTxIT(void);
+
+void Bsp_ADCUpdate(int id);
 
 uint32_t Bsp_GetTick(void);
 

@@ -126,15 +126,6 @@ SECTIONS
   /* used by the startup to initialize data */
   _sidata = LOADADDR(.data);
 
-  /* DTCM RAM */
-	.dtcmram :
-	{
-	    . = ALIGN(4);
-	    *(.dtcmram)
-	    *(.dtcmram*)
-	    . = ALIGN(4);
-	} >DTCMRAM
-
   /* Initialized data sections goes into RAM, load LMA copy after code */
   .data :
   {
@@ -164,6 +155,15 @@ SECTIONS
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
   } >RAM_D1
+
+  /* DTCM RAM */
+	.dtcmram :
+	{
+	    . = ALIGN(4);
+	    *(.dtcmram)
+	    *(.dtcmram*)
+	    . = ALIGN(4);
+	} >DTCMRAM
 
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :

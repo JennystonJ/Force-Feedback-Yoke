@@ -1,0 +1,19 @@
+/*
+ * diagnostics_event_types.h
+ *
+ *  Created on: Jul 17, 2026
+ *      Author: Jennyston
+ */
+
+#ifndef INC_DIAGNOSTICS_DIAGNOSTICS_EVENT_TYPES_H_
+#define INC_DIAGNOSTICS_DIAGNOSTICS_EVENT_TYPES_H_
+
+typedef enum DiagnosticsEvent {
+	DIAG_EVENT_MOTOR_OVERCURRENT,
+	DIAG_EVENT_MOTOR_FAULT,
+	DIAG_EVENT_ENCODER_SPI_ERROR,
+	DIAG_EVENT_ENCODER_CRC_ERROR,
+	DIAG_EVENT_USB_ERROR,
+} DiagnosticsEvent_e;
+
+#endif /* INC_DIAGNOSTICS_DIAGNOSTICS_EVENT_TYPES_H_ */

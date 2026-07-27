@@ -88,6 +88,7 @@ void ADS1256_Init(ADS1256_t *adc, SPI_HandleTypeDef *hspi, GPIO_t nCS,
 
 	adc->dmaCount = 0;
 	adc->errorCount = 0;
+	adc->dmaInProgress = false;
 }
 
 int32_t ADS1256_Read(ADS1256_t *adc) {
@@ -107,6 +108,7 @@ void ADS1256_StartDMA(ADS1256_t *adc) {
 
 //		SendCommandIT(adc);
 //		adc->dmaState = ADS1256_DMA_COMMAND_SENT;
+		adc->dmaInProgress = true;
 		HAL_SPI_TransmitReceive_DMA(adc->hspi, adc->bufferTx, adc->bufferRx, 3);
 	}
 //	}
@@ -135,6 +137,7 @@ void ADS1256UpdateDMA(ADS1256_t *adc) {
 }
 
 void ADS1256_Update(ADS1256_t *adc) {
+	adc->dmaInProgress = false;
 	//Convert 24-bit signed integer to 32-bit signed integer (skip index 0)
 	int32_t value = (((int32_t)adc->bufferRx[0]) << 16) |
 					(((int32_t)adc->bufferRx[1]) << 8) |

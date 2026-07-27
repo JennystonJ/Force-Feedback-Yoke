@@ -16,6 +16,8 @@ extern "C" {
 
 int32_t Map(int32_t in, int32_t inMin, int32_t inMax, int32_t outMin,
 		int32_t outMax);
+float MapFloat(float in, float inMin, float inMax, float outMin,
+		float outMax);
 int32_t Constrain(int32_t value, int32_t min, int32_t max);
 float ConstrainFloat(float value, float min, float max);
 float signf(float x);

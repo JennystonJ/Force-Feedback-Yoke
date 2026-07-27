@@ -18,18 +18,18 @@ void FOC_Init(FOC_t *foc, float busVoltage) {
 	foc->iqSetPoint = 0;
 
 	PID_Init(&foc->idPID);
-	// TODO: Configure PID parameters
+
 	PID_SetGains(&foc->idPID, 0, 0, 0);
 	PID_SetIntegralLimit(&foc->idPID, 100);
 	PID_SetIntegralEpsilon(&foc->idPID, 0);
 
 	PID_Init(&foc->iqPID);
-	// TODO: Configure PID parameters
+
 	PID_SetGains(&foc->iqPID, 0, 0, 0);
 	PID_SetIntegralLimit(&foc->iqPID, 100);
 	PID_SetIntegralEpsilon(&foc->iqPID, 0);
 
-	busVoltage = 12.0f;
+	foc->busVoltage = busVoltage;
 }
 
 float FOC_GetIDSetPoint(FOC_t *foc) {

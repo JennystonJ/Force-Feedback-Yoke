@@ -35,6 +35,10 @@ void FFBAssist_Init(FFBAssist_t *ffbAssist) {
 
 	LowPassFilter_Init(&ffbAssist->lpfAssistForce, 0.25f);
 
+	ffbAssist->kCoulomb = 0;
+	ffbAssist->kViscous = 0;
+	ffbAssist->jVirtual = 1;
+	ffbAssist->virtualVelocity = 0;
 	ffbAssist->assistForce = 0;
 
 
@@ -66,143 +70,145 @@ void FFBAssist_SetVelocitySmallCompensation(FFBAssist_t *ffbAssist,
 	ffbAssist->velocitySmallComp = velSmallComp;
 }
 
-float FFBAssist_Calc(FFBAssist_t *ffbAssist, float forceApplied,
-		float motorForce, float velocity, float acceleration, float dt) {
+//float FFBAssist_Calc(FFBAssist_t *ffbAssist, float forceApplied,
+//		float motorForce, float velocity, float acceleration, float dt) {
+float FFBAssist_Calc(FFBAssist_t *ffbAssist, AxisKinematics_t *kinematics,
+		float dt) {
 
-//	if(forceApplied > ffbAssist->assistThreshold && speed < 0.0005) {
-//			// Stiction detected
-//			ffbAssist->compensatoryForce = ffbAssist->stictionThreshold -
-//					ffbAssist->assistThreshold;
-//	}
-//	else if(forceApplied < -ffbAssist->assistThreshold && speed > 0.0005) {
-//			// Stiction detected
-//			ffbAssist->compensatoryForce = -(ffbAssist->stictionThreshold -
-//					ffbAssist->assistThreshold);
-//	}
-//	else {
-//		DecayCompensatoryForce(ffbAssist, speed, dt);
-//	}
-//	//Check if force direction changed
-//	if((forceApplied > 0 && ffbAssist->previousForceApplied < 0) ||
-//			(forceApplied < 0 && ffbAssist->previousForceApplied > 0)) {
-//		// Set to 0 (decay immediately) to help with direction changes
-//		ffbAssist->compensatoryForce = 0;
-//	}
-// ************
-//	float newForce = 0;
-//	if(fabs(forceApplied) <
-//			ffbAssist->assistThreshold) {r
-////		ffbAssist->compensatoryForce = 0.0f;
-////		DecayCompensatoryForce(ffbAssist, speed, dt);
-//
-//	}
-//	else {
-//		newForce = (motorForce*ffbAssist->motorTorqueCancelGain *
-//				acceleration*ffbAssist->accelerationGain) +
-//						-ffbAssist->gain * forceApplied
-//						- ffbAssist->damping;
-//		if(forceApplied < 0) {
-//			newForce += ffbAssist->stictionThreshold;
-//		}
-//		else if(forceApplied > 0) {
-//			newForce -= ffbAssist->stictionThreshold;
-//		}
-//
-//		newForce = newForce * ffbAssist->smoothingRate +
-//				newForce * (1 - ffbAssist->smoothingRate);
-// ***************
-//		if(fabs(forceApplied) < ffbAssist->smoothingThreshold) {
-//			// Smooth out application of force
-//			ffbAssist->compensatoryForce = newForce * ffbAssist->smoothingRate +
-//					ffbAssist->compensatoryForce *
-//					(1 - ffbAssist->smoothingRate);
-//		}
-//		else {
-//
-//		}
-//	}
+	//	if(forceApplied > ffbAssist->assistThreshold && speed < 0.0005) {
+	//			// Stiction detected
+	//			ffbAssist->compensatoryForce = ffbAssist->stictionThreshold -
+	//					ffbAssist->assistThreshold;
+	//	}
+	//	else if(forceApplied < -ffbAssist->assistThreshold && speed > 0.0005) {
+	//			// Stiction detected
+	//			ffbAssist->compensatoryForce = -(ffbAssist->stictionThreshold -
+	//					ffbAssist->assistThreshold);
+	//	}
+	//	else {
+	//		DecayCompensatoryForce(ffbAssist, speed, dt);
+	//	}
+	//	//Check if force direction changed
+	//	if((forceApplied > 0 && ffbAssist->previousForceApplied < 0) ||
+	//			(forceApplied < 0 && ffbAssist->previousForceApplied > 0)) {
+	//		// Set to 0 (decay immediately) to help with direction changes
+	//		ffbAssist->compensatoryForce = 0;
+	//	}
+	// ************
+	//	float newForce = 0;
+	//	if(fabs(forceApplied) <
+	//			ffbAssist->assistThreshold) {r
+	////		ffbAssist->compensatoryForce = 0.0f;
+	////		DecayCompensatoryForce(ffbAssist, speed, dt);
+	//
+	//	}
+	//	else {
+	//		newForce = (motorForce*ffbAssist->motorTorqueCancelGain *
+	//				acceleration*ffbAssist->accelerationGain) +
+	//						-ffbAssist->gain * forceApplied
+	//						- ffbAssist->damping;
+	//		if(forceApplied < 0) {
+	//			newForce += ffbAssist->stictionThreshold;
+	//		}
+	//		else if(forceApplied > 0) {
+	//			newForce -= ffbAssist->stictionThreshold;
+	//		}
+	//
+	//		newForce = newForce * ffbAssist->smoothingRate +
+	//				newForce * (1 - ffbAssist->smoothingRate);
+	// ***************
+	//		if(fabs(forceApplied) < ffbAssist->smoothingThreshold) {
+	//			// Smooth out application of force
+	//			ffbAssist->compensatoryForce = newForce * ffbAssist->smoothingRate +
+	//					ffbAssist->compensatoryForce *
+	//					(1 - ffbAssist->smoothingRate);
+	//		}
+	//		else {
+	//
+	//		}
+	//	}
 
-//	ffbAssist->assistForce = ffbAssist->assistForce +
-//			ffbAssist->lpFilterCo * (newForce - ffbAssist->assistForce);
-// *******************
-//	ffbAssist->assistForce = newForce;
-//	float dF = ffbAssist->dFilterCo *
-//			(forceApplied - ffbAssist->previousForceApplied) / dt +
-//			(1 - ffbAssist->dFilterCo) * ffbAssist->dFPrevious;
-//	ffbAssist->assistForce -= ffbAssist->dK * dF;
-//
-//
-//	// Update previous force applied for next calculation
-//	ffbAssist->dFPrevious = dF;
-//	ffbAssist->previousForceApplied = forceApplied;
-// ************
-//
-//	float velocityAbs = fabs(velocity);
-//	float velocityScale = velocityAbs /
-//			(velocityAbs + ffbAssist->velocitySmallComp);
-//	float assistGainScaled = ffbAssist->gain * velocityScale;
-//
-//
-//	ffbAssist->inertialContribution = acceleration *
-//			ffbAssist->accelerationGain;
-//	ffbAssist->assistForce = assistGainScaled *
-//			forceApplied - ffbAssist->inertialContribution;
-//	return ffbAssist->assistForce;
+	//	ffbAssist->assistForce = ffbAssist->assistForce +
+	//			ffbAssist->lpFilterCo * (newForce - ffbAssist->assistForce);
+	// *******************
+	//	ffbAssist->assistForce = newForce;
+	//	float dF = ffbAssist->dFilterCo *
+	//			(forceApplied - ffbAssist->previousForceApplied) / dt +
+	//			(1 - ffbAssist->dFilterCo) * ffbAssist->dFPrevious;
+	//	ffbAssist->assistForce -= ffbAssist->dK * dF;
+	//
+	//
+	//	// Update previous force applied for next calculation
+	//	ffbAssist->dFPrevious = dF;
+	//	ffbAssist->previousForceApplied = forceApplied;
+	// ************
+	//
+	//	float velocityAbs = fabs(velocity);
+	//	float velocityScale = velocityAbs /
+	//			(velocityAbs + ffbAssist->velocitySmallComp);
+	//	float assistGainScaled = ffbAssist->gain * velocityScale;
+	//
+	//
+	//	ffbAssist->inertialContribution = acceleration *
+	//			ffbAssist->accelerationGain;
+	//	ffbAssist->assistForce = assistGainScaled *
+	//			forceApplied - ffbAssist->inertialContribution;
+	//	return ffbAssist->assistForce;
 
-// ************
+	// ************
 
 	// User force estimation
-//	float forceUser = forceApplied + ffbAssist->accelerationGain * acceleration +
-//			ffbAssist->velocityGain * velocity; // + frictionEst
-//
-//	// Stiction logic
-//	bool nearStick = fabsf(velocity) < ffbAssist->velocitySticition;
-//	if(nearStick && fabsf(forceUser) > ffbAssist->forceBreak &&
-//			!ffbAssist->boostActive) {
-//		ffbAssist->boostActive = true;
-//		ffbAssist->boostTimerCount = ffbAssist->boostTime;
-//		ffbAssist->forceBias = ConstrainFloat(ffbAssist->forceBias +
-//				signf(forceUser)*ffbAssist->forceBiasStep,
-//				-ffbAssist->forceBiasMax, ffbAssist->forceBiasMax);
-//	}
-//
-//	ffbAssist->boostTimerCount--;
-//	if(ffbAssist->boostTimerCount <= 0) {
-//		ffbAssist->boostTimerCount = 0;
-//	}
-//
-//	float boostForce;
-//	if(ffbAssist->boostActive) {
-//		boostForce = signf(forceUser) * ffbAssist->forceBoost;
-//		if((fabs(velocity) > ffbAssist->velocityExit) ||
-//				(ffbAssist->boostTimerCount <= 0)) {
-//			ffbAssist->boostActive = false;
-//		}
-//	}
-//
-//	if(nearStick && fabsf(forceUser) > ffbAssist->forceStart) {
-//		ffbAssist->forceBias = ConstrainFloat(ffbAssist->forceBias +
-//				ffbAssist->forceUserKi * forceUser * dt,
-//				-ffbAssist->forceBiasMax, ffbAssist->forceBiasMax);
-//	}
-//	else {
-//		ffbAssist->forceBias *= expf(-dt/ffbAssist->forceBiasDecay);
-//	}
-//
-//	float forceRaw = ffbAssist->gain * forceUser + ffbAssist->forceBias +
-//			boostForce;
-//	ffbAssist->assistForce = slewLimit(forceRaw, ffbAssist->assistForce,
-//			ffbAssist->forceSlewLimit, dt);
-//
-//	return ffbAssist->assistForce;
+	//	float forceUser = forceApplied + ffbAssist->accelerationGain * acceleration +
+	//			ffbAssist->velocityGain * velocity; // + frictionEst
+	//
+	//	// Stiction logic
+	//	bool nearStick = fabsf(velocity) < ffbAssist->velocitySticition;
+	//	if(nearStick && fabsf(forceUser) > ffbAssist->forceBreak &&
+	//			!ffbAssist->boostActive) {
+	//		ffbAssist->boostActive = true;
+	//		ffbAssist->boostTimerCount = ffbAssist->boostTime;
+	//		ffbAssist->forceBias = ConstrainFloat(ffbAssist->forceBias +
+	//				signf(forceUser)*ffbAssist->forceBiasStep,
+	//				-ffbAssist->forceBiasMax, ffbAssist->forceBiasMax);
+	//	}
+	//
+	//	ffbAssist->boostTimerCount--;
+	//	if(ffbAssist->boostTimerCount <= 0) {
+	//		ffbAssist->boostTimerCount = 0;
+	//	}
+	//
+	//	float boostForce;
+	//	if(ffbAssist->boostActive) {
+	//		boostForce = signf(forceUser) * ffbAssist->forceBoost;
+	//		if((fabs(velocity) > ffbAssist->velocityExit) ||
+	//				(ffbAssist->boostTimerCount <= 0)) {
+	//			ffbAssist->boostActive = false;
+	//		}
+	//	}
+	//
+	//	if(nearStick && fabsf(forceUser) > ffbAssist->forceStart) {
+	//		ffbAssist->forceBias = ConstrainFloat(ffbAssist->forceBias +
+	//				ffbAssist->forceUserKi * forceUser * dt,
+	//				-ffbAssist->forceBiasMax, ffbAssist->forceBiasMax);
+	//	}
+	//	else {
+	//		ffbAssist->forceBias *= expf(-dt/ffbAssist->forceBiasDecay);
+	//	}
+	//
+	//	float forceRaw = ffbAssist->gain * forceUser + ffbAssist->forceBias +
+	//			boostForce;
+	//	ffbAssist->assistForce = slewLimit(forceRaw, ffbAssist->assistForce,
+	//			ffbAssist->forceSlewLimit, dt);
+	//
+	//	return ffbAssist->assistForce;
 
-// ************
-	float forceUser = forceApplied +
-			ffbAssist->accelerationGain * acceleration +
-			ffbAssist->velocityGain * velocity; // + frictionEst
+	// ************
+//	float forceUser = kinematics->userTorque +
+//			ffbAssist->velocityGain * kinematics->velocity; // + frictionEst
 
 
 	// Stiction logic
+	/*
 	bool nearStick = fabsf(velocity) < ffbAssist->velocitySticition;
 	if(nearStick && fabsf(forceUser) > ffbAssist->forceBreak &&
 			!ffbAssist->boostActive) {
@@ -235,25 +241,40 @@ float FFBAssist_Calc(FFBAssist_t *ffbAssist, float forceApplied,
 	else {
 		ffbAssist->forceBias *= expf(-dt/ffbAssist->forceBiasDecay);
 	}
+*/
 
-
+	/*
 	// Force-based Dampening
-	float s = ConstrainFloat(fabsf(forceUser) / ffbAssist->forceScale,
+	float s = ConstrainFloat(fabsf(kinematics->userTorque) / ffbAssist->forceScale,
 			0.0f, 1.0f);
 
 	// Dead band
-	if(fabsf(forceUser) < ffbAssist->forceDeadband) {
+	if(fabsf(kinematics->userTorque) < ffbAssist->forceDeadband) {
 		s = 0.0f;
 	}
 
 	float b = ffbAssist->dampingMin +
 			(ffbAssist->dampingMax - ffbAssist->dampingMin) * (1.0f - s);
-	ffbAssist->dampingForce = -b * velocity;
+	ffbAssist->dampingForce = -b * kinematics->velocity;
 
-	float forceRaw = ffbAssist->gain * forceUser + ffbAssist->forceBias +
-			boostForce + ffbAssist->dampingForce;
+//	float forceRaw = ffbAssist->gain * forceUser + ffbAssist->forceBias +
+//			boostForce + ffbAssist->dampingForce;
+	float forceRaw = ffbAssist->gain * forceUser + ffbAssist->dampingForce;
 	ffbAssist->assistForce = slewLimit(forceRaw, ffbAssist->assistForce,
 			ffbAssist->forceSlewLimit, dt);
+
+	 */
+	float frictionTorque = ffbAssist->kCoulomb * signf(kinematics->velocity) +
+			ffbAssist->kViscous * kinematics->velocity;
+
+	float userTorque = kinematics->loadCellTorque - kinematics->motorTorque;
+	float acceleration = userTorque / ffbAssist->jVirtual;
+	ffbAssist->virtualVelocity += acceleration * dt;
+	ffbAssist->virtualVelocity *= (1.0f - ffbAssist->damping * dt);
+
+	ffbAssist->gain = 0;
+	ffbAssist->assistForce = ffbAssist->gain * ffbAssist->virtualVelocity +
+			frictionTorque;
 
 	return ffbAssist->assistForce;
 }

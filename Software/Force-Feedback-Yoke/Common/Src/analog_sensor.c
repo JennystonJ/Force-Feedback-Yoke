@@ -18,12 +18,15 @@ void AnalogSensor_Init(AnalogSensor_t *analogSensor,
 	analogSensor->maxCount = maxCount;
 	analogSensor->offset = 0;
 
+	analogSensor->lastValueRaw = 0;
 	analogSensor->lastValue = 0;
 	analogSensor->lastValueDifferential = 0;
-	analogSensor->lastReturnedValue = 0;
 
-	analogSensor->calibrating = false;
-	analogSensor->calibrateUpdateFlag = false;
+	// Calibration variables
+	analogSensor->calState = ANALOG_SENSOR_CAL_READY;
+	analogSensor->calSampleCount = 0;
+	analogSensor->calSampleTarget = 0;
+	analogSensor->calSampleAccumulator = 0;
 }
 
 void AnalogSensor_SetDifferential(AnalogSensor_t *analogSensor,
@@ -36,19 +39,25 @@ void AnalogSensor_SetOffset(AnalogSensor_t *analogSensor, int offset) {
 	analogSensor->offset = offset;
 }
 
-int AnalogSensor_GetValue(AnalogSensor_t *analogSensor) {
+int AnalogSensor_GetRawValue(AnalogSensor_t *analogSensor) {
 	if(analogSensor->differential) {
-		analogSensor->lastValueDifferential = analogSensor->interface.
-				ADCReadChannel(&analogSensor->interface,
-						analogSensor->channelN);
-	}
+			analogSensor->lastValueDifferential = analogSensor->interface.
+					ADCReadChannel(&analogSensor->interface,
+							analogSensor->channelN);
+		}
 
-	analogSensor->lastValue = analogSensor->interface.ADCReadChannel(
-			&analogSensor->interface, analogSensor->channel);
+		analogSensor->lastValueRaw = analogSensor->interface.ADCReadChannel(
+				&analogSensor->interface, analogSensor->channel) -
+						(int)analogSensor->lastValueDifferential;
+	return analogSensor->lastValueRaw;
+}
 
-	analogSensor->lastReturnedValue = (int)analogSensor->lastValue -
-			(int)analogSensor->lastValueDifferential + analogSensor->offset;
-	return analogSensor->lastReturnedValue;
+int AnalogSensor_GetValue(AnalogSensor_t *analogSensor) {
+
+	analogSensor->lastValue = AnalogSensor_GetRawValue(analogSensor) +
+			analogSensor->offset;
+
+	return analogSensor->lastValue;
 }
 
 unsigned int AnalogSensor_GetMaxCount(AnalogSensor_t *analogSensor) {
@@ -65,34 +74,36 @@ float AnalogSensor_GetVref(AnalogSensor_t *analogSensor) {
 			&analogSensor->interface);
 }
 
-void AnalogSensor_CalibrateZeroOffset(AnalogSensor_t *analogSensor,
+void AnalogSensor_StartCalibration(AnalogSensor_t *analogSensor,
 		unsigned int numSamples) {
-
-	unsigned int sampleCount = 0;
-	analogSensor->offset = 0;
-	int64_t sampleAccumulator = 0;
-
-	analogSensor->calibrating = true;
-	while(sampleCount < numSamples) {
-		// Wait for new sample to be ready
-		while(!analogSensor->calibrateUpdateFlag) {}
-
-		// Add sample to accumulator
-		sampleAccumulator += (int64_t)AnalogSensor_GetValue(analogSensor);
-
-		// Reset flag and update sample count
-		analogSensor->calibrateUpdateFlag = false;
-		sampleCount++;
-	}
-
-	// Calculate average, negate, then set to offset
-	analogSensor->offset = (int)(-sampleAccumulator/(int)numSamples);
-
-	analogSensor->calibrating = false;
+	analogSensor->calSampleTarget = numSamples;
+	analogSensor->calSampleCount = 0;
+	analogSensor->calSampleAccumulator = 0;
+	// Start calibration
+	analogSensor->calState = ANALOG_SENSOR_CAL_RUNNING;
 }
 
 void AnalogSensor_Update(AnalogSensor_t *analogSensor) {
-	if(analogSensor->calibrating) {
-		analogSensor->calibrateUpdateFlag = true;
+	if(analogSensor->calState == ANALOG_SENSOR_CAL_RUNNING) {
+		// Add sample to accumulator
+		analogSensor->calSampleAccumulator +=
+				(int64_t)AnalogSensor_GetRawValue(analogSensor);
+
+		// Update remaining sample count
+		analogSensor->calSampleCount++;
+
+		if(analogSensor->calSampleCount >= analogSensor->calSampleTarget) {
+
+			// Calculate average, negate, then set to offset
+			analogSensor->offset = -(int)(analogSensor->calSampleAccumulator /
+					analogSensor->calSampleCount);
+
+			// Calibration done
+			analogSensor->calState = ANALOG_SENSOR_CAL_DONE;
+		}
 	}
+}
+
+bool AnalogSensor_IsCalibrationDone(AnalogSensor_t *analogSensor) {
+	return analogSensor->calState == ANALOG_SENSOR_CAL_DONE;
 }

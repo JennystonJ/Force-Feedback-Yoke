@@ -17,6 +17,7 @@ typedef struct LoadCell {
 	float offset;
 	float conversionConstant;
 	float lastReading;
+	bool reverse;
 
 	CircularBuffer_t circularBuffer;
 	int circularBufferData[5];
@@ -33,6 +34,7 @@ void LoadCell_SetLowPassAlpha(LoadCell_t *loadCell, float alpha);
 void LoadCell_SetOffset(LoadCell_t *loadCell, float offset);
 void LoadCell_SetConversionConstant(LoadCell_t *loadCell,
 		float converstionCosntant);
+void LoadCell_SetReverse(LoadCell_t *loadCell, bool reverse);
 void LoadCell_RunCalibration(LoadCell_t *loadCell, unsigned int numSamples);
 void LoadCell_Update(LoadCell_t *loadCell);
 

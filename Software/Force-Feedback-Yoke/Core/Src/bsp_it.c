@@ -17,11 +17,11 @@ void BspIT_TimIT(TIM_HandleTypeDef *htim) {
 
 void BspIT_ADCIT(ADC_HandleTypeDef *hadc) {
 	if(hadc == &CURRENT_SENSE_PITCH_ADC) {
-		Bsp_MotorControlLoopIT(&pitchMotor, &pitchEncoder, PITCH_ADC_ID,
+		Bsp_MotorControlLoopIT(&pitchMotor, &pitchEncoder, BSP_PITCH_ID,
 				PITCH_MOTOR_CONTROL_LOOP_PERIOD_MS);
 	}
 	else if(hadc == &CURRENT_SENSE_ROLL_ADC) {
-		Bsp_MotorControlLoopIT(&rollMotor, &rollEncoder, ROLL_ADC_ID,
+		Bsp_MotorControlLoopIT(&rollMotor, &rollEncoder, BSP_ROLL_ID,
 				ROLL_MOTOR_CONTROL_LOOP_PERIOD_MS);
 	}
 	else {
@@ -39,7 +39,7 @@ void BspIT_EXTIIT(uint16_t gpioPin) {
 			Bsp_EStopIT();
 			break;
 		case ADC1_DRDY_Pin:
-			Bsp_ADS1256DrdyUpdate(gpioPin);
+//			Bsp_ADS1256DrdyUpdate(gpioPin);
 			break;
 		default:
 			// Invalid, do nothing
@@ -51,6 +51,9 @@ void BspIT_SPIIT(SPI_HandleTypeDef *hspi) {
 	if(hspi == &hspi2) {
 		Bsp_ADS1256Update();
 	}
+	else if(hspi == &hspi3) {
+		Bsp_EncoderUpdateComplete();
+	}
 }
 
 void BspIT_I2CIT(I2C_HandleTypeDef *hi2c) {
@@ -60,6 +63,7 @@ void BspIT_I2CIT(I2C_HandleTypeDef *hi2c) {
 void BspIT_UARTTxCpltIT(UART_HandleTypeDef *huart) {
 	if(huart == &SERIAL_DAQ_UART) {
 		Bsp_SerialDAQTxIT();
+//		Bsp_LogTxIT();
 	}
 }
 

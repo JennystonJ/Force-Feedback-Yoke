@@ -12,14 +12,22 @@
 #include "bldc_foc.h"
 #include "encoder.h"
 #include "current_sensor.h"
+#include "diagnostics/diagnostics_config.h"
 
 #include <stdbool.h>
 
-typedef enum {
+typedef enum CurrentCalState {
+	CURRENT_CAL_IDLE,
+	CURRENT_CAL_RUNNING,
+	CURRENT_CAL_DONE
+} CurrentCalState_e;
+
+typedef enum BLDCMotorControlMode{
 	BLDC_MOTOR_MODE_VOLTAGE,
 	BLDC_MOTOR_MODE_CURRENT,
 	BLDC_MOTOR_MODE_ENCODER_CAL
 } BLDCMotorControlMode_e;
+
 
 typedef struct BLDCMotor {
 	BLDCDriver_t *driver;
@@ -31,9 +39,13 @@ typedef struct BLDCMotor {
 	int electricalAngleCount;
 	float electricalAngle;
 
+	CurrentCalState_e currentCalState;
+
+	bool currentSensingEnabled;
 	CurrentSensor_t *currentA;
 	CurrentSensor_t *currentB;
 	CurrentSensor_t *currentC;
+	unsigned int currentSenseCalSampleTarget;
 
 	PhaseCurrents_t phaseCurrents;
 
@@ -46,10 +58,19 @@ typedef struct BLDCMotor {
 	bool eStop;
 
 	FOC_t foc;
+
+	bool diagInit;
+	MotorDiagnosticsConfig_t diagConfig;
 } BLDCMotor_t;
 
 void BLDCMotor_Init(BLDCMotor_t *motor, BLDCDriver_t *driver,
 		Encoder_t *encoder, int polePairs);
+
+void BLDCMotor_SetDiagnostics(BLDCMotor_t *motor,
+		MotorDiagnosticsConfig_t config);
+
+void BLDCMotor_SetId(BLDCMotor_t *motor, int8_t id);
+
 void BLDCMotor_SetCurrentSensors(BLDCMotor_t *motor, CurrentSensor_t *currentA,
 		CurrentSensor_t *currentB, CurrentSensor_t *currentC);
 
@@ -91,8 +112,10 @@ FOC_t *BLDCMotor_GetFOC(BLDCMotor_t *motor);
 
 void BLDCMotor_RunEncoderCalibration(BLDCMotor_t *motor,
 		float phaseHoldCurrrent);
-void BLDCMotor_RunCurrentSensorCalibration(BLDCMotor_t *motor,
-		unsigned int numSamples);
+void BLDCMotor_RunCurrentSensorCalibration(BLDCMotor_t *motor);
+void BLDCMotor_SetCurrentSensorCalibrationSampleTarget(BLDCMotor_t *motor,
+		unsigned int targetSamples);
+bool BLDCMotor_IsCurrentSensorCalibrating(BLDCMotor_t *motor);
 
 void BLDCMotor_Update(BLDCMotor_t *motor, float deltaTimeMs);
 

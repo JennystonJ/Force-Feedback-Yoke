@@ -27,6 +27,8 @@ int CircularBuffer_GetNext(CircularBuffer_t *buffer){
 		int data = buffer->data[buffer->headIndex];
 		// Increment head index, wrap if needed
 		buffer->headIndex = (buffer->headIndex + 1) % buffer->len;
+
+		return data;
 	}
 	else {
 		// No data available

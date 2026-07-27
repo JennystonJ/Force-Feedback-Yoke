@@ -12,6 +12,11 @@ int32_t Map(int32_t in, int32_t inMin, int32_t inMax, int32_t outMin,
 	return (((int64_t)(in - inMin)*(outMax - outMin))/(inMax - inMin)) + outMin;
 }
 
+float MapFloat(float in, float inMin, float inMax, float outMin,
+		float outMax) {
+	return (((in - inMin)*(outMax - outMin))/(inMax - inMin)) + outMin;
+}
+
 int32_t Constrain(int32_t value, int32_t min, int32_t max) {
 	if(value < min) {
 		return min;

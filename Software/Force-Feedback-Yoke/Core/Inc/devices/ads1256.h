@@ -54,6 +54,7 @@ struct ADS1256 {
 	// Debug
 	long dmaCount;
 	long errorCount;
+	bool dmaInProgress;
 };
 
 void ADS1256_Init(ADS1256_t *adc, SPI_HandleTypeDef *hspi, GPIO_t nCS,

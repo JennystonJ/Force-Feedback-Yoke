@@ -8,17 +8,24 @@
 #ifndef INC_HARDWARE_CONFIG_H_
 #define INC_HARDWARE_CONFIG_H_
 
+#define CLOCKSPEED_MHZ 480.0f
+
 #define US_TIM htim6
 #define FFB_CONTROL_LOOP_TIM htim7
 
 // *** Encoder Configuration ***
+#define ENCODER_MASTER_START_TIMER htim4
+#define ENCODER_UPPER_WORD_TIMER htim15
+
 #define ENCODER_PITCH_SPI hspi3
 #define ENCODER_PITCH_TIM htim2
-#define ENCODER_PITCH_COUNTS_PER_REV 65536
+//#define ENCODER_PITCH_PULSE_TIM htim12
+#define ENCODER_PITCH_COUNTS_PER_REV 2097152
 
 #define ENCODER_ROLL_SPI hspi3
 #define ENCODER_ROLL_TIM htim5
-#define ENCODER_ROLL_COUNTS_PER_REV 65536
+//#define ENCODER_ROLL_PULSE_TIM htim3
+#define ENCODER_ROLL_COUNTS_PER_REV 2097152
 
 // *** Driver Configuration ***
 #define DRIVER_PITCH_TIM htim1
@@ -34,9 +41,11 @@
 #define DRIVER_ROLL_OC_ADC_SYNC_CHANNEL TIM_CHANNEL_4
 
 // *** Current Sensor Configuration
+#define CURRENT_SENSE_NUM_PHASES 3
+
 #define CURRENT_SENSE_PITCH_ADC hadc2
 #define CURRENT_SENSE_PITCH_ADC_VREF 3.3f
-// 20 bit ADC (16-bit + 16* over-sampling)
+// 16 bit ADC (16-bit + 8 * over-sampling, right shift 3 bits)
 #define CURRENT_SENSE_PITCH_ADC_COUNTS 65536
 #define CURRENT_SENSE_PITCH_A_CH 0
 #define CURRENT_SENSE_PITCH_B_CH 1
@@ -45,8 +54,11 @@
 
 #define CURRENT_SENSE_ROLL_ADC hadc1
 #define CURRENT_SENSE_ROLL_ADC_VREF 3.3f
+// TODO: Fix current sense ADC counts value
 // 18 bit ADC (16-bit + 4* over-sampling)
-#define CURRENT_SENSE_ROLL_ADC_COUNTS 262144
+//#define CURRENT_SENSE_ROLL_ADC_COUNTS 262144
+// 16 bit ADC (16-bit + 8 * over-sampling, right shift 3 bits)
+#define CURRENT_SENSE_ROLL_ADC_COUNTS 65536
 #define CURRENT_SENSE_ROLL_A_CH 0
 #define CURRENT_SENSE_ROLL_B_CH 1
 #define CURRENT_SENSE_ROLL_C_CH 2
@@ -56,8 +68,9 @@
 #define ADS1256_SPI hspi2
 #define ADS1256_ADC_COUNTS 16777216
 
-// *** Data Acquisition Configuration
-#define SERIAL_DAQ_UART huart2
+// *** Data Acquisition and Logging Configuration
+#define SERIAL_DAQ_UART huart1
+#define LOGGING_UART huart1
 
 /*** Interrupt Configuration ***/
 #define PITCH_MOTOR_CONTROL_LOOP_PERIOD_MS 0.05f

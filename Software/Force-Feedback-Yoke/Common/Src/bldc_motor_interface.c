@@ -6,6 +6,7 @@
  */
 
 #include "bldc_motor_interface.h"
+#include <stdbool.h>
 
 static void MotorSetEnable(MotorInterface_t *interface, bool enabled);
 static float MotorGetBusVoltage(MotorInterface_t *interface);
@@ -24,7 +25,9 @@ static int MotorGetNumCurrentSensors(MotorInterface_t *interface);
 static float MotorGetCurrentReading(MotorInterface_t *interface,
 		int sensorIndex);
 static float MotorGetTorqueReading(MotorInterface_t *interface);
-static float MotorGetTotalCurrentReading(MotorInterface_t * interface);
+static float MotorGetTotalCurrentReading(MotorInterface_t *interface);
+static void MotorStartCalibration(MotorInterface_t *interface);
+static bool MotorIsCalibrationRunning(MotorInterface_t *interface);
 static void MotorUpdate(MotorInterface_t *interface, float deltaTimeMs);
 
 
@@ -47,6 +50,8 @@ void BLDCMotorInterface_Init(MotorInterface_t *interface, BLDCMotor_t *motor) {
 	interface->MotorGetCurrentReading = &MotorGetCurrentReading;
 	interface->MotorGetTorqueReading = &MotorGetTorqueReading;
 	interface->MotorGetTotalCurrentReading = &MotorGetTotalCurrentReading;
+	interface->MotorStartCalibration = &MotorStartCalibration;
+	interface->MotorIsCalibrationRunning = &MotorIsCalibrationRunning;
 	interface->MotorUpdate = &MotorUpdate;
 }
 
@@ -123,11 +128,20 @@ static float MotorGetCurrentReading(MotorInterface_t *interface,
 }
 
 static float MotorGetTorqueReading(MotorInterface_t *interface) {
-	return BLDCMotor_GetTorqueReading(interface->hardwareMotor);
+	return BLDCMotor_GetTorqueReading((BLDCMotor_t *)interface->hardwareMotor);
 }
 
 static float MotorGetTotalCurrentReading(MotorInterface_t * interface) {
 	return BLDCMotor_GetTotalCurrentReading(
+			(BLDCMotor_t *)interface->hardwareMotor);
+}
+
+static void MotorStartCalibration(MotorInterface_t *interface) {
+	BLDCMotor_RunCurrentSensorCalibration((BLDCMotor_t *)interface->hardwareMotor);
+}
+
+static bool MotorIsCalibrationRunning(MotorInterface_t *interface) {
+	return BLDCMotor_IsCurrentSensorCalibrating(
 			(BLDCMotor_t *)interface->hardwareMotor);
 }
 

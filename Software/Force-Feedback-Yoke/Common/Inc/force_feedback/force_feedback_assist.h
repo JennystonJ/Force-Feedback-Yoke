@@ -12,6 +12,7 @@
 
 #include "utilities/filters.h"
 #include <stdbool.h>
+#include "control/axis_kinematics.h"
 
 typedef struct FFBAssist {
 	float decayRate;
@@ -60,6 +61,11 @@ typedef struct FFBAssist {
 
 	LowPass_t lpfAssistForce;
 
+	float kCoulomb;
+	float kViscous;
+	float jVirtual;
+	float virtualVelocity;
+
 	float assistForce;
 } FFBAssist_t;
 
@@ -73,7 +79,9 @@ void FFBAssist_SetVelocityGain(FFBAssist_t *ffbAssist, float velGain);
 void FFBAssist_SetVelocitySmallCompensation(FFBAssist_t *ffbAssist,
 		float velSmallComp);
 
-float FFBAssist_Calc(FFBAssist_t *ffbAssist, float forceApplied,
-		float motorForce, float speed, float acceleration, float dt);
+//float FFBAssist_Calc(FFBAssist_t *ffbAssist, float forceApplied,
+//		float motorForce, float speed, float acceleration, float dt);
+float FFBAssist_Calc(FFBAssist_t *ffbAssist, AxisKinematics_t *kinematics,
+		float dt);
 
 #endif /* INC_FORCE_FEEDBACK_ASSIST_H_ */

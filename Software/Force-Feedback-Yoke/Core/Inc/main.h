@@ -38,13 +38,21 @@ extern "C" {
 /* USER CODE BEGIN ET */
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
 extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim7;
 extern TIM_HandleTypeDef htim8;
+extern TIM_HandleTypeDef htim12;
+
+extern DMA_HandleTypeDef hdma_tim2_ch1;
+extern DMA_HandleTypeDef hdma_tim2_ch2;
 
 extern SPI_HandleTypeDef hspi2;
 extern SPI_HandleTypeDef hspi3;
+
+extern CRC_HandleTypeDef hcrc;
 
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
@@ -101,6 +109,8 @@ void Error_Handler(void);
 #define M1_NFAULT_GPIO_Port GPIOD
 #define E1_NCS_Pin GPIO_PIN_9
 #define E1_NCS_GPIO_Port GPIOC
+#define ENC_PITCH_A_Pin GPIO_PIN_15
+#define ENC_PITCH_A_GPIO_Port GPIOA
 #define PROBE_OUT_Pin GPIO_PIN_2
 #define PROBE_OUT_GPIO_Port GPIOD
 #define ADC1_DRDY_Pin GPIO_PIN_4
@@ -108,6 +118,8 @@ void Error_Handler(void);
 #define ADC1_DRDY_EXTI_IRQn EXTI4_IRQn
 #define ADC2_DRDY_Pin GPIO_PIN_7
 #define ADC2_DRDY_GPIO_Port GPIOD
+#define ENC_PITCH_B_Pin GPIO_PIN_3
+#define ENC_PITCH_B_GPIO_Port GPIOB
 #define AUX_INT_Pin GPIO_PIN_5
 #define AUX_INT_GPIO_Port GPIOB
 #define ADC2_NCS_Pin GPIO_PIN_0
